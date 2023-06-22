@@ -21,7 +21,7 @@ class ProductManager {
         }
 
         this.products.push(product)
-        return product
+        return product;
 
     }
 
