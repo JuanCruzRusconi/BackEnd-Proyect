@@ -8,8 +8,9 @@ class ProductManager {
 
     #id = 0;
 
-    getProducts = () => {
+    getProducts = async () => {
         return this.products;
+
     }
 
     addProduct = async (product) => {
@@ -27,7 +28,8 @@ class ProductManager {
             }
 
             const newProduct = {
-                id: this.#id++,
+                //id: this.#id++,
+                id: products.length,
                 ...product,
             }
 
@@ -41,7 +43,7 @@ class ProductManager {
 
         
        // this.products.push(newProduct);
-       // console.log(`Product ${product.title} submitted successfully`);
+       console.log(`Product ${product.title} submitted successfully`);
     };
 
     getProductById = (productId) => {
@@ -53,7 +55,28 @@ class ProductManager {
         console.log("Producto encontrado");
         return productById;
     }
+
+    updateProduct = async () => {
+        try {
+            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const products = JSON.parse(file);
+            
+
+            const update = products.find((product) => product.id === 2)
+            console.log(update)
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+
+    deleteProduct = (products) => {
+
+        const deleteById = products.filter((product) => product.id === 2);
+        console.log(deleteById)
+    }
 }
+
 
 const productManager = new ProductManager()
 
@@ -98,4 +121,4 @@ await productManager.addProduct({
     stock: 300
 });
 
-console.log(productManager.getProducts())
+console.log(await productManager.getProducts())
