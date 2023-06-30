@@ -33,14 +33,12 @@ class ProductManager {
                 ...product,
             }
 
-
             this.products.push(newProduct);
             products.push(newProduct);
             await fs.writeFile("./Desafios/products.json", JSON.stringify(products))
         } catch (e) {
             console.log(e);
         }
-
         
        // this.products.push(newProduct);
        console.log(`Product ${product.title} submitted successfully`);
@@ -61,7 +59,6 @@ class ProductManager {
             const file = await fs.readFile("./Desafios/products.json", "utf-8");
             const products = JSON.parse(file);
             
-
             const update = products.find((product) => product.id === 2)
             console.log(update)
         } catch (e) {
@@ -70,10 +67,17 @@ class ProductManager {
 
     }
 
-    deleteProduct = (products) => {
+    deleteProduct =  async () => {
+        try {
+            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const products = JSON.parse(file);
 
-        const deleteById = products.filter((product) => product.id === 2);
-        console.log(deleteById)
+            const deleteById = products.filter((product) => product.id === 2);
+            console.log(deleteById);
+        } catch (e) {
+            console.log(e)
+        }
+        
     }
 }
 
