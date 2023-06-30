@@ -17,7 +17,7 @@ class ProductManager {
         const {title, description, price, thumbnail, code, stock} = product
 
         try {
-            const file = await fs.readFile("./products.json", "utf-8");
+            const file = await fs.readFile("./Desafios/products.json", "utf-8");
             const products = JSON.parse(file);
 
             const itsValid = this.products.some((productFind) => productFind.code === code);
@@ -32,10 +32,9 @@ class ProductManager {
             }
 
 
-
             this.products.push(newProduct);
-            //products.push(newProduct);
-            await fs.writeFile("./products.json", JSON.stringify(products))
+            products.push(newProduct);
+            await fs.writeFile("./Desafios/products.json", JSON.stringify(products))
         } catch (e) {
             console.log(e);
         }
