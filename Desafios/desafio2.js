@@ -9,8 +9,9 @@ class ProductManager {
     #id = 0;
 
     getProducts = async () => {
-        return this.products;
-
+        const file = await fs.readFile("./Desafios/products.json", "utf-8");
+        const products = JSON.parse(file);
+        return products;
     }
 
     addProduct = async (product) => {
@@ -33,9 +34,10 @@ class ProductManager {
                 ...product,
             }
 
-            this.products.push(newProduct);
+            this.products = products;
             products.push(newProduct);
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(products))
+            await fs.writeFile("./Desafios/products.json", JSON.stringify(products));
+            return product;
         } catch (e) {
             console.log(e);
         }
@@ -59,12 +61,14 @@ class ProductManager {
             const file = await fs.readFile("./Desafios/products.json", "utf-8");
             const products = JSON.parse(file);
             
-            const update = products.find((product) => product.id === 2)
-            console.log(update)
+            const update = await products.find((product) => product.id === 2)
+            console.log("Producto a actualizar:")
+            return update;
+            
         } catch (e) {
             console.log(e)
         }
-
+       //console.log(updateProduct())
     }
 
     deleteProduct =  async () => {
@@ -72,8 +76,12 @@ class ProductManager {
             const file = await fs.readFile("./Desafios/products.json", "utf-8");
             const products = JSON.parse(file);
 
-            const deleteById = products.filter((product) => product.id === 2);
-            console.log(deleteById);
+            const deleted = await products.filter((product) => product.id === 2);
+            console.log("Producto eliminado:")
+            //return deleteById;
+        
+            await fs.writeFile("./Desafios/products.json", JSON.stringify(products));
+            return deleted;
         } catch (e) {
             console.log(e)
         }
@@ -83,7 +91,7 @@ class ProductManager {
 
 
 const productManager = new ProductManager()
-
+/*
 await productManager.addProduct({
     title: "Remera", 
     description: "Blanco", 
@@ -124,5 +132,10 @@ await productManager.addProduct({
     code: 4444, 
     stock: 300
 });
+*/
 
 console.log(await productManager.getProducts())
+
+console.log(await productManager.updateProduct())
+
+console.log(await productManager.deleteProduct())
