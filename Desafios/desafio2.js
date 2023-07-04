@@ -34,10 +34,10 @@ class ProductManager {
                 ...product,
             }
 
-            this.products = products;
+            //this.products = products;
             products.push(newProduct);
             await fs.writeFile("./Desafios/products.json", JSON.stringify(products));
-            return product;
+            //return product;
         } catch (e) {
             console.log(e);
         }
@@ -55,7 +55,7 @@ class ProductManager {
         console.log("Producto encontrado");
         return productById;
     }
-
+/*
     updateProduct = async () => {
         try {
             const file = await fs.readFile("./Desafios/products.json", "utf-8");
@@ -70,7 +70,8 @@ class ProductManager {
         }
        //console.log(updateProduct())
     }
-
+    */
+/*
     deleteProduct =  async () => {
         try {
             const file = await fs.readFile("./Desafios/products.json", "utf-8");
@@ -82,6 +83,54 @@ class ProductManager {
         
             await fs.writeFile("./Desafios/products.json", JSON.stringify(products));
             return deleted;
+        } catch (e) {
+            console.log(e)
+        }
+        
+    }
+    */
+    updateProduct = async (id, product) => {
+        try {
+            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const products = JSON.parse(file);
+
+            let productFound = products.find((product) => product.id === id);
+            if(!productFound){
+                return `No se ha encontrado el producto con id: ${id}`;
+            }
+            
+            let update = this.products.map((p) => {
+                if(p.id === id){
+                    return {...p, ...product}
+                }
+                return p;
+            });
+
+            await fs.writeFile("./Desafios/products.json", JSON.stringify(update, null, 2));
+            //console.log("Producto a actualizar:")
+            //return update;
+            
+        } catch (e) {
+            console.log(e)
+        }
+        
+       //console.log(updateProduct())
+    }
+
+    deleteProduct =  async (id) => {
+        try {
+            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const products = JSON.parse(file);
+
+            let productFound = products.find((product) => product.id === this.#id);
+            if(!productFound){
+                return `No se ha encontrado el producto con id: ${id}`;
+            }
+
+            let deleteProduct = products.filter((p) => p.id !== id)
+        
+            await fs.writeFile("./Desafios/products.json", JSON.stringify(deleteProduct, null, 2));
+            return productFound;
         } catch (e) {
             console.log(e)
         }
@@ -133,9 +182,8 @@ await productManager.addProduct({
     stock: 300
 });
 */
-
 console.log(await productManager.getProducts())
 
-console.log(await productManager.updateProduct())
+console.log("Producto a actualizar:", await productManager.updateProduct())
 
-console.log(await productManager.deleteProduct())
+console.log("Producto a eliminar:", await productManager.deleteProduct())
