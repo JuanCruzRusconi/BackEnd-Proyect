@@ -1,16 +1,7 @@
 [
   {
-    "id": 0,
-    "title": "Remera",
-    "description": "Blanco",
-    "price": 20000,
-    "thumbnail": "Ruta de imagen",
-    "code": 1111,
-    "stock": 1000
-  },
-  {
     "id": 1,
-    "title": "Buzo",
+    "title": "MAC",
     "description": "Negro",
     "price": 40000,
     "thumbnail": "Ruta de imagen",
@@ -43,5 +34,23 @@
     "thumbnail": "Ruta de imagen",
     "code": 4444,
     "stock": 300
+  },
+  {
+    "id": 5,
+    "title": "Remera",
+    "description": "Blanco",
+    "price": 20000,
+    "thumbnail": "Ruta de imagen",
+    "code": 1111,
+    "stock": 1000
+  },
+  {
+    "id": 6,
+    "title": "Buzo",
+    "description": "Negro",
+    "price": 40000,
+    "thumbnail": "Ruta de imagen",
+    "code": 2222,
+    "stock": 700
   }
 ]

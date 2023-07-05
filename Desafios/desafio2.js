@@ -10,8 +10,8 @@ class ProductManager {
 
     getProducts = async () => {
         const file = await fs.readFile("./Desafios/products.json", "utf-8");
-        const products = JSON.parse(file);
-        return products;
+        this.products = JSON.parse(file);
+        return this.products;
     }
 
     addProduct = async (product) => {
@@ -55,46 +55,13 @@ class ProductManager {
         console.log("Producto encontrado");
         return productById;
     }
-/*
-    updateProduct = async () => {
-        try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
-            const products = JSON.parse(file);
-            
-            const update = await products.find((product) => product.id === 2)
-            console.log("Producto a actualizar:")
-            return update;
-            
-        } catch (e) {
-            console.log(e)
-        }
-       //console.log(updateProduct())
-    }
-    */
-/*
-    deleteProduct =  async () => {
-        try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
-            const products = JSON.parse(file);
 
-            const deleted = await products.filter((product) => product.id === 2);
-            console.log("Producto eliminado:")
-            //return deleteById;
-        
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(products));
-            return deleted;
-        } catch (e) {
-            console.log(e)
-        }
-        
-    }
-    */
     updateProduct = async (id, product) => {
         try {
             const file = await fs.readFile("./Desafios/products.json", "utf-8");
-            const products = JSON.parse(file);
+            this.products = JSON.parse(file);
 
-            let productFound = products.find((product) => product.id === id);
+            let productFound = this.products.find((product) => product.id === id);
             if(!productFound){
                 return `No se ha encontrado el producto con id: ${id}`;
             }
@@ -107,34 +74,34 @@ class ProductManager {
             });
 
             await fs.writeFile("./Desafios/products.json", JSON.stringify(update, null, 2));
-            //console.log("Producto a actualizar:")
-            //return update;
+            console.log("ProductFound:")
+            return productFound;
             
         } catch (e) {
             console.log(e)
         }
-        
-       //console.log(updateProduct())
+        //console.log("Producto a actualizar:", await productManager.updateProduct(idUpdate, productUpdate));
     }
 
     deleteProduct =  async (id) => {
         try {
             const file = await fs.readFile("./Desafios/products.json", "utf-8");
-            const products = JSON.parse(file);
+            this.products = JSON.parse(file);
 
-            let productFound = products.find((product) => product.id === this.#id);
+            let productFound = this.products.find((product) => product.id === id);
             if(!productFound){
                 return `No se ha encontrado el producto con id: ${id}`;
             }
-
-            let deleteProduct = products.filter((p) => p.id !== id)
+            // Filtra los productos que quier eliminar y guarda los que no 
+            let deleteProduct = this.products.filter((p) => p.id !== id)
         
             await fs.writeFile("./Desafios/products.json", JSON.stringify(deleteProduct, null, 2));
+            //console.log("DP:", deleteProduct);
+            console.log("PF:", productFound)
             return productFound;
         } catch (e) {
             console.log(e)
         }
-        
     }
 }
 
@@ -182,8 +149,24 @@ await productManager.addProduct({
     stock: 300
 });
 */
-console.log(await productManager.getProducts())
 
-console.log("Producto a actualizar:", await productManager.updateProduct())
+// ------- CAMBIOS A REALIZAR ------- //
 
-console.log("Producto a eliminar:", await productManager.deleteProduct())
+let idUpdate = 1;
+let productUpdate = {
+            title: "MAC", 
+            description: "Negro", 
+            price: 40000, 
+            thumbnail: "Ruta de imagen", 
+            code: 2222, 
+            stock: 700
+        };
+
+let idDelete = 7;
+
+console.log(await productManager.getProducts());
+
+console.log("Producto a actualizar:", await productManager.updateProduct(idUpdate, productUpdate), "por:", productUpdate);
+
+console.log("Producto eliminado:", await productManager.deleteProduct(idDelete));
+
