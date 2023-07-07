@@ -7,17 +7,7 @@ import express from "express"
 //     const {...} = request;
 //})
 
-const app = express()
 
-app.get("/hola", (req, res) => {
-    res.send("hola mundo");
-    //res
-})
-
-app.listen(8083, () => {
-    console.log("escuchando")
-
-})
 
 // node Desafios/desafio3.js
 
@@ -193,3 +183,27 @@ console.log("Producto a actualizar:", await productManager.updateProduct(idUpdat
 
 console.log("Producto eliminado:", await productManager.deleteProduct(idDelete));
 
+
+const app = express()
+
+app.get("/users", async (req, res) => {
+
+    const users = await productManager.getProducts()
+    res.send(users);
+    //res
+})
+
+app.get("/users/:id", async (req, res) => {
+
+    const { id } = req.params
+    //const userId = users.find((user) => user.id == id)
+    const users = await productManager.getProducts()
+    res.send(users.find((user) => user.id == id));
+    //res
+})
+
+app.listen(8080, () => {
+    console.log("escuchando")
+
+})
+//   node Desafios/desafio3.jss
