@@ -190,7 +190,7 @@ app.get("/users", async (req, res) => {
 
     const users = await productManager.getProducts()
     res.send(users);
-    //res
+    
 })
 
 app.get("/users/:id", async (req, res) => {
@@ -199,11 +199,10 @@ app.get("/users/:id", async (req, res) => {
     //const userId = users.find((user) => user.id == id)
     const users = await productManager.getProducts()
     res.send(users.find((user) => user.id == id));
-    //res
+    
 })
 
 app.listen(8080, () => {
     console.log("escuchando")
 
 })
-//   node Desafios/desafio3.jss

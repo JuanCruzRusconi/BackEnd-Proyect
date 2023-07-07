@@ -9,7 +9,7 @@ export default class ProductManager {
     #id = 0;
 
     getProducts = async () => {
-        const file = await fs.readFile("./Desafios/products.json", "utf-8");
+        const file = await fs.readFile("./src/products.json", "utf-8");
         this.products = JSON.parse(file);
         return this.products;
     }
@@ -19,7 +19,7 @@ export default class ProductManager {
         const {title, description, price, thumbnail, code, stock} = product
 
         try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const file = await fs.readFile("./src/products.json", "utf-8");
             const products = JSON.parse(file);
 
             const itsValid = this.products.some((productFind) => productFind.code === code);
@@ -36,7 +36,7 @@ export default class ProductManager {
 
             //this.products = products;
             products.push(newProduct);
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(products));
+            await fs.writeFile("./src/products.json", JSON.stringify(products));
             //return product;
         } catch (e) {
             console.log(e);
@@ -58,7 +58,7 @@ export default class ProductManager {
 
     updateProduct = async (id, product) => {
         try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const file = await fs.readFile("./src/products.json", "utf-8");
             this.products = JSON.parse(file);
 
             let productFound = this.products.find((product) => product.id === id);
@@ -73,7 +73,7 @@ export default class ProductManager {
                 return p;
             });
 
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(update, null, 2));
+            await fs.writeFile("./src/products.json", JSON.stringify(update, null, 2));
             console.log("ProductFound:")
             return productFound;
             
@@ -85,7 +85,7 @@ export default class ProductManager {
 
     deleteProduct =  async (id) => {
         try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const file = await fs.readFile("./src/products.json", "utf-8");
             this.products = JSON.parse(file);
 
             let productFound = this.products.find((product) => product.id === id);
@@ -95,7 +95,7 @@ export default class ProductManager {
             // Filtra los productos que quier eliminar y guarda los que no 
             let deleteProduct = this.products.filter((p) => p.id !== id)
         
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(deleteProduct, null, 2));
+            await fs.writeFile("./src/products.json", JSON.stringify(deleteProduct, null, 2));
             //console.log("DP:", deleteProduct);
             console.log("PF:", productFound)
             return productFound;
