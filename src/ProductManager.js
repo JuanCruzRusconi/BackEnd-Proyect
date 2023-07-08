@@ -104,7 +104,6 @@ export default class ProductManager {
     }
 }
 
-
 const productManager = new ProductManager()
 
 await productManager.addProduct({

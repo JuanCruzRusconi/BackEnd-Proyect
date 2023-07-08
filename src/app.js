@@ -11,6 +11,7 @@ app.get("/products", async (req, res) => {
     const { limit } = req.query;
 
     const products = await productManager.getProducts()
+    
     res.send(limit ? 
         products.slice(0, limit) 
         : products);
@@ -31,17 +32,6 @@ app.get("/product", async (req, res) => {
     //const productId = products.find((product) => product.id == pid)
     const products = await productManager.getProducts()
     res.send(price ? products.filter((product) => product.price == price) : products);
-    //res.send(productId);
-})
-
-app.get("/product", async (req, res) => {
-
-    const { limit } = req.query;
-    //const productId = products.find((product) => product.id == pid)
-    const products = await productManager.getProducts()
-    res.send(limit ? 
-        products.slice(0, limit) 
-        : products);
     //res.send(productId);
 })
 
