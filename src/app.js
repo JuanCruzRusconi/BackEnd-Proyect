@@ -1,5 +1,5 @@
 import express from "express"
-import ProductManager from "./desafio2.js";
+import ProductManager from "./ProductManager.js";
 
 const app = express();
 app.use(express.urlencoded({extended: true}))
@@ -8,8 +8,12 @@ const productManager = new ProductManager("./products.json");
 
 app.get("/products", async (req, res) => {
 
+    const { limit } = req.query;
+
     const products = await productManager.getProducts()
-    res.send(products);
+    res.send(limit ? 
+        products.slice(0, limit) 
+        : products);
 })
 
 app.get("/product/:pid", async (req, res) => {
@@ -40,18 +44,6 @@ app.get("/product", async (req, res) => {
         : products);
     //res.send(productId);
 })
-
-/*
-app.get("/product", async (req, res) => {
-
-    const { limit } = req.query
-    //const productId = products.find((product) => product.id == pid)
-    const products = await productManager.getProducts()
-    res.send(limit ? products.filter((products) => products.length = limit) : products);
-    //res.send(productId);
-
-})
-*/
 
 app.listen(8080, () => {
     console.log("escuchando")

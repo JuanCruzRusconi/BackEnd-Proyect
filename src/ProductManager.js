@@ -1,19 +1,6 @@
 import fs from "fs/promises"
-import http from "http"
-import express from "express"
 
-
-//http.createServer((request, response) => {
-//     const {...} = request;
-//})
-
-
-
-// node Desafios/desafio3.js
-
-
-
-class ProductManager {
+export default class ProductManager {
 
     constructor () {
         this.products = [];
@@ -22,7 +9,7 @@ class ProductManager {
     #id = 0;
 
     getProducts = async () => {
-        const file = await fs.readFile("./Desafios/products.json", "utf-8");
+        const file = await fs.readFile("./src/products.json", "utf-8");
         this.products = JSON.parse(file);
         return this.products;
     }
@@ -32,30 +19,29 @@ class ProductManager {
         const {title, description, price, thumbnail, code, stock} = product
 
         try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const file = await fs.readFile("./src/products.json", "utf-8");
             const products = JSON.parse(file);
 
             const itsValid = this.products.some((productFind) => productFind.code === code);
+            
             if (itsValid) {
                 console.log(`ERROR: Code in use in ${product.title}`);
                 return;
-            }
+            };
 
             const newProduct = {
                 //id: this.#id++,
-                id: products.length,
+                id: products[products.length -1].id + 1,
                 ...product,
             }
 
-            //this.products = products;
             products.push(newProduct);
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(products));
-            //return product;
+            await fs.writeFile("./src/products.json", JSON.stringify(products));
+            return product;
         } catch (e) {
             console.log(e);
         }
         
-       // this.products.push(newProduct);
        console.log(`Product ${product.title} submitted successfully`);
     };
 
@@ -71,7 +57,7 @@ class ProductManager {
 
     updateProduct = async (id, product) => {
         try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const file = await fs.readFile("./src/products.json", "utf-8");
             this.products = JSON.parse(file);
 
             let productFound = this.products.find((product) => product.id === id);
@@ -81,12 +67,12 @@ class ProductManager {
             
             let update = this.products.map((p) => {
                 if(p.id === id){
-                    return {...p, ...product}
+                    return {...p, ...product};
                 }
                 return p;
             });
 
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(update, null, 2));
+            await fs.writeFile("./src/products.json", JSON.stringify(update, null, 2));
             console.log("ProductFound:")
             return productFound;
             
@@ -98,7 +84,7 @@ class ProductManager {
 
     deleteProduct =  async (id) => {
         try {
-            const file = await fs.readFile("./Desafios/products.json", "utf-8");
+            const file = await fs.readFile("./src/products.json", "utf-8");
             this.products = JSON.parse(file);
 
             let productFound = this.products.find((product) => product.id === id);
@@ -108,7 +94,7 @@ class ProductManager {
             // Filtra los productos que quier eliminar y guarda los que no 
             let deleteProduct = this.products.filter((p) => p.id !== id)
         
-            await fs.writeFile("./Desafios/products.json", JSON.stringify(deleteProduct, null, 2));
+            await fs.writeFile("./src/products.json", JSON.stringify(deleteProduct, null, 2));
             //console.log("DP:", deleteProduct);
             console.log("PF:", productFound)
             return productFound;
@@ -120,7 +106,7 @@ class ProductManager {
 
 
 const productManager = new ProductManager()
-/*
+
 await productManager.addProduct({
     title: "Remera", 
     description: "Blanco", 
@@ -161,7 +147,7 @@ await productManager.addProduct({
     code: 4444, 
     stock: 300
 });
-*/
+
 
 // ------- CAMBIOS A REALIZAR ------- //
 
@@ -183,26 +169,3 @@ console.log("Producto a actualizar:", await productManager.updateProduct(idUpdat
 
 console.log("Producto eliminado:", await productManager.deleteProduct(idDelete));
 
-
-const app = express()
-
-app.get("/users", async (req, res) => {
-
-    const users = await productManager.getProducts()
-    res.send(users);
-    
-})
-
-app.get("/users/:id", async (req, res) => {
-
-    const { id } = req.params
-    //const userId = users.find((user) => user.id == id)
-    const users = await productManager.getProducts()
-    res.send(users.find((user) => user.id == id));
-    
-})
-
-app.listen(8080, () => {
-    console.log("escuchando")
-
-})
