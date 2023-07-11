@@ -8,13 +8,16 @@ const productManager = new ProductManager("./products.json");
 
 app.get("/products", async (req, res) => {
 
-    const { limit } = req.query;
+    const { limit, price } = req.query;
 
     const products = await productManager.getProducts()
     
     res.send(limit ? 
-        products.slice(0, limit) 
-        : products);
+        products.slice(0, limit) : products 
+        || 
+        price ? 
+        products.filter((product) => product.price == price) 
+        : products)
 })
 
 app.get("/product/:pid", async (req, res) => {
@@ -23,15 +26,6 @@ app.get("/product/:pid", async (req, res) => {
     //const productId = products.find((product) => product.id == pid)
     const products = await productManager.getProducts()
     res.send(products.find((product) => product.id == pid));
-    //res.send(productId);
-})
-
-app.get("/product", async (req, res) => {
-
-    const { price } = req.query;
-    //const productId = products.find((product) => product.id == pid)
-    const products = await productManager.getProducts()
-    res.send(price ? products.filter((product) => product.price == price) : products);
     //res.send(productId);
 })
 
