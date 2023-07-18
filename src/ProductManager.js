@@ -104,8 +104,8 @@ export default class ProductManager {
     }
 }
 
-const productManager = new ProductManager()
-
+//const productManager = new ProductManager()
+/*
 await productManager.addProduct({
     title: "Remera", 
     description: "Blanco", 
@@ -161,10 +161,12 @@ let productUpdate = {
         };
 
 let idDelete = 7;
-
+*/
+/*
 console.log(await productManager.getProducts());
 
-console.log("Producto a actualizar:", await productManager.updateProduct(idUpdate, productUpdate), "por:", productUpdate);
+console.log("Producto a actualizar:", await productManager.updateProduct());
 
-console.log("Producto eliminado:", await productManager.deleteProduct(idDelete));
+console.log("Producto eliminado:", await productManager.deleteProduct());
+*/
 
