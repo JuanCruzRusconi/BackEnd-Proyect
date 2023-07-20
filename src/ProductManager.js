@@ -38,6 +38,7 @@ export default class ProductManager {
             products.push(newProduct);
             await fs.writeFile("./src/products.json", JSON.stringify(products));
             return product;
+            
         } catch (e) {
             console.log(e);
         }

@@ -1,1 +1,24 @@
-[{"id":0,"title":"Remera","description":"Blanco","price":20000,"thumbnail":"Ruta de imagen","code":1111,"stock":1000},{"id":1,"title":"Buzo","description":"Negro","price":40000,"thumbnail":"Ruta de imagen","code":2222,"stock":700},{"id":2,"title":"Jogger","description":"Beige","price":35000,"thumbnail":"Ruta de imagen","code":3333,"stock":5000},{"id":3,"title":"Jean","description":"Azul","price":37000,"thumbnail":"Ruta de imagen","code":4444,"stock":800},{"id":4,"title":"Campera","description":"Verde","price":70000,"thumbnail":"Ruta de imagen","code":4444,"stock":300},{"id":5,"title":"Remera","description":"Blanco","price":20000,"thumbnail":"Ruta de imagen","code":1111,"stock":1000},{"id":6,"title":"Buzo","description":"Negro","price":40000,"thumbnail":"Ruta de imagen","code":2222,"stock":700},{"id":7,"title":"Jogger","description":"Beige","price":35000,"thumbnail":"Ruta de imagen","code":3333,"stock":5000},{"id":8,"title":"Jean","description":"Azul","price":37000,"thumbnail":"Ruta de imagen","code":4444,"stock":800},{"id":9,"title":"Campera","description":"Verde","price":70000,"thumbnail":"Ruta de imagen","code":4444,"stock":300},{"id":10,"title":"Remera","description":"Blanco","price":20000,"thumbnail":"Ruta de imagen","code":1111,"stock":1000},{"id":11,"title":"Buzo","description":"Negro","price":40000,"thumbnail":"Ruta de imagen","code":2222,"stock":700},{"id":12,"title":"Jogger","description":"Beige","price":35000,"thumbnail":"Ruta de imagen","code":3333,"stock":5000},{"id":13,"title":"Jean","description":"Azul","price":37000,"thumbnail":"Ruta de imagen","code":4444,"stock":800},{"id":14,"title":"Campera","description":"Verde","price":70000,"thumbnail":"Ruta de imagen","code":4444,"stock":300},{"id":15,"title":"Remera","description":"Blanco","price":20000,"thumbnail":"Ruta de imagen","code":1111,"stock":1000},{"id":16,"title":"Buzo","description":"Negro","price":40000,"thumbnail":"Ruta de imagen","code":2222,"stock":700},{"id":17,"title":"Jogger","description":"Beige","price":35000,"thumbnail":"Ruta de imagen","code":3333,"stock":5000},{"id":18,"title":"Jean","description":"Azul","price":37000,"thumbnail":"Ruta de imagen","code":4444,"stock":800},{"id":19,"title":"Campera","description":"Verde","price":70000,"thumbnail":"Ruta de imagen","code":4444,"stock":300},{"id":20,"title":"Remera","description":"Blanco","price":20000,"thumbnail":"Ruta de imagen","code":1111,"stock":1000},{"id":21,"title":"Buzo","description":"Negro","price":40000,"thumbnail":"Ruta de imagen","code":2222,"stock":700},{"id":22,"title":"Jogger","description":"Beige","price":35000,"thumbnail":"Ruta de imagen","code":3333,"stock":5000},{"id":23,"title":"Jean","description":"Azul","price":37000,"thumbnail":"Ruta de imagen","code":4444,"stock":800},{"id":24,"title":"Campera","description":"Verde","price":70000,"thumbnail":"Ruta de imagen","code":4444,"stock":300},{"id":25,"title":"toalle","descriptio":"amarilla","price":70000,"thumbnail":"Ruta de imagen","code":44448,"stock":"300"},{"id":26,"title":"cargador"},{"id":27,"title":"toalla","description":"blanca","price":40000,"thumbnail":"Ruta de imagen","code":2292,"stock":700},{"id":28,"title":"tele","description":"blanca","price":400000,"thumbnail":"Ruta de imagen","code":2272,"stock":700},{"id":29,"title":"algo","descriptio":"ffff","price":70000,"thumbnail":"","code":4434,"stock":300}]
+[
+  {
+    "id": 0,
+    "title": "Iphone 14",
+    "description": "128gb, light blue",
+    "price": 600000,
+    "thumbnail": "Ruta de imagen",
+    "code": 1000,
+    "stock": 100,
+    "status": true,
+    "category": "tech"
+  },
+  {
+    "id": 1,
+    "title": "Iphone 14 Pro Max",
+    "description": "128gb, space grey",
+    "code": 1001,
+    "price": 750000,
+    "status": true,
+    "stock": 100,
+    "category": "tech",
+    "thumbnail": "Ruta de imagen"
+  }
+]
