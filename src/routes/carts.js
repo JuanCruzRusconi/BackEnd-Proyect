@@ -20,8 +20,20 @@ cartsRouter.post("/:cid/product/:pid", async (req, res) => {
     const body = req.body;
     try {
         const { cid, pid } = req.params;
-        const addProductToCart = await cartManager.addProduct(+cid, +pid, body);
-        res.send(createCart);
+        const addProductToCart = await cartManager.addProduct(+cid);
+        res.send(addProductToCart);
+    } catch {
+        res.status(502).send({error : true})
+    }
+})
+
+cartsRouter.get("/:cid/product/:pid", async (req, res) => {
+    
+    //const body = req.body;
+    try {
+        const { cid, pid } = req.params;
+        const addProductToCart = await cartManager.addProduct(+cid, +pid);
+        res.send(addProductToCart);
     } catch {
         res.status(502).send({error : true})
     }

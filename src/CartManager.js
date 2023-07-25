@@ -1,3 +1,4 @@
+import { Console } from "console";
 import e from "express";
 import fs from "fs/promises"
 
@@ -34,26 +35,55 @@ export default class CartManager {
             console.log(e)
         }
     }
-
+/*
     addProduct = async (product) => {
 
         const {productId, quantity} = product
         try {
             const file = await fs.readFile("./src/carts.json", "utf-8");
-            const products = JSON.parse(file);
-            const itsIncluded = this.product.some((productFind) => productFind.id === productId);
+            const carts = JSON.parse(file);
+            const itsIncluded = this.carts.some((productFind) => productFind.id === productId);
             if (itsIncluded) {
                 product.quantity++;
                 return;
             };
             const newProduct = {
-                //id: this.#id++,
-                id: products[products.length -1].id + 1,
+                id: this.#id++,
+                //id: product[product.length -1].id + 1,
                 ...product,
             }
             carts.push(newProduct);
-            await fs.writeFile("./src/carts.json", JSON.stringify(products));
+            await fs.writeFile("./src/carts.json", JSON.stringify(carts));
             return product;
+        } catch (e) {
+            console.log(e);
+        }
+       console.log(`Product ${product.title} submitted successfully`);
+    };
+*/
+    addProduct = async (cartId, productId, product) => {
+
+        try {
+            const file = await fs.readFile("./src/carts.json", "utf-8");
+            const carts = JSON.parse(file);
+
+            let cartToUpdate = carts.find((cart) => cart.id === cartId);
+
+            //let productToAdd = product.some((product) => product.id === productId);
+            //if (productToAdd) {product.quantity +1};
+
+            //let cartProducts = cartToupdate[0];
+/*
+            let productToAdd = cartToUpdate[0];
+            const newProduct = {
+                id: productToAdd[product.length -1].id + 1,
+                ...product,
+            }
+            cartToUpdate.push(newProduct);
+            await fs.writeFile("./src/carts.json", "utf-8", JSON.stringify(carts));
+            */
+            return cartToUpdate;
+
         } catch (e) {
             console.log(e);
         }
