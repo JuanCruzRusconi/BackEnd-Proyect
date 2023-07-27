@@ -17,6 +17,15 @@ export default class CartManager {
         return this.carts;
     }
 
+    getCartById = async (cid) => {
+
+        const file = await fs.readFile("./src/carts.json", "utf-8");
+        this.carts = JSON.parse(file);
+
+        let cartToUpdate = this.carts.find((cart) => cart.id === cid);
+        return cartToUpdate;
+    }
+
     addCart = async (cart) => {
 
         const {products} = cart
@@ -26,6 +35,7 @@ export default class CartManager {
 
             const newCart = {
                 id: carts[carts.length -1].id + 1,
+                products: [],
                 ...cart,
             }
             carts.push(newCart);
@@ -35,58 +45,49 @@ export default class CartManager {
             console.log(e)
         }
     }
-/*
-    addProduct = async (product) => {
 
-        const {productId, quantity} = product
+    addProductInCartById = async (cidCart, productById) => {
+
         try {
             const file = await fs.readFile("./src/carts.json", "utf-8");
             const carts = JSON.parse(file);
-            const itsIncluded = this.carts.some((productFind) => productFind.id === productId);
-            if (itsIncluded) {
-                product.quantity++;
-                return;
+
+           if (!cidCart) return "Cart Not Found";
+           if (!productById) return "Product Not Found";
+
+           let update = carts.map((cart) => {
+            if(cart.id === cidCart.id) {
+                if (!cidCart.products.some ((product) => product.id === productById.id))
+            { 
+                let productInCart = cart.products.push({
+                id: productById.id,
+                quantity: 1,
+            });
+
+            return {
+                ...cart,
+                ...productInCart
             };
-            const newProduct = {
-                id: this.#id++,
-                //id: product[product.length -1].id + 1,
-                ...product,
+           }
+           
+           console.log("everithing ok");
+           cart.products.map((p) => {
+            if(p.id === productById.id) {
+                return ++p.quantity;
             }
-            carts.push(newProduct);
-            await fs.writeFile("./src/carts.json", JSON.stringify(carts));
-            return product;
-        } catch (e) {
-            console.log(e);
+            return p;
+           });
         }
-       console.log(`Product ${product.title} submitted successfully`);
-    };
-*/
-    addProduct = async (cartId, productId, product) => {
+        return cart;
+        });
 
-        try {
-            const file = await fs.readFile("./src/carts.json", "utf-8");
-            const carts = JSON.parse(file);
-
-            let cartToUpdate = carts.find((cart) => cart.id === cartId);
-
-            //let productToAdd = product.some((product) => product.id === productId);
-            //if (productToAdd) {product.quantity +1};
-
-            //let cartProducts = cartToupdate[0];
-/*
-            let productToAdd = cartToUpdate[0];
-            const newProduct = {
-                id: productToAdd[product.length -1].id + 1,
-                ...product,
-            }
-            cartToUpdate.push(newProduct);
-            await fs.writeFile("./src/carts.json", "utf-8", JSON.stringify(carts));
-            */
-            return cartToUpdate;
+        await fs.writeFile("./src/carts.json", JSON.stringify(update));
+        
+        return "Product added to cart succesfully";
 
         } catch (e) {
             console.log(e);
         }
-       console.log(`Product ${product.title} submitted successfully`);
     };
 }
+    

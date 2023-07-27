@@ -1,3 +1,4 @@
+import { json } from "express";
 import fs from "fs/promises"
 
 export default class ProductManager {
@@ -46,8 +47,11 @@ export default class ProductManager {
        console.log(`Product ${product.title} submitted successfully`);
     };
 
-    getProductById = (productId) => {
+    getProductById = async (productId) => {
         
+        const file = await fs.readFile("./src/products.json", "utf-8");
+        this.products = JSON.parse(file);
+
         const productById = this.products.find((product) => product.id === productId);
 
         if(!productById) return "Not Found";
