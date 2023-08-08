@@ -1,0 +1,31 @@
+{{#if isAdmin}}
+<h1>Productos:</h1>
+{{#each products}}
+<div>
+    <ul>
+        <li>Nombre: {{this.title}}</li>
+        <li>Precio: {{this.price}}</li>
+        <li>Descripcion: {{this.description}}</li>
+        <li>Code: {{this.code}}</li>
+    </ul>
+</div>
+{{/each}}
+{{else}}
+<div>
+    <h1>Error</h1>
+    <p>No tienes acceso a esta informacion ya que no eres admin.</p>
+</div>
+{{/if}}
+
+
+ {
+    "id": 0,
+    "title": "Iphone 14",
+    "description": "128gb, light blue",
+    "price": 600000,
+    "thumbnail": "Ruta de imagen",
+    "code": 1000,
+    "stock": 100,
+    "status": true,
+    "category": "tech"
+  },

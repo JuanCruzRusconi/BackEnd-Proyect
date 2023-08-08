@@ -56,28 +56,27 @@ export default class CartManager {
            if (!productById) return "Product Not Found";
 
            let update = carts.map((cart) => {
-            if(cart.id === cidCart.id) {
-                if (!cidCart.products.some ((product) => product.id === productById.id))
-            { 
-                let productInCart = cart.products.push({
-                id: productById.id,
-                quantity: 1,
-            });
+            if (cart.id === cidCart.id) {
+                if (!cidCart.products.some((product) => product.id === productById.id)) {
+                    let productInCart = cart.products.push({
+                        id: productById.id,
+                        quantity: 1,
+                    });
 
-            return {
-                ...cart,
-                ...productInCart
-            };
-           }
-           
-           console.log("everithing ok");
-           cart.products.map((p) => {
-            if(p.id === productById.id) {
-                return ++p.quantity;
+                    return {
+                        ...cart,
+                        ...productInCart
+                    };
+                }
+
+                console.log("everithing ok");
+                cart.products.map((p) => {
+                    if (p.id === productById.id) {
+                        return ++p.quantity;
+                    }
+                    return p;
+                });
             }
-            return p;
-           });
-        }
         return cart;
         });
 
