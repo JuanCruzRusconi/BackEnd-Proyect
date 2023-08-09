@@ -1,31 +1,31 @@
 import express from "express";
 import handlebars from "express-handlebars";
-import __dirname from "./config/dirname.js";
+//import __dirname from "./config/dirname.js";
 import { Server as HTTPServer } from "http";
 import { Server } from "socket.io";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 //import productsRouter from "./routes/products.js";
 //import cartsRouter from "./routes/carts.js";
-//import productsViewsRouter from "./routes/products.views.js";
+import productsViewsRouter from "./routes/products.views.js";
 //import ProductManager from "./ProductManager.js";
 //const productManager = new ProductManager("./products.json");
 
 const app = express();
 
-//const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.engine("handlebars", handlebars.engine());
-app.set("views", "./src/views");
+app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(express.static("public"));
+app.use(express.static(`${__dirname}/public`));
 
 //app.use("/api/products", productsRouter);
 //app.use("/api/carts", cartsRouter);
-//app.use("/products", productsViewsRouter);
+app.use("/products", productsViewsRouter);
 /*
 app.get("/", (req, res) => {
     const {
@@ -35,12 +35,15 @@ app.get("/", (req, res) => {
         nombre: nombre
     })
 });
-
-const appServer = app.listen(8081, () => {
-    console.log("escuchando")
-});
-const socketServer = new Server(appServer);
 */
+app.get("/", (req, res) => {
+    res.render("index");
+});
+
+//const appServer = app.listen(8081, () => {
+//    console.log("escuchando")
+//});
+//const socketServer = new Server(appServer);
 
 const httpServer = HTTPServer(app);
 
@@ -55,6 +58,6 @@ socketServer.on("connection", (socket) => {
 
 });
 
-httpServer.listn(8081, () => {
+httpServer.listen(8081, () => {
     console.log("escuchando..")
 });
