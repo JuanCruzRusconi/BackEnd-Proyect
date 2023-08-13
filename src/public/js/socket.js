@@ -18,31 +18,50 @@ addProductForm.addEventListener("submit", (e) => {
     const category = document.getElementById('category').value;
     
     socket.emit("newProd", {title, description, price, thumbnail, code, stock, status, category});
-
+/*
+    socket.on("connection", (socket)=>{
+    
+        socket.on("products", async (data)=>{
+        const {title, description, price, code, stock} = data
+        let lista = document.getElementById("products");
+        //let productos = ""
+        let productos = `<div>
+                            <ul>
+                                <li>Nombre: ${title}</li>
+                                <li>Descripcion: ${description}</li>
+                                <li>Precio: ${price}</li>
+                                <li>Code: ${code}</li>
+                                <li>Stock: ${stock}</li>
+                            </ul>
+                         </div>`;
+                                 
+        lista.innerHTML = productos;
+        })
+    })   
+*/
     let lista = document.getElementById("products");
     //let productos = ""
     let productos = `<div>
-                                 <ul>
-                                     <li>Nombre: ${title}</li>
-                                     <li>Descripcion: ${description}</li>
-                                     <li>Precio: ${price}</li>
-                                     <li>Code: ${code}</li>
-                                 </ul>
-                             </div>`
+                        <ul>
+                            <li>Nombre: ${title}</li>
+                            <li>Descripcion: ${description}</li>
+                            <li>Precio: ${price}</li>
+                            <li>Code: ${code}</li>
+                        </ul>
+                     </div>`;
                              
     lista.innerHTML = productos;
 
-
     document.getElementById('title').value = '';
     document.getElementById('description').value = '';
-    document.getElementById('code').value = '';
     document.getElementById('price').value = '';
-    document.getElementById('stock').value = '';
-    document.getElementById('category').value = '';
     document.getElementById('thumbnail').value = '';
-
-    return false;
+    document.getElementById('code').value = ''; 
+    document.getElementById('stock').value = '';
+    document.getElementById('status').value = '';
+    document.getElementById('category').value = '';   
 });
+
 /*
 socket.on("saludo", (data) => {
     console.log(`mensaje del servidor: ${data}`);

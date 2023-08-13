@@ -43,19 +43,49 @@ const httpServer = HTTPServer(app);
 
 const socketServer = new Server(httpServer);
 
+app.get("/join", (req, res) => {
+    res.render("join");
+});
+
+app.get("/chat", (req, res) => {
+    res.render("chat");
+});
+
+const msgs = [
+    { name: "eduardo", text: "primer mensaje" },
+    { name: "Juan", text: "segundo mensaje" }
+];
+
+const msgsOwn = [
+    { name: "Martin", text: "tercer mensaje" },
+    { name: "Juan Cruz", text: "cuarto mensaje" }
+];
+
 socketServer.on("connection", (socket) => {
     
-    console.log("cliente conectado");
+    console.log(`cliente conectado: ${socket.id}`);
 
-    socket.emit("nuevoProducto", "");
     socket.on("newProd", async (data) => {
         
         productManager.addProduct(data);
 
         socket.emit("products", await productManager.getProducts());
     });
+
+    socket.emit("historial", msgs);
+    //socket.emit("historial2", msgsOwn);
+    socket.on("sendMessage", (data) => {
+        console.log(data);
+        msgs.push({name: socket.id, text: data});
+        socket.broadcast.emit("getMessage", {name: socket.id, text: data});
+    });
+    /*
+    socket.on("sendMessage2", (data2) => {
+        console.log('NUEVO MENSAJE: ', data2)
+    });
+    */
 });
 
-httpServer.listen(8081, () => {
+httpServer.listen(8080, () => {
     console.log("escuchando..")
 });
