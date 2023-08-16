@@ -1,18 +1,20 @@
 {{#if isAdmin}}
-<h1>Productos:</h1>
-{{#each products}}
-<div>
-    <ul>
-        <li>Nombre: {{this.title}}</li>
-        <li>Precio: {{this.price}}</li>
-        <li>Descripcion: {{this.description}}</li>
-        <li>Code: {{this.code}}</li>
-    </ul>
-</div>
-{{/each}}
-{{else}}
-<div>
-    <h1>Error</h1>
-    <p>No tienes acceso a esta informacion ya que no eres admin.</p>
+<div style="color: aliceblue;">
+    <h1>Productos:</h1>
+    {{#each products}}
+    <div>
+        <ul>
+            <li>Nombre: {{this.title}}</li>
+            <li>Precio: {{this.price}}</li>
+            <li>Descripcion: {{this.description}}</li>
+            <li>Code: {{this.code}}</li>
+        </ul>
+    </div>
+    {{/each}}
+    {{else}}
+    <div>
+        <h1>Error</h1>
+        <p>No tienes acceso a esta informacion ya que no eres admin.</p>
+    </div>
 </div>
 {{/if}}

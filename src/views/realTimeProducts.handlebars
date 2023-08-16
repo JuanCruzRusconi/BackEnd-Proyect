@@ -1,57 +1,61 @@
-<h1>Productos:</h1>
-{{#each products}}
-<div>
-    <ul>
-        <li>Nombre: {{this.title}}</li>
-        <li>Precio: {{this.price}}</li>
-        <li>Descripcion: {{this.description}}</li>
-        <li>Code: {{this.code}}</li>
-    </ul>
-</div>
-{{/each}}
-
-<div id="products"></div>
-
-<form id="addProduct" method="post">
-
-    <h2>Añadir proudcto:</h2>
-
-    <div id="container-inputs">
+<div style="color: aliceblue;">
+    <h1>Productos:</h1>
+    {{#each products}}
+    <div>
         <ul>
-            <li>Nombre:
-                <input class="inputs" type="text" name="title" id="title" placeholder="Ingrese nombre del producto"
-                    required />
-            </li>
-            <li>Descripción:
-                <input class="inputs" type="text" name="description" id="description" placeholder="Ingrese descripcion"
-                    required />
-            </li>
-            <li>Precio:
-                <input class="inputs" type="number" name="price" id="price" placeholder="Ingrese el precio" required />
-            </li>
-            <li>Thumbnail:
-                <input class="inputs" type="text" name="thumbnail" id="thumbnail" placeholder="Ingrese su imagen url"
-                    required />
-            </li>
-            <li>Codigo:
-                <input class="inputs" type="text" name="code" id="code" placeholder="Ingrese el codigo" required />
-            </li>
-            <li>Stock:
-                <input class="inputs" type="number" name="stock" id="stock" placeholder="Ingrese el stock" required />
-            </li>
-            <li>Status:
-                <input class="inputs" type="text" name="status" id="status" placeholder="Ingrese status" required />
-            </li>
-            <li>Category:
-                <input class="inputs" type="text" name="category" id="category" placeholder="Ingrese la categoria"
-                    required />
-            </li>
+            <li>Nombre: {{this.title}}</li>
+            <li>Precio: {{this.price}}</li>
+            <li>Descripcion: {{this.description}}</li>
+            <li>Code: {{this.code}}</li>
         </ul>
     </div>
-    <div class="botons">
-        <button type="submit" id="add-btn">Agregar a la lista de productos</button>
-    </div>
-</form>
+    {{/each}}
+
+    <div id="products"></div>
+
+    <form id="addProduct" method="post">
+
+        <h2>Añadir proudcto:</h2>
+
+        <div id="container-inputs">
+            <ul>
+                <li>Nombre:
+                    <input class="inputs" type="text" name="title" id="title" placeholder="Ingrese nombre del producto"
+                        required />
+                </li>
+                <li>Descripción:
+                    <input class="inputs" type="text" name="description" id="description"
+                        placeholder="Ingrese descripcion" required />
+                </li>
+                <li>Precio:
+                    <input class="inputs" type="number" name="price" id="price" placeholder="Ingrese el precio"
+                        required />
+                </li>
+                <li>Thumbnail:
+                    <input class="inputs" type="text" name="thumbnail" id="thumbnail"
+                        placeholder="Ingrese su imagen url" required />
+                </li>
+                <li>Codigo:
+                    <input class="inputs" type="text" name="code" id="code" placeholder="Ingrese el codigo" required />
+                </li>
+                <li>Stock:
+                    <input class="inputs" type="number" name="stock" id="stock" placeholder="Ingrese el stock"
+                        required />
+                </li>
+                <li>Status:
+                    <input class="inputs" type="text" name="status" id="status" placeholder="Ingrese status" required />
+                </li>
+                <li>Category:
+                    <input class="inputs" type="text" name="category" id="category" placeholder="Ingrese la categoria"
+                        required />
+                </li>
+            </ul>
+        </div>
+        <div class="botons">
+            <button type="submit" id="add-btn">Agregar a la lista de productos</button>
+        </div>
+    </form>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/socket.js"></script>

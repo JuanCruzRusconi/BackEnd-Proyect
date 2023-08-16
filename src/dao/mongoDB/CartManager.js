@@ -30,7 +30,6 @@ export default class CartManager {
             console.log(e);
         }
     }
-    }
 
     addCart = async (cart) => {
 
@@ -48,9 +47,8 @@ export default class CartManager {
 
         try {
             const find = await cartsModel.findOne({cidCart});
-
-            const add = await cartsModel.insertOne({productById})
-            return get;
+            const add = await find.insertOne({productById})
+            return add;
         } catch (e) {
             console.log(e);
         }
@@ -59,4 +57,3 @@ export default class CartManager {
 
     };
 }
-    

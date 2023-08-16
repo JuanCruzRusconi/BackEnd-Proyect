@@ -11,13 +11,14 @@ import cartsRouter from "./routes/carts.js";
 import productsViewsRouter from "./routes/products.views.js";
 //import ProductManager from "./dao/fileSystem/ProductManager.js";
 import ProductManager from "./dao/mongoDB/ProductManager.js";
+import messagesModel from "./schemas/messages.schema.js";
 import productsModel from "./schemas/products.schema.js";
 import cartsModel from "./schemas/carts.schema.js";
 //const productManager = new ProductManager("./products.json");
 
-//const ProductManager = new ProductManager();
-
 const app = express();
+
+const prodManager = new ProductManager();
 
 const mongooseConect = await mongoose.connect("mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce")
 
@@ -73,14 +74,15 @@ socketServer.on("connection", (socket) => {
 
     socket.on("newProd", async (data) => {
         
-        productManager.addProduct(data);
-
-        socket.emit("products", await productManager.getProducts());
+        prodManager.addProduct(data);
+        socket.emit("products", await prodManager.getProducts());
     });
 
     socket.emit("historial", msgs);
-    //socket.emit("historial2", msgsOwn);
+   
     socket.on("sendMessage", (data) => {
+        
+        messagesModel.inserOne({data});
         console.log(data);
         msgs.push({name: socket.id, text: data});
         socket.broadcast.emit("getMessage", {name: socket.id, text: data});
