@@ -1,5 +1,6 @@
 import express from "express";
 import handlebars from "express-handlebars";
+import mongoose from "mongoose";
 //import __dirname from "./config/dirname.js";
 import { Server as HTTPServer } from "http";
 import { Server } from "socket.io";
@@ -8,12 +9,17 @@ import { fileURLToPath } from "url";
 import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import productsViewsRouter from "./routes/products.views.js";
-import ProductManager from "./ProductManager.js";
+//import ProductManager from "./dao/fileSystem/ProductManager.js";
+import ProductManager from "./dao/mongoDB/ProductManager.js";
+import productsModel from "./schemas/products.schema.js";
+import cartsModel from "./schemas/carts.schema.js";
 //const productManager = new ProductManager("./products.json");
 
-const productManager = new ProductManager();
+//const ProductManager = new ProductManager();
 
 const app = express();
+
+const mongooseConect = await mongoose.connect("mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce")
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -86,6 +92,6 @@ socketServer.on("connection", (socket) => {
     */
 });
 
-httpServer.listen(8080, () => {
+httpServer.listen(8081, () => {
     console.log("escuchando..")
 });

@@ -87,7 +87,15 @@ inputBox.addEventListener("keydown", (event) => {
     inputBox.value = "";
   }
 });
+
 /*
+const form = document.getElementById("formEvent");
+
+form.addEventListener("submit", function(evento){
+  console.log(evento);
+  evento.preventDefault();
+});
+
 const placeHolder = document.getElementById("message");
 const sendButton = document.getElementById("sendMsg")
 const placeHolderValue = placeHolder.value();
@@ -98,7 +106,7 @@ function showMsg(){
   socket.emit("sendMessage2", inputBox.value);
 
 };
-
+*/
 console.log("hola")
 /*socket.on("getMessage2", (data) => {
   console.log(`mensaje entrante NUEVO: `, data);
