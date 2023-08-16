@@ -14,11 +14,13 @@ import ProductManager from "./dao/mongoDB/ProductManager.js";
 import messagesModel from "./schemas/messages.schema.js";
 import productsModel from "./schemas/products.schema.js";
 import cartsModel from "./schemas/carts.schema.js";
+import MessagesManager from "./dao/mongoDB/MessagesManager.js";
 //const productManager = new ProductManager("./products.json");
 
 const app = express();
 
 const prodManager = new ProductManager();
+const msgManager = new MessagesManager();
 
 const mongooseConect = await mongoose.connect("mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce")
 
@@ -78,11 +80,11 @@ socketServer.on("connection", (socket) => {
         socket.emit("products", await prodManager.getProducts());
     });
 
-    socket.emit("historial", msgs);
+    socket.emit("historial", msgManager.getMessages());
    
     socket.on("sendMessage", (data) => {
         
-        messagesModel.inserOne({data});
+        msgManager.addMessage({data});
         console.log(data);
         msgs.push({name: socket.id, text: data});
         socket.broadcast.emit("getMessage", {name: socket.id, text: data});

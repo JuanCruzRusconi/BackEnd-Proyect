@@ -28,9 +28,9 @@ productsRouter.get("/:pid", async (req, res) => {
     try {
     const { pid } = req.params
     //const productId = products.find((product) => product.id == pid)
-    const products = await productManager.getProducts()
-    res.send(products.find((product) => product.id == pid));
-    //res.send(productId);
+    const product = await productManager.getProductById(pid);
+    //res.send(products.find((product) => product.id == pid));
+    res.send(product);
     } catch {
         res.status(502).send({error : true})
     }
@@ -41,7 +41,7 @@ productsRouter.post("/", async (req, res) => {
     const body = req.body;
     try {
         const addNewProduct = await productManager.addProduct(body);
-        const mongo = await productsModel.insertMany([body]);
+        //const mongo = await productsModel.insertMany([body]);
         res.send(addNewProduct);
     } catch {
         res.status(502).send({error : true})
@@ -53,7 +53,7 @@ productsRouter.put("/:pid", async (req, res) => {
     try {
     const { pid } = req.params;
     const product = req.body; 
-    await productManager.updateProduct(+pid, product);
+    await productManager.updateProduct(pid, product);
     res.send(await productManager.getProducts());
     } catch {
         res.status(502).send({error : true})

@@ -11,7 +11,7 @@ productsViewsRouter.get("/", async (req, res) => {
     try {  
     const isAdmin = req.query.admin; 
     const productos = await productManager.getProducts() 
-    res.render("home", {products: productos, isAdmin: isAdmin})
+    res.render("home", { products: productos.map(producto => producto.toJSON()), isAdmin: isAdmin });
     } catch {
         res.status(502).send({error : true})
     }
@@ -21,7 +21,7 @@ productsViewsRouter.get("/realtimeproducts", async (req, res) => {
    
     try {  
     const productos = await productManager.getProducts(); 
-    res.render("realTimeProducts", {products: productos});
+    res.render("realTimeProducts", { products: productos.map(producto => producto.toJSON()) });
     //socket.emit("listaProductos", productos);
     } catch {
         res.status(502).send({error : true})

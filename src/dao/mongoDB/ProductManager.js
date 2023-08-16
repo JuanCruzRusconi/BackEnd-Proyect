@@ -36,7 +36,7 @@ export default class ProductManager {
     getProductById = async (productId) => {
         
         try {
-            const get = await productsModel.findOne({productId});
+            const get = await productsModel.findOne({_id: productId});
             return get;
         } catch (e) {
             console.log(e);
@@ -46,7 +46,14 @@ export default class ProductManager {
     updateProduct = async (id, product) => {
         
         try {  
-            const update = await productsModel.findOne({id});
+            const update = await productsModel.findOne({_id: id});
+            update.toObject()
+            //update.
+            const mod = await productsModel.insertOne({product});
+            mod.toJSON();
+            await mod.save()
+
+
             update.save()
             await update.save()
             const updateJSON = update.toJSON();
