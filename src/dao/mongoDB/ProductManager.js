@@ -24,7 +24,7 @@ export default class ProductManager {
         const {title, description, price, thumbnail, code, stock} = product
 
         try {
-            const add = await productsModel.insertOne([product]);
+            const add = await productsModel.create([product]);
             return add;
         } catch (e) {
             console.log(e);
@@ -47,16 +47,14 @@ export default class ProductManager {
         
         try {  
             const update = await productsModel.findOne({_id: id});
-            update.toObject()
-            //update.
-            const mod = await productsModel.insertOne({product});
-            mod.toJSON();
-            await mod.save()
-
-
-            update.save()
-            await update.save()
-            const updateJSON = update.toJSON();
+            const mod2 = await update.updateOne({product});
+            //const mod = await productsModel.updateOne({product});
+            //mod.toJSON();
+            //await mod.save()
+            //update.save()
+            //await update.save()
+            //const updateJSON = update.toJSON();
+            return mod2;
         } catch (e) {
             console.log(e)
         }

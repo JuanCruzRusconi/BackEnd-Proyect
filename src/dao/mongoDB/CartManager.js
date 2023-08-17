@@ -24,7 +24,7 @@ export default class CartManager {
     getCartById = async (cid) => {
 
         try {
-            const get = await cartsModel.findOne({cid});
+            const get = await cartsModel.findOne({_id: cid});
             return get;
         } catch (e) {
             console.log(e);
@@ -36,7 +36,7 @@ export default class CartManager {
         const {products} = cart
         
         try {
-            const add = await cartsModel.insertOne([cart]);
+            const add = await cartsModel.create([cart]);
             return add;
         } catch (e) {
             console.log(e);

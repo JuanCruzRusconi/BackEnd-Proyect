@@ -2,11 +2,9 @@ import mongoose from "mongoose";
 
 const cartsSchema = new mongoose.Schema({
 
-    products: [
-        {
-            quantity: Number
-        }
-    ]
+    products: {
+        type: Array
+    }
 
 });
 

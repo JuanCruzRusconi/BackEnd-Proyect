@@ -63,7 +63,7 @@ cartsRouter.get("/:cid", async (req, res) => {
 
     try {
         const { cid } = req.params;
-        const carts = await cartManager.getCartById(+cid);
+        const carts = await cartManager.getCartById(cid);
         res.send(carts);
     } catch {
         res.status(502).send({error : true})
