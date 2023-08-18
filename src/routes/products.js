@@ -1,6 +1,5 @@
 import { Router } from "express";
 import ProductManager from "../dao/mongoDB/ProductManager.js";
-import productsModel from "../schemas/products.schema.js";
 
 const productManager = new ProductManager("products");
 
@@ -64,7 +63,7 @@ productsRouter.delete("/:pid", async (req, res) => {
     
     try {
     const { pid } = req.params;
-    await productManager.deleteProduct(+pid);
+    await productManager.deleteProduct(pid);
     res.send({delete: true});
     } catch {
         res.status(502).send({error : true})

@@ -8,24 +8,20 @@ export default class MessagesManager {
     getMessages = async () => {
 
         try {
-            const messages = await messagesModel.find();
-            return messages;
-
+            const getMessgs = await messagesModel.find();
+            return getMessgs;
         } catch (e) {
             console.log(e);
         }
-    }
+    };
 
-    addMessage = async (message) => {
+    addMessage = async (user, message) => {
 
         try {
-            const newMessage = await messagesModel.insertOne(message);
-            newMessage.toObject();
-            newMessage.save();
-            return newMessage;
-
+            const addMessg = await messagesModel.create({user, message});
+            return addMessg;
         } catch (e) {
             console.log(e);
         }
-    }
-}
+    };
+};

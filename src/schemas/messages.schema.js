@@ -10,7 +10,7 @@ const messagesSchema = new mongoose.Schema({
         type: String,
         require: true
     }
-})
+});
 
 const messagesModel = mongoose.model("messages", messagesSchema);
 

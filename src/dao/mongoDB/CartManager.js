@@ -9,51 +9,47 @@ export default class CartManager {
 
     constructor () {
        //this.carts = [];
-    }
+    };
 
     getCarts = async () => {
         
         try {
-        const carts = await cartsModel.find();
-        return carts;
+        const getCarts = await cartsModel.find();
+        return getCarts;
         } catch (e) {
             return [];
         }
-    }
+    };
 
     getCartById = async (cid) => {
 
         try {
-            const get = await cartsModel.findOne({_id: cid});
-            return get;
+            const getCart = await cartsModel.findOne({_id: cid});
+            return getCart;
         } catch (e) {
             console.log(e);
         }
-    }
+    };
 
     addCart = async (cart) => {
 
         const {products} = cart
-        
         try {
-            const add = await cartsModel.create([cart]);
-            return add;
+            const addCart = await cartsModel.create([cart]);
+            return addCart;
         } catch (e) {
             console.log(e);
         }
-    }
+    };
 
     addProductInCartById = async (cidCart, productById) => {
 
         try {
-            const find = await cartsModel.findOne({cidCart});
-            const add = await find.insertOne({productById})
-            return add;
+            const addProdInCart = await cartsModel.updateOne({_id: cidCart}, {$push: {products: productById}});
+            return addProdInCart;
         } catch (e) {
             console.log(e);
         }
-        
         return "Product added to cart succesfully";
-
     };
-}
+};

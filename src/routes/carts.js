@@ -1,6 +1,4 @@
 import { Router } from "express";
-//import CartManager from "../dao/fileSystem/CartManager.js";
-//import ProductManager from "../dao/fileSystem/ProductManager.js"
 import CartManager from "../dao/mongoDB/CartManager.js";
 import ProductManager from "../dao/mongoDB/ProductManager.js";
 
@@ -26,8 +24,8 @@ cartsRouter.post("/:cid/product/:pid", async (req, res) => {
     try {
         //const { cid, pid } = req.params;
         //const addProductToCart = await cartManager.addProduct(+cid);
-        let cidCart = +req.params.cid;
-        let productById = +req.params.pid;
+        let cidCart = req.params.cid;
+        let productById = req.params.pid;
         res.send(await cartManager.addProductInCartById(
             await cartManager.getCartById(cidCart),
             await productManager.getProductById(productById)

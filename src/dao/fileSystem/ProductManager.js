@@ -1,6 +1,6 @@
 /*
 import { json } from "express";
-import fs from "fs/promises"
+import fs from "fs/promises";
 
 export default class ProductManager {
 

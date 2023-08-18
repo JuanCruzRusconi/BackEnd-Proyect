@@ -1,4 +1,5 @@
 // Conexion Socket
+
 console.log("hola front");
 
 const addProductForm = document.getElementById("addProduct");

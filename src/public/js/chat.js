@@ -42,7 +42,7 @@ function createOwnMessage (msg) {
 const socket = io();
 
 socket.on("historial", (data) => {
-    console.log(data)
+    console.log(data);
 
     const msgHtml = data.map((msg) => createMessage(msg));
     $("#messages").html(msgHtml.join(" "));
@@ -54,10 +54,12 @@ socket.on("getMessage", (msg) => {
 });
 
 $(function () {
+
   $("#formEvent").on("submit", function (evento) {
     evento.preventDefault();
     console.log(evento);
   });
+
   $("#sendMsg").on("click", function () {
     const input = $("#message").val();
     $("#message").val("");
@@ -73,7 +75,7 @@ $(function () {
       socket.emit("sendMessage", input);
 
       $("#messages").append(createOwnMessage(input));
-    }
+    };
   });
 });
 
