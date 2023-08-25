@@ -3,6 +3,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import cartsModel from "../../schemas/carts.schema.js";
 import mongoose from "mongoose";
+import { pid } from "process";
 //import e from "express";
 
 export default class CartManager {
@@ -14,7 +15,7 @@ export default class CartManager {
     getCarts = async () => {
         
         try {
-        const getCarts = await cartsModel.find();
+        const getCarts = await cartsModel.find({});
         return getCarts;
         } catch (e) {
             return [];
@@ -41,7 +42,7 @@ export default class CartManager {
             console.log(e);
         }
     };
-
+/*
     addProductInCartById = async (cidCart, productById) => {
 
         try {
@@ -52,4 +53,58 @@ export default class CartManager {
         }
         return "Product added to cart succesfully";
     };
+*/
+
+addProductInCartById = async (cidCart, productById) => {
+
+    try {
+        const filter = {
+            _id: cidCart,
+            "products._id": productById
+        };
+        const cart = await cartsModel.findById(cidCart).lean();
+        if (cart.products.find((p) => p._id == productById._id.toString())) {
+            const update = {
+                $inc: {
+                    "products.$.quantity": 1
+                },
+            }
+            await cartsModel.findOneAndUpdate(filter, update);
+        } else {
+            const update2 = {
+                $push: {
+                    products: {
+                        _id: productById._id,
+                        quantity: 1
+                    },
+                }
+            }
+            await cartsModel.findByIdAndUpdate({
+                _id: cidCart
+            }, update2);
+        }
+        return await cartsModel.findById(cidCart);
+        //const addProdInCart = await cartsModel.updateOne({_id: cidCart}, {$push: {products: productById}});
+        return find;
+    } catch (e) {
+        console.log(e);
+
+    }
+};
+
+    deleteProductInCartById = async (cid) => {
+
+        try {
+            const deleteProd = await cartsModel.aggregate([
+                {
+                    $match: {_id: cid}
+                },
+        
+            ]);
+            return deleteProd;
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
 };

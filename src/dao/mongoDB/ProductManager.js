@@ -21,8 +21,12 @@ export default class ProductManager {
 
     addProduct = async (product) => {
 
-        //const {title, description, price, thumbnail, code, stock} = product
+        const {title, description, price, thumbnail, code, stock} = product
+        
         try {
+            const codeValid = await productsModel.findOne({code: code}).lean();
+            if (codeValid) return "Code in use";
+
             const addProd = await productsModel.create([product]);
             return addProd;
         } catch (e) {

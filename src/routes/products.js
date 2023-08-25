@@ -1,5 +1,6 @@
 import { Router } from "express";
 import ProductManager from "../dao/mongoDB/ProductManager.js";
+import productsModel from "../schemas/products.schema.js";
 
 const productManager = new ProductManager("products");
 
@@ -8,15 +9,12 @@ const productsRouter = Router();
 productsRouter.get("/", async (req, res) => {
    
     try {  
-    const { limit, price } = req.query;
+    const { limit = 2, page = 1, sort = 1, query = {}  } = req.query;
     const products = await productManager.getProducts() 
-    res.send(//limit ? 
-    //    products.slice(0, limit) : 
-      //  price ? 
-        //products.filter((product) => product.price == price) 
-        //: 
-        //products
-        products);
+    const paginate = await productsModel.paginate({
+        limit, page, sort, query
+    });
+    res.send(products);
     } catch {
         res.status(502).send({error : true})
     }
