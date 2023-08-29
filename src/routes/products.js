@@ -9,16 +9,18 @@ const productsRouter = Router();
 productsRouter.get("/", async (req, res) => {
    
     try {  
-    const { limit = 2, page = 1, sort = 1, query = {}  } = req.query;
-    const products = await productManager.getProducts() 
-    const paginate = await productsModel.paginate({
-        limit, page, sort, query
+    const { limit = 10, page = 1, sort = 1, ...query } = req.query;
+    const products = await productsModel.paginate(query, {
+        limit: limit,
+        lean: true,
+        page: page, 
+        sort: {price: +sort}
     });
     res.send(products);
     } catch {
         res.status(502).send({error : true})
     }
-})
+});
 
 productsRouter.get("/:pid", async (req, res) => {
     
@@ -31,7 +33,7 @@ productsRouter.get("/:pid", async (req, res) => {
     } catch {
         res.status(502).send({error : true})
     }
-})
+});
 
 productsRouter.post("/", async (req, res) => {
 
@@ -55,7 +57,7 @@ productsRouter.put("/:pid", async (req, res) => {
     } catch {
         res.status(502).send({error : true})
     }
-})
+});
 
 productsRouter.delete("/:pid", async (req, res) => {
     
@@ -66,7 +68,7 @@ productsRouter.delete("/:pid", async (req, res) => {
     } catch {
         res.status(502).send({error : true})
     }
-})
+});
 
 export default productsRouter
 

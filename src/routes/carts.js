@@ -83,7 +83,12 @@ cartsRouter.put("/:cid/products/:pid", async (req, res) => {
 
     try {
         const { cid, pid } = req.params;
-        const carts = await cartManager.deleteProductInCartById(cid, pid);
+        const { quantity } = req.body;
+        const carts = await cartManager.updateQuantity(
+            await cartManager.getCartById(cid),
+            await productManager.getProductById(pid),
+            quantity
+        );
         res.send(carts);
     } catch {
         res.status(502).send({error : true})
@@ -93,19 +98,33 @@ cartsRouter.put("/:cid/products/:pid", async (req, res) => {
 cartsRouter.delete("/:cid", async (req, res) => {
 
     try {
-        const { cid, pid } = req.params;
-        const carts = await cartManager.deleteProductInCartById(cid, pid);
+        const { cid } = req.params;
+        const carts = await cartManager.deleteCart(cid);
         res.send(carts);
     } catch {
         res.status(502).send({error : true})
     }
 });
 
-cartsRouter.delete("/:cid/products/:pid", async (req, res) => {
+cartsRouter.delete("/:cid/products", async (req, res) => {
+
+    try {
+        const { cid } = req.params;
+        const carts = await cartManager.deleteProducts(cid);
+        res.send(carts);
+    } catch {
+        res.status(502).send({error : true})
+    }
+});
+
+cartsRouter.delete("/:cid/product/:pid", async (req, res) => {
 
     try {
         const { cid, pid } = req.params;
-        const carts = await cartManager.deleteProductInCartById(cid, pid);
+        const carts = await cartManager.deleteProductInCartById(
+            await cartManager.getCartById(cid),
+            await productManager.getProductById(pid)
+        );
         res.send(carts);
     } catch {
         res.status(502).send({error : true})
