@@ -18,11 +18,11 @@ const cartsSchema = new mongoose.Schema({
     default: []
     }
 });
-/*
+
 cartsSchema.pre("find", function () {
     this.populate("products.product");
 });
-*/
+
 const cartsModel = mongoose.model("carts", cartsSchema);
 
 export default cartsModel;
