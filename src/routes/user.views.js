@@ -35,7 +35,7 @@ userViewsRouter.post("/login", isLogged, async (req, res) => {
     try {
     const { username, password } = req.body;
     const user = await userManager.validateUser(username, password);
-    if(!user) return res.render("/user/login");
+    if(!user) return res.status(401).send({error: true, msg: "Credenciales inexistentes"});
     delete user.password;
     delete user.salt;
     req.session.user = user;
