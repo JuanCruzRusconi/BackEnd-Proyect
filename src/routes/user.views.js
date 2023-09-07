@@ -5,7 +5,7 @@ import ProductManager from "../dao/mongoDB/ProductManager.js";
 
 const userViewsRouter = Router();
 
-const userManager = new UserManager()
+const userManager = new UserManager();
 const productManager = new ProductManager();
 
 const protectedView = (req, res, next) => {
@@ -34,15 +34,14 @@ userViewsRouter.post("/login", isLogged, async (req, res) => {
 
     try {
     const { username, password } = req.body;
-    const user = await userManager.validateUser(username, password);
+    const user = userManager.validateUser(username, password);
     if(!user) return res.status(401).send({error: true, msg: "Credenciales inexistentes"});
     delete user.password;
     delete user.salt;
     req.session.user = user;
     res.redirect("/user/profile");
-    
     } catch {
-        res.status(502).send({error : true})
+        res.status(502).send({error : true});
     }
 });
 
@@ -57,10 +56,9 @@ userViewsRouter.post("/register", isLogged, async (req, res) => {
         username: username,
         password: password,
         role: username === "admincoder@coder.com" ? "admin" : "user"});
-    //res.send(user);
     res.redirect("/user/profile");
     } catch {
-
+        res.status(502).send({error : true});
     }
 });
 
