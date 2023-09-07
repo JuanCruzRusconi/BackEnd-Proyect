@@ -75,6 +75,7 @@ export default class UserManager {
         const validateUser = await userModel.findOne({ username });
         if(!validateUser) return "Error, usuario no encontrado."
         const passw = await bcrypt.compare(password, validateUser.password);
-        return passw ? validateUser.toObject : false;
+        return passw ? validateUser.toObject() : false;
     };   
 }
+

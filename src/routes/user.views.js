@@ -48,11 +48,11 @@ userViewsRouter.post("/login", isLogged, async (req, res) => {
 userViewsRouter.post("/register", isLogged, async (req, res) => {
 
     try {
-    const { nombre, apellido, username, password } = req.body;
+    const { name, surname, username, password } = req.body;
     //const body = req.body;
     const user = await userManager.createUser({
-        nombre: nombre,
-        apellido: apellido,
+        name: name,
+        surname: surname,
         username: username,
         password: password,
         role: username === "admincoder@coder.com" ? "admin" : "user"});
