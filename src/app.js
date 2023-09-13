@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo"
 import sessionFilesStore from "session-file-store";
+import passport from "passport";
+import InitLocalStrategy from "./config/passport.js";
 
 import { Server as HTTPServer } from "http";
 import { Server } from "socket.io";
@@ -15,6 +17,7 @@ import productsRouter from "./routes/products.js";
 import cartsRouter from "./routes/carts.js";
 import productsViewsRouter from "./routes/products.views.js";
 import userViewsRouter from "./routes/user.views.js";
+import authRouter from "./routes/auth.js"
 
 import ProductManager from "./dao/mongoDB/ProductManager.js";
 import MessagesManager from "./dao/mongoDB/MessagesManager.js";
@@ -33,8 +36,8 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
 
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-
 app.use(cookieParser());
 //const fileStore = sessionFilesStore(session);
 app.use(session({
@@ -44,16 +47,19 @@ app.use(session({
     // FS store: new fileStore({path: "./sessions"});
     store: new MongoStore({mongoUrl: "mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce"}),
     ttl: 30,
-})
-);
+}));
 
-app.use(express.urlencoded({extended: true}));
+InitLocalStrategy();
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.static(`${__dirname}/public`));
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/products", productsViewsRouter);
 app.use("/user", userViewsRouter);
+app.use("/api/auth", authRouter);
 
 app.get("/", (req, res) => {
     const { nombre } = req.query;

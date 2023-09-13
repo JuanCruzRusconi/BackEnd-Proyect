@@ -14,6 +14,10 @@ const usersSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    email: {
+        type: String,
+        default: "@gmail.com",
+    },
     password: {
         type: String,
         required: true,
@@ -21,9 +25,9 @@ const usersSchema = new mongoose.Schema({
     avatar: {
         type: String,
     },
-    salt: {
-        type: String,
-    },
+    //salt: {
+        //type: String, -- crypto
+    //},
     role: {
         type: String,
         enum: ["admin", "user"],

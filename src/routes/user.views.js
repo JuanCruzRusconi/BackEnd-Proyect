@@ -2,6 +2,7 @@ import { Router } from "express";
 import UserModel from "../schemas/users.schema.js";
 import UserManager from "../dao/mongoDB/UserManager.js";
 import ProductManager from "../dao/mongoDB/ProductManager.js";
+import passport from "passport";
 
 const userViewsRouter = Router();
 
@@ -29,12 +30,12 @@ userViewsRouter.get("/register", isLogged, (req, res) => {
     
     res.render("register");
 });
-
+/*
 userViewsRouter.post("/login", isLogged, async (req, res) => {
 
     try {
     const { username, password } = req.body;
-    const user = userManager.validateUser(username, password);
+    const user = await userManager.validateUser(username, password);
     if(!user) return res.status(401).send({error: true, msg: "Credenciales inexistentes"});
     delete user.password;
     delete user.salt;
@@ -44,6 +45,7 @@ userViewsRouter.post("/login", isLogged, async (req, res) => {
         res.status(502).send({error : true});
     }
 });
+
 
 userViewsRouter.post("/register", isLogged, async (req, res) => {
 
@@ -61,14 +63,28 @@ userViewsRouter.post("/register", isLogged, async (req, res) => {
         res.status(502).send({error : true});
     }
 });
+*/
+userViewsRouter.post("/login", passport.authenticate("login", {
+        successRedirect: "/user/profile",
+        failureRedirect: "/user/login"
+    }),
+    async (req, res) => {}
+);
+
+userViewsRouter.post("/register", passport.authenticate("register", {
+        successRedirect: "/user/profile",
+        failureRedirect: "/user/register"
+    }),
+    async (req, res) => {}
+);
 
 userViewsRouter.get("/profile", protectedView, async (req, res) => {
 
     try {
-        const { nombre, apellido, username } = req.session.user;
+        const { nombre, apellido, username } = req.user;
         console.log("Inicio de sesion:")
-        console.log(req.session.user);
-        res.render("profile", req.session.user); 
+        console.log(req.user);
+        res.render("profile", req.user); 
     } catch {
 
     }

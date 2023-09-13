@@ -19,7 +19,27 @@ export default class UserManager {
           } catch (e) {
             return [];
           }
-        };
+    };
+
+    getUserById = async (id) => {
+
+        try {
+            const user = await userModel.findById(id);
+            return user;
+        } catch {
+
+        }
+    };
+
+    getUserByUsername = async (username) => {
+
+        try {
+            const user = await userModel.findOne({username});
+            return user;
+        } catch {
+
+        }
+    };
 
     updateUser = async () => {
 
@@ -73,7 +93,7 @@ export default class UserManager {
     validateUser = async (username, password) => {
 
         const validateUser = await userModel.findOne({ username });
-        if(!validateUser) return "Error, usuario no encontrado."
+        if(!validateUser) return false;
         const passw = await bcrypt.compare(password, validateUser.password);
         return passw ? validateUser.toObject() : false;
     };   
