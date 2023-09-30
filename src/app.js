@@ -18,9 +18,11 @@ import cartsRouter from "./routes/carts.js";
 import productsViewsRouter from "./routes/products.views.js";
 import userViewsRouter from "./routes/user.views.js";
 import authRouter from "./routes/auth.js"
+import userApiRouter from "./routes/user.router.js";
 
 import ProductManager from "./dao/mongoDB/ProductManager.js";
 import MessagesManager from "./dao/mongoDB/MessagesManager.js";
+
 
 
 const app = express();
@@ -60,6 +62,7 @@ app.use("/api/carts", cartsRouter);
 app.use("/products", productsViewsRouter);
 app.use("/user", userViewsRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/users", userApiRouter);
 
 app.get("/", (req, res) => {
     const { nombre } = req.query;
@@ -130,6 +133,6 @@ socketServer.on("connection", (socket) => {
     */
 });
 
-httpServer.listen(8081, () => {
+httpServer.listen(8080, () => {
     console.log("escuchando..")
 });

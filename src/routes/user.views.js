@@ -11,13 +11,13 @@ const productManager = new ProductManager();
 
 const protectedView = (req, res, next) => {
     
-    if(!req.session.user) return res.redirect("/user/login");
+    if(!req.user) return res.redirect("/user/login");
     next();
 };
 
 const isLogged = (req, res, next) => {
 
-    if(req.session.user) return res.redirect("/user/profile");
+    if(req.user) return res.redirect("/user/profile");
     next();
 };
 

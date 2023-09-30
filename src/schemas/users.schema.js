@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const usersSchema = new mongoose.Schema({
 
@@ -18,9 +18,22 @@ const usersSchema = new mongoose.Schema({
         type: String,
         default: "@gmail.com",
     },
+    age: {
+        type: Number,
+    },
     password: {
         type: String,
         required: true,
+    },
+    cart: {
+        type: [{
+            cart: {
+                type: mongoose.Types.ObjectId,
+                ref: "carts",
+            }
+        }],
+        require: true,
+        default: []
     },
     avatar: {
         type: String,
@@ -33,6 +46,10 @@ const usersSchema = new mongoose.Schema({
         enum: ["admin", "user"],
         default: "user"  
     }
+});
+
+usersSchema.pre("find", function () {
+    this.populate("carts.cart");
 });
 
 const userModel = mongoose.model("users", usersSchema);

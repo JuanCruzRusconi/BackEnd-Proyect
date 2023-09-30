@@ -2,10 +2,15 @@ import passport from "passport";
 import local from "passport-local";
 import GitHubStrategy from "passport-github2";
 import UserManager from "../dao/mongoDB/UserManager.js";
+import jwt from "passport-jwt";
+import cookieExtractor from "../utils/cookieJWT.js";
+import { SECRET } from "../utils/jwt.js";
 
 const userManager = new UserManager();
 
 local.Strategy; 
+
+const JWTStrategy = jwt.Strategy;
 
 const InitLocalStrategy = () => {
 
@@ -15,7 +20,7 @@ const InitLocalStrategy = () => {
 
         //const { username, password } = req.body;
         const user = await userManager.validateUser(username, password);
-        if(!user) return done("Credenciales inexistentes.");
+        if(!user) return done(null, false);
 
         return done(null, user);
     }));
@@ -25,7 +30,7 @@ const InitLocalStrategy = () => {
     }, async (req, username, password, done) => {
 
         const userExists = await userManager.getUserByUsername(username);
-        if (userExists) return done("Usuario existente.");
+        if (userExists) return done(null, false);
 
         const { name, surname } = req.body;
 
@@ -37,7 +42,18 @@ const InitLocalStrategy = () => {
             role: username === "admincoder@coder.com" ? "admin" : "user"
         });
 
-        return done(null, user.toObject());
+        return done(null, user);
+    }));
+
+    passport.use("jwt", new JWTStrategy({
+        jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: SECRET, 
+    }, async (payload, done) => {
+        console.log(payload);
+        const user = await userManager.getUserById(payload.sub);
+        if(!user) return done("Credenciales invalidas");
+
+        return done(null, user);
     }));
 
     passport.use("github", new GitHubStrategy ({
@@ -64,13 +80,13 @@ const InitLocalStrategy = () => {
 
     passport.serializeUser((user, done) => {
 
-        done(null, user.username);
+        done(null, user._id);
     });
 
-    passport.deserializeUser(async (username, done) => {
+    passport.deserializeUser(async (id, done) => {
 
         try {
-            const user = await userManager.getUserByUsername(username);
+            const user = await userManager.getUserById(id);
             done(null, user);
         } catch (e) {
             done(null, false);
