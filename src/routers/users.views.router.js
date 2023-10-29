@@ -1,13 +1,8 @@
 import { Router } from "express";
-import UserModel from "../schemas/users.schema.js";
-import UserManager from "../dao/mongoDB/UserManager.js";
-import ProductManager from "../dao/mongoDB/ProductManager.js";
 import passport from "passport";
+import * as UsersViewsController from "../controllers/users.views.controller.js"
 
 const userViewsRouter = Router();
-
-const userManager = new UserManager();
-const productManager = new ProductManager();
 
 const protectedView = (req, res, next) => {
     
@@ -21,15 +16,9 @@ const isLogged = (req, res, next) => {
     next();
 };
 
-userViewsRouter.get("/login", isLogged, (req, res) => {
-    
-    res.render("login");
-});
+userViewsRouter.get("/login", isLogged, UsersViewsController.GETLogin);
 
-userViewsRouter.get("/register", isLogged, (req, res) => {
-    
-    res.render("register");
-});
+userViewsRouter.get("/register", isLogged, UsersViewsController.GETRegister);
 /*
 userViewsRouter.post("/login", isLogged, async (req, res) => {
 
@@ -78,39 +67,10 @@ userViewsRouter.post("/register", passport.authenticate("register", {
     async (req, res) => {}
 );
 
-userViewsRouter.get("/profile", protectedView, async (req, res) => {
+userViewsRouter.get("/profile", protectedView, UsersViewsController.GETProfile);
 
-    try {
-        const { nombre, apellido, username } = req.user;
-        console.log("Inicio de sesion:")
-        console.log(req.user);
-        res.render("profile", req.user); 
-    } catch {
+userViewsRouter.get("/profile/products", protectedView, UsersViewsController.GETProfileProducts);
 
-    }
-});
-
-userViewsRouter.get("/profile/products", protectedView, async (req, res) => {
-
-    try {
-        const { nombre, apellido, username } = req.session.user;
-        const isAdmin = req.query.admin;
-        const productos = await productManager.getProducts()
-        res.render("home", { products: productos.map(producto => producto.toJSON()), isAdmin: true }); 
-    } catch {
-
-    }
-});
-
-userViewsRouter.get("/logout", protectedView, (req, res) => {
-
-    try {
-        req.session.destroy((error) => {
-            res.redirect("/user/login");
-        })
-    } catch {
-
-    }
-});
+userViewsRouter.get("/logout", protectedView, UsersViewsController.GETLogout);
 
 export default userViewsRouter;

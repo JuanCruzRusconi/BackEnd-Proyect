@@ -59,15 +59,15 @@ const InitLocalStrategy = () => {
     passport.use("github", new GitHubStrategy ({
         clientID: "Iv1.691c49ed935c2683",
         clientSecret: "394518bf0992c95fc9e6ba589074642450660520",
-        callbackURL: "http://localhost:8081/api/auth/callback"
+        callbackURL: "http://localhost:8080/api/auth/callback"
     }, async (accessToken, refreshToken, profile, done) => {
 
         console.log(profile);
         const username = profile._json.login;
-        const user = await userManager.getUserByUsername(username);
-        if(user) return done(null, user);
+        const userExists = await userManager.getUserByUsername(username);
+        if(userExists) return done(null, user);
 
-        const createUser = await userManager.createUser({
+        const user = await userManager.createUser({
             name: profile._json.name.split(" ")[0],
             surname: profile._json.name.split(" ")[2],
             username,
@@ -75,12 +75,16 @@ const InitLocalStrategy = () => {
             role: username === "admincoder@coder.com" ? "admin" : "user"
         });
 
-        done(null, createUser);
+        done(null, user);
     }));
 
     passport.serializeUser((user, done) => {
-
+        try {
+        console.log(user)
         done(null, user._id);
+        } catch (e) {
+            console.log(e)
+        }
     });
 
     passport.deserializeUser(async (id, done) => {

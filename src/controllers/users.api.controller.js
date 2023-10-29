@@ -1,14 +1,14 @@
-import { Router } from "express";
 import UserManager from "../dao/mongoDB/UserManager.js";
-import { JWTCookieMW, JWTMW, generateToken } from "../utils/jwt.js";
-import passport from "passport";
-import passportMW from "../utils/jwt.middleware.js";
-
-const userApiRouter = Router();
+import * as UsersServices from "../services/users.services.js"
 
 const userManager = new UserManager();
 
-userApiRouter.post("/login", async (req, res) => {
+export const GETUsers = async (req, res) => {
+
+    await UsersServices.GetAllUsers();
+};
+
+export const POSTLogin = async (req, res) => {
 
     console.log(req.body);
     
@@ -22,11 +22,9 @@ userApiRouter.post("/login", async (req, res) => {
         httpOnly: true
     });
     res.send({ error: false, accessToken: token });
-});
+};
 
-userApiRouter.get("/profile", passportMW("jwt"), async (req, res) => {
+export const GETSessionCurrent = async (req, res) => {
 
     res.send({ error: false, user: req.user });  
-});
-
-export default userApiRouter;
+};

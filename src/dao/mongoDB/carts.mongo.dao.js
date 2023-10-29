@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import { pid } from "process";
 //import e from "express";
 
-export default class CartManager {
+export default class CartsDAO {
 
     constructor() {
         //this.carts = [];
@@ -32,7 +32,7 @@ export default class CartManager {
         }
     };
 
-    addCart = async (cart) => {
+    createCart = async (cart) => {
 
         const { products } = cart
         try {
@@ -43,16 +43,16 @@ export default class CartManager {
         }
     };
     /*
-        addProductInCartById = async (cidCart, productById) => {
+    addProductInCartById = async (cidCart, productById) => {
 
-            try {
-                const addProdInCart = await cartsModel.updateOne({_id: cidCart}, {$push: {products: productById}});
-                return addProdInCart;
-            } catch (e) {
-                console.log(e);
-            }
-            return "Product added to cart succesfully";
-        };
+           try {
+            const addProdInCart = await cartsModel.updateOne({_id: cidCart}, {$push: {products: productById}});
+            return addProdInCart;
+        } catch (e) {
+            console.log(e);
+        }
+        return "Product added to cart succesfully";
+    };
     */
 
     addProductInCartById = async (cidCart, productById) => {
@@ -109,69 +109,67 @@ export default class CartManager {
         }
     };
     /*
-        deleteProductInCartById = async (cid) => {
+    deleteProductInCartById = async (cid) => {
 
-            try {
-                const deleteProd = await cartsModel.aggregate([
-                    {
-                        $match: {_id: cid}
-                    },
-            
-                ]);
-                return deleteProd;
+           try {
+               const deleteProd = await cartsModel.aggregate([
+                  {
+                       $match: {_id: cid}
+                   },
+               ]);
+            return deleteProd;
+        } catch (e) {
+            console.log(e);
+        }
+    }*/
 
-            } catch (e) {
-                console.log(e);
-            }
-        }*/
+    deleteProductInCartById = async (cidCart, productById) => {
 
-        deleteProductInCartById = async (cidCart, productById) => {
-
-            try {
-                const filter = {
-                    _id: cidCart,
-                    "products._id": productById
-                };
-                const cart = await cartsModel.findById(cidCart).lean();
-                if (cart.products.find((p) => p._id == productById._id.toString() && p.quantity > 1)) {
-                    const update = {
-                        $inc: {
-                            "products.$.quantity": -1,
+           try {
+            const filter = {
+                   _id: cidCart,
+                "products._id": productById
+            };
+            const cart = await cartsModel.findById(cidCart).lean();
+            if (cart.products.find((p) => p._id == productById._id.toString() && p.quantity > 1)) {
+                const update = {
+                    $inc: {
+                        "products.$.quantity": -1,
+                       },
+                   }
+                await cartsModel.findOneAndUpdate(filter, update);
+            } else {
+                const update2 = {
+                    $pull: {
+                        products: {
+                             _id: productById,
                         },
                     }
-                    await cartsModel.findOneAndUpdate(filter, update);
-                } else {
-                    const update2 = {
-                        $pull: {
-                            products: {
-                                _id: productById,
-                            },
-                        }
-                    };
-                    await cartsModel.findByIdAndUpdate(cidCart, update2);
+                };
+                await cartsModel.findByIdAndUpdate(cidCart, update2);
+            }
+               return await cartsModel.findById(cidCart);
+            //const addProdInCart = await cartsModel.updateOne({_id: cidCart}, {$push: {products: productById}});
+            return find;
+        } catch (e) {
+            console.log(e);
+        }
+    };    
+
+    updateProductQuantity = async (cid, pid, quantity) => {
+
+        try {
+            let update = await cartsModel.findById(cid);
+            update.products.map((p) => {
+                if (p._id == pid._id.toString()) {
+                    p.quantity = quantity;
                 }
-                return await cartsModel.findById(cidCart);
-                //const addProdInCart = await cartsModel.updateOne({_id: cidCart}, {$push: {products: productById}});
-                return find;
-            } catch (e) {
-                console.log(e);
-            }
-        };    
-
-        updateQuantity = async (cid, pid, quantity) => {
-
-            try {
-                let update = await cartsModel.findById(cid);
-                update.products.map((p) => {
-                    if (p._id == pid._id.toString()) {
-                        p.quantity = quantity;
-                    }
-                    return p;
-                });
-                update.save();
-                return update;
-            } catch (e) {
-                console.log(e);
-            }
-        };
+                return p;
+            });
+            update.save();
+            return update;
+        } catch (e) {
+            console.log(e);
+        }
+    };
 };

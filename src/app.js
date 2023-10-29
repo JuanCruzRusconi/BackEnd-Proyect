@@ -13,21 +13,21 @@ import { Server } from "socket.io";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
-import productsRouter from "./routes/products.js";
-import cartsRouter from "./routes/carts.js";
-import productsViewsRouter from "./routes/products.views.js";
-import userViewsRouter from "./routes/user.views.js";
-import authRouter from "./routes/auth.js"
-import userApiRouter from "./routes/user.router.js";
+import cartsRouter from "./routers/carts.api.router.js";
+import productsRouter from "./routers/products.api.router.js";
+import productsViewsRouter from "./routers/products.views.router.js";
+import userViewsRouter from "./routers/users.views.router.js";
+import userApiRouter from "./routers/users.api.router.js";
+import authRouter from "./routers/auth.api.router.js"
 
-import ProductManager from "./dao/mongoDB/ProductManager.js";
+import ProductsDAO from "./dao/mongoDB/products.mongo.dao.js";
 import MessagesManager from "./dao/mongoDB/MessagesManager.js";
 
 
 
 const app = express();
 
-const prodManager = new ProductManager();
+const prodManager = new ProductsDAO();
 const msgManager = new MessagesManager();
 
 const mongooseConect = await mongoose.connect("mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce");
@@ -62,7 +62,7 @@ app.use("/api/carts", cartsRouter);
 app.use("/products", productsViewsRouter);
 app.use("/user", userViewsRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/users", userApiRouter);
+app.use("/api/user", userApiRouter);
 
 app.get("/", (req, res) => {
     const { nombre } = req.query;

@@ -14,10 +14,10 @@ export default class UserManager {
     getUsers = async () => {
 
         try {
-            const users = await userModel.find();
+            await userModel.find();
             return users;
           } catch (e) {
-            return [];
+            //return [];
           }
     };
 
@@ -86,7 +86,7 @@ export default class UserManager {
         const { nombre, apellido, username, password } = user;
         user.salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, user.salt);
-        const newUser = await userModel.create([user]);
+        const newUser = await userModel.create(user);
         return newUser;
     };
 

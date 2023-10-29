@@ -4,41 +4,36 @@ import { fileURLToPath } from "url";
 import productsModel from "../../schemas/products.schema.js";
 import mongoose from "mongoose";
 
-export default class ProductManager {
+export default class ProductsDAO {
 
     constructor () {
         //nodethis.products = [];
     };
 
     getProducts = async () => {
+        
         try {
-            const getProds = await productsModel.find();
-            return getProds;
+         await productsModel.find();
+          //  return getProds;
         } catch (e) {
-            return [];
+          //  return [];
         }
     };
 
-    addProduct = async (product) => {
-
-        const {title, description, price, thumbnail, code, stock} = product
+    createProduct = async (product) => {
         
         try {
-            const codeValid = await productsModel.findOne({code: code}).lean();
-            if (codeValid) return "Code in use";
-
             const addProd = await productsModel.create([product]);
             return addProd;
         } catch (e) {
             console.log(e);
         }
-       //console.log(`Product ${product} submitted successfully`);
     };
 
     getProductById = async (productId) => {
         
         try {
-            const getProd = await productsModel.findOne({_id: productId});
+            const getProd = await productsModel.findOne(productId);
             return getProd;
         } catch (e) {
             console.log(e);
@@ -53,7 +48,6 @@ export default class ProductManager {
         } catch (e) {
             console.log(e);
         }
-        //console.log(`Producto has been actualized`);
     };
 
     deleteProduct =  async (id) => {
