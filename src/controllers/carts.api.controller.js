@@ -1,5 +1,6 @@
 import * as CartsServices from "../services/carts.services.js";
 import * as ProductsServices from "../services/products.services.js"
+import * as TicketsServices from "../services/tickets.services.js";
 
 export const POSTCart = async (req, res) => {
     
@@ -94,6 +95,18 @@ export const DELETEProductByIdInCartById = async (req, res) => {
             await ProductsServices.GetProductById(pid)
         );
         res.send(carts);
+    } catch {
+        res.status(502).send({error : true})
+    }
+};
+
+export const POSTPurchase = async (req, res) => {
+
+    try {
+        const { cid } = req.params;
+        const cart = await CartsServices.PostPurchase(cid);
+        await TicketsServices.PostTicket()
+        res.send({error: false, msg: "Compra finalizada"});
     } catch {
         res.status(502).send({error : true})
     }

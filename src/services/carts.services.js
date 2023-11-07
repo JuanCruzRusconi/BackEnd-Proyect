@@ -1,6 +1,9 @@
 import CartsDAO from "../dao/mongoDB/carts.mongo.dao.js";
+import ProductsDAO from "../dao/mongoDB/products.mongo.dao.js";
 
 const CartsDao = new CartsDAO();
+const ProductsDao = new ProductsDAO();
+
 
 export const GetCarts = async () => {
 
@@ -79,5 +82,15 @@ export const PutProductQuantityByIdInCartById = async (cid, pid, quantity) => {
         await CartsDao.updateProductQuantity(cid, pid, quantity);    
     } catch (e) {
         console.log(e);
+    }
+};
+
+export const PostPurchase = async (cid) => {
+
+    try {
+        const cart = await CartsDao.getCartById(cid);
+        return cart
+    } catch (e) {
+        console.log("no anduvo");
     }
 };

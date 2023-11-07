@@ -1,12 +1,10 @@
 import passport from "passport";
 import local from "passport-local";
 import GitHubStrategy from "passport-github2";
-import UserManager from "../dao/mongoDB/UserManager.js";
 import jwt from "passport-jwt";
 import cookieExtractor from "../utils/cookieJWT.js";
 import { SECRET } from "../utils/jwt.js";
-
-const userManager = new UserManager();
+import * as UsersServices from "../services/users.services.js"
 
 local.Strategy; 
 
@@ -19,7 +17,7 @@ const InitLocalStrategy = () => {
     }, async (req, username, password, done) => {
 
         //const { username, password } = req.body;
-        const user = await userManager.validateUser(username, password);
+        const user = await UsersServices.ValidateUser(username, password);
         if(!user) return done(null, false);
 
         return done(null, user);
@@ -29,12 +27,12 @@ const InitLocalStrategy = () => {
         passReqToCallback: true
     }, async (req, username, password, done) => {
 
-        const userExists = await userManager.getUserByUsername(username);
+        const userExists = await UsersServices.GetUserByUsername(username);
         if (userExists) return done(null, false);
 
         const { name, surname } = req.body;
 
-        const user = await userManager.createUser({
+        const user = await UsersServices.CreateUser({
             name: name,
             surname: surname,
             username: username,
@@ -50,7 +48,7 @@ const InitLocalStrategy = () => {
         secretOrKey: SECRET, 
     }, async (payload, done) => {
         console.log(payload);
-        const user = await userManager.getUserById(payload.sub);
+        const user = await UsersServices.GetUserById(payload.sub);
         if(!user) return done("Credenciales invalidas");
 
         return done(null, user);
@@ -64,10 +62,10 @@ const InitLocalStrategy = () => {
 
         console.log(profile);
         const username = profile._json.login;
-        const userExists = await userManager.getUserByUsername(username);
+        const userExists = await UsersServices.GetUserByUsername(username);
         if(userExists) return done(null, user);
 
-        const user = await userManager.createUser({
+        const user = await UsersServices.CreateUser({
             name: profile._json.name.split(" ")[0],
             surname: profile._json.name.split(" ")[2],
             username,
@@ -90,7 +88,7 @@ const InitLocalStrategy = () => {
     passport.deserializeUser(async (id, done) => {
 
         try {
-            const user = await userManager.getUserById(id);
+            const user = await UsersServices.GetUserById(id);
             done(null, user);
         } catch (e) {
             done(null, false);

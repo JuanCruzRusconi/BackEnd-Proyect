@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
-import * as UsersViewsController from "../controllers/users.views.controller.js"
+import * as UsersViewsController from "../controllers/users.views.controller.js";
+import * as UsersServices from "../services/users.services.js";
 
 const userViewsRouter = Router();
 
@@ -24,7 +25,7 @@ userViewsRouter.post("/login", isLogged, async (req, res) => {
 
     try {
     const { username, password } = req.body;
-    const user = await userManager.validateUser(username, password);
+    const user = await UsersServices.ValidateUser(username, password);
     if(!user) return res.status(401).send({error: true, msg: "Credenciales inexistentes"});
     delete user.password;
     delete user.salt;
@@ -41,7 +42,7 @@ userViewsRouter.post("/register", isLogged, async (req, res) => {
     try {
     const { name, surname, username, password } = req.body;
     //const body = req.body;
-    const user = await userManager.createUser({
+    const user = await UsersServices.CreateUser({
         name: name,
         surname: surname,
         username: username,

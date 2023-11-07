@@ -2,12 +2,15 @@ import * as ProductsServices from "../services/products.services.js"
 
 export const GETProducts = async (req, res) => {
    
-    try {  
-    const isAdmin = req.query.admin; 
-    const productos = await ProductsServices.GetProducts(); 
-    res.render("home", { products: productos.map(producto => producto.toJSON()), isAdmin: isAdmin });
+    try {
+        const isAdmin = req.query.admin;
+        const productos = await ProductsServices.GetProducts();
+        res.render("home", {
+            products: productos.map(producto => producto.toJSON()),
+            isAdmin: true
+        });
     } catch {
-        res.status(502).send({error : true})
+        res.status(502).send({ error: true });
     }
 };
 
@@ -27,7 +30,7 @@ export const GETRealTimeProducts = async (req, res) => {
    
     try {  
     const productos = await ProductsServices.GetProducts(); 
-    res.render("realTimeProducts", { products: productos.map(producto => producto.toJSON()) });
+    res.render("realTimeProducts", { productos: productos.map(product => product.toJSON()), isAdmin: true });
     //socket.emit("listaProductos", productos);
     } catch {
         res.status(502).send({error : true})

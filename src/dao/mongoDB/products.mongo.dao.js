@@ -13,10 +13,10 @@ export default class ProductsDAO {
     getProducts = async () => {
         
         try {
-         await productsModel.find();
-          //  return getProds;
+            const prods = await productsModel.find();
+            return prods;
         } catch (e) {
-          //  return [];
+            return [];
         }
     };
 

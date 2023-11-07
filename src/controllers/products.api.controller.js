@@ -13,7 +13,7 @@ export const GETProducts = async (req, res) => {
     });
     res.send(products);
     } catch {
-        res.status(502).send({error : true})
+        res.status(502).send({error : true, msg: "Not autorized"})
     }
 };
 

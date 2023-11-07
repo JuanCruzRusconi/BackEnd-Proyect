@@ -23,4 +23,6 @@ cartsRouter.delete("/:cid/products", CartsApiController.DELETEProductsInCartById
 
 cartsRouter.delete("/:cid/product/:pid", CartsApiController.DELETEProductByIdInCartById);
 
+cartsRouter.post("/:cid/purchase", CartsApiController.POSTPurchase);
+
 export default cartsRouter;

@@ -1,91 +1,86 @@
-import UserManager from "../dao/mongoDB/UserManager.js";
+import UsersDAO from "../dao/mongoDB/users.mongo.dao.js";
+import bcrypt from "bcrypt";
 
-const UserDao = new UserManager();
+const UsersDao = new UsersDAO();
 
 export const GetAllUsers = async () => {
 
     try {
-        const users = await UserDao.getUsers();
+        const users = await UsersDao.getUsers();
         return users;
       } catch (e) {
         return [];
       }
 };
-/*
+
 export const GetUserById = async (id) => {
 
     try {
-        const user = await userModel.findById(id);
+        const user = await UsersDao.getUserById(id);
         return user;
-    } catch {
-
+    } catch (e) {
+        console.log(e);
     }
 };
 
-GetUserByUsername = async (username) => {
+export const GetUserByUsername = async (username) => {
 
     try {
-        const user = await userModel.findOne({username});
+        const user = await UsersDao.getUserByUsername(username);
         return user;
-    } catch {
-
+    } catch (e) {
+        console.log(e);
     }
 };
 
-UpdateUser = async () => {
+export const UpdateUser = async () => {
 
-    const user = await userModel.findOne({ username });
+    try {
+    const user = await UsersDao.updateUser(username);
     user.user.avatar = profile_picture;
     await user.save();
     const userObject = user.toObject();
     const userJSON = user.toJSON();
     const products = await model.find({});
     res.render("index", { prod: products });
+    } catch (e) {
+        console.log(e);
+    }
 };
 
-// ------- crypto ------- // 
-createUser2 = async (user) => {
-
-    const { nombre, apellido, username, passwor } = user;
-    user.salt = crypto.randomBytes(128).toString("base64");
-    user.password = crypto
-        .createHmac("sha256", user.salt)
-        .update(user.password)
-        .digest("hex");
-    const createUser = await userModel.create([user]);
-    return createUser;
-};
-
-validateUser = async (username, password) => {
-
-    const user = await userModel.findOne({ username });
-    if (!user) return "Error, usuario no existe!";
-
-    const loginHash = crypto
-        .createHmac("sha256", user.salt)
-        .update(password)
-        .digest("hex");
-
-    return loginHash == user.password ?
-        user.toObject() :
-        false;
-};*/
-/*
 // ------- bcrypt ------- // 
-CreateUser = async (user) => {
+export const CreateUser = async (user) => {
     
+    try {
     const { nombre, apellido, username, password } = user;
     user.salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, user.salt);
-    const newUser = await userModel.create(user);
+    const newUser = await UsersDao.createUser(user);
     return newUser;
+    } catch (e) {
+        console.log(e);
+    }
 };
 
-ValidateUser = async (username, password) => {
+export const ValidateUser = async (username, password) => {
 
-    const validateUser = await userModel.findOne({ username });
+    try {
+    const validateUser = await UsersDao.validateUser(username);
     if(!validateUser) return false;
     const passw = await bcrypt.compare(password, validateUser.password);
     return passw ? validateUser.toObject() : false;
+    } catch (e) {
+        console.log(e);
+    }
 };
-*/
+
+export const UserRole = async () => {
+
+    try {
+        const user = await UsersDao.getUserByUsername(username);
+        const role = user.role;
+        return role;
+    } catch (e) {
+        console.log(e);
+    }
+}

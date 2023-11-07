@@ -1,7 +1,4 @@
 import * as ProductsServices from "../services/products.services.js"
-import UserManager from "../dao/mongoDB/UserManager.js";
-
-const userManager = new UserManager();
 
 export const GETLogin = async (req,res) => {
     

@@ -22,6 +22,7 @@ import authRouter from "./routers/auth.api.router.js"
 
 import ProductsDAO from "./dao/mongoDB/products.mongo.dao.js";
 import MessagesManager from "./dao/mongoDB/MessagesManager.js";
+import { sendEmail, transport } from "./config/nodemailer.js";
 
 
 
@@ -63,6 +64,7 @@ app.use("/products", productsViewsRouter);
 app.use("/user", userViewsRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userApiRouter);
+app.use("/mail", sendEmail);
 
 app.get("/", (req, res) => {
     const { nombre } = req.query;

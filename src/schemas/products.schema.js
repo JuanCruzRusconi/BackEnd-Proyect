@@ -42,6 +42,3 @@ productsSchema.plugin(mongoosePaginate);
 const productsModel = mongoose.model("products", productsSchema);
 
 export default productsModel;
-
-
-//const {title, description, price, thumbnail, code, stock} = product
