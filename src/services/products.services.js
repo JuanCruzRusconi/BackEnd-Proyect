@@ -1,4 +1,5 @@
 import ProductsDAO from "../dao/mongoDB/products.mongo.dao.js";
+import productsModel from "../schemas/products.schema.js";
 
 const ProductsDao = new ProductsDAO();
 
@@ -35,6 +36,16 @@ export const GetProductById = async (productId) => {
      }
 };
 
+export const GetProductStockById = async (productId) => {
+        
+    try {
+        const getProd = await ProductsDao.getProductById({_id: productId});
+        return getProd.stock;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 export const PutProduct = async (id, product) => {
      
     try {  
@@ -54,3 +65,16 @@ export const DeleteProduct =  async (id) => {
          console.log(e);
      }
  };
+
+ export const UpdateProductStockAfterPurchase =  async (id, quantity) => {
+     
+    try {
+        const prod = await ProductsDao.getProductById(id);
+        if(prod.stock < quantity) throw new Error("No hay stock disponible");
+        const newStock = prod.stock - quantity;
+        const updateProd = await ProductsDao.updateProductStockAfterPurchase(id, newStock);
+        return updateProd;
+    } catch (e) {
+        throw e;
+    }
+};

@@ -1,4 +1,7 @@
-import * as UsersServices from "../services/users.services.js"
+import { generateToken } from "../utils/jwt.js";
+import * as UsersServices from "../services/users.services.js";
+import * as CartsServices from "../services/carts.services.js";
+import e from "express";
 
 export const GETUsers = async (req, res) => {
 
@@ -23,5 +26,34 @@ export const POSTLogin = async (req, res) => {
 
 export const GETSessionCurrent = async (req, res) => {
 
-    res.send({ error: false, user: req.user }); 
+    try {
+        if(!req.user) throw new Error("Debes loguearte");
+        res.send({ error: false, user: req.user });
+    } catch (e) {
+        throw e;
+    }
+};
+
+export const GETLogout = async (req,res) => {
+    
+    try {
+        req.session.destroy((error) => {
+            res.send("Sesion culmianda")
+        });
+    } catch (e) {
+        throw e;
+    }
+};
+
+export const POSTCart = async (req, res) => {
+
+    try {
+    const { prod } = req.params;
+    const cart = req.user.cart;
+    await CartsServices.PostProductInCartById(cart, prod);
+    res.send({error: false, user: req.user.cart});    //await UsersServices.CreateUser 
+    //await CartsServices.PostCart(prod)
+    } catch (e) {
+
+    }
 };

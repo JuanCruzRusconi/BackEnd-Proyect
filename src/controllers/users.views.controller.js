@@ -48,7 +48,7 @@ export const GETLogout = async (req,res) => {
     try {
         req.session.destroy((error) => {
             res.redirect("/user/login");
-        })
+        });
     } catch (e) {
         console.log(e);
     }

@@ -59,4 +59,14 @@ export default class ProductsDAO {
             console.log(e);
         }
     };
+
+    updateProductStockAfterPurchase = async (id, newStock) => {
+        
+        try {              
+            const updateProd = await productsModel.updateOne({_id: id}, {$set: {stock: newStock}}); 
+            return updateProd;
+        } catch (e) {
+            console.log(e);
+        }                                                           
+    };
 };

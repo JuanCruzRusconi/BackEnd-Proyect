@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import cartsModel from "../../schemas/carts.schema.js";
 import mongoose from "mongoose";
 import { pid } from "process";
+import e from "express";
 //import e from "express";
 
 export default class CartsDAO {
@@ -30,7 +31,7 @@ export default class CartsDAO {
         } catch (e) {
             console.log(e);
         }
-    };
+    }
 
     createCart = async (cart) => {
 
@@ -155,6 +156,16 @@ export default class CartsDAO {
             console.log(e);
         }
     };    
+
+    deleteAllProductsByIdInCartById = async (cid, pid) => {
+        
+        try {
+            const cart = await cartsModel.findByIdAndUpdate({_id: cid}, { $pull: { products: { _id: pid }}});
+            return cart;
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     updateProductQuantity = async (cid, pid, quantity) => {
 
