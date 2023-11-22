@@ -130,4 +130,3 @@ export const POSTPurchase = async (req, res) => {
         res.status(502).send({error: true, msg: e.message});
     }
 };
-

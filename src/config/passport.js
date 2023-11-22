@@ -44,7 +44,7 @@ const InitLocalStrategy = () => {
     }));
 
     passport.use("jwt", new JWTStrategy({
-        jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
+        jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderAsBearerToken(), //jwt.ExtractJwt.fromExtractors([cookieExtractor])
         secretOrKey: SECRET, 
     }, async (payload, done) => {
         console.log(payload);

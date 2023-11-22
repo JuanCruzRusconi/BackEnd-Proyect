@@ -6,16 +6,16 @@ const cartsSchema = new mongoose.Schema({
         type: [
             {
                 product: {
-                    type: mongoose.Types.ObjectId,
+                    type: mongoose.Schema.Types.ObjectId,
                     ref: "products" 
                 }, 
                 quantity: {
                     type: Number,
                     default: 1,
                 },
-        }
-    ],
-    default: []
+            }
+        ],
+        default: []
     }
 });
 
@@ -26,6 +26,7 @@ cartsSchema.pre("find", function () {
 const cartsModel = mongoose.model("carts", cartsSchema);
 
 export default cartsModel;
+
 /*
 {
     "id":1,

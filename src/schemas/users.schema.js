@@ -25,16 +25,24 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    cart: {
-        type: [{
-            carts: {
-                type: mongoose.Types.ObjectId,
-                ref: "carts",
-            }
-        }],
-        require: true,
-        default: []
+    /*cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts"
     },
+    /*
+    cart: {
+        type: [
+            {
+                carts: {
+                    //_id
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "carts",
+                }
+            }
+        ],
+        required: true,
+        default: []
+    },*/
     avatar: {
         type: String,
     },
@@ -51,6 +59,11 @@ const usersSchema = new mongoose.Schema({
 usersSchema.pre("find", function () {
     this.populate("cart.carts");
 });
+/*
+usersSchema.pre("save", function (next) {
+    this.cart = CartServices;
+    next()
+});*/
 
 const userModel = mongoose.model("users", usersSchema);
 

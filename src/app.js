@@ -135,6 +135,8 @@ socketServer.on("connection", (socket) => {
     */
 });
 
-httpServer.listen(8080, () => {
-    console.log("escuchando..")
+const PORT = 8080;
+
+httpServer.listen(PORT, () => {
+    console.log(`Escuchando en el puerto: ${PORT}`)
 });

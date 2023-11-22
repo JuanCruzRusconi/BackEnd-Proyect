@@ -1,11 +1,36 @@
 import { generateToken } from "../utils/jwt.js";
 import * as UsersServices from "../services/users.services.js";
 import * as CartsServices from "../services/carts.services.js";
-import e from "express";
+import CartsDAO from "../dao/mongoDB/carts.mongo.dao.js";
+
+const CartsDao = new CartsDAO()
 
 export const GETUsers = async (req, res) => {
 
-    await UsersServices.GetAllUsers();
+    const users = await UsersServices.GetAllUsers();
+    res.send(users);
+};
+
+export const GETUserById = async (req, res) => {
+
+    try {
+        const { pid } = req.params;
+        const user = await UsersServices.GetUserById(pid);
+        res.send(user);
+    } catch (e) {
+
+    }
+};
+
+export const GETUserByUsername = async (req, res) => {
+
+    try {
+        const { uid } = req.params;
+        const user = await UsersServices.GetUserByUsername(uid);
+        res.send(user);
+    } catch (e) {
+
+    }
 };
 
 export const POSTLogin = async (req, res) => {
@@ -21,7 +46,7 @@ export const POSTLogin = async (req, res) => {
         maxAge: (24*60*60)*1000,
         httpOnly: true
     });
-    res.send({ error: false, accessToken: token });
+    res.send({ error: false, accessToken: token, user: user });
 };
 
 export const GETSessionCurrent = async (req, res) => {
@@ -34,24 +59,19 @@ export const GETSessionCurrent = async (req, res) => {
     }
 };
 
-export const GETLogout = async (req,res) => {
-    
-    try {
-        req.session.destroy((error) => {
-            res.send("Sesion culmianda")
-        });
-    } catch (e) {
-        throw e;
-    }
-};
+export const POSTLogout = (req, res) => {
+    // Elimina la cookie llamada "accessToken" estableciendo su tiempo de expiración en el pasado
+    res.cookie("accessToken", "", { expires: new Date(0), httpOnly: true });
+    res.send({ error: false, message: 'Cierre de sesión exitoso' });
+  };
 
-export const POSTCart = async (req, res) => {
+export const POSTProdCart = async (req, res) => {
 
     try {
     const { prod } = req.params;
     const cart = req.user.cart;
-    await CartsServices.PostProductInCartById(cart, prod);
-    res.send({error: false, user: req.user.cart});    //await UsersServices.CreateUser 
+    await CartsServices.PostCart();
+    res.send({error: false, cart});    //await UsersServices.CreateUser 
     //await CartsServices.PostCart(prod)
     } catch (e) {
 

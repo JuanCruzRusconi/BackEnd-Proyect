@@ -34,7 +34,7 @@ export default class UsersDAO {
     getUserByUsername = async (username) => {
 
         try {
-            const user = await userModel.findOne({username});
+            const user = await userModel.findOne({ username });
             return user;
         } catch (e) {
             console.log(e);

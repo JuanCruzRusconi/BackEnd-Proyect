@@ -63,7 +63,9 @@ export default class CartsDAO {
                 _id: cidCart,
                 "products._id": productById
             };
-            const cart = await cartsModel.findById(cidCart).lean();
+            console.log(cidCart)
+            const cart = await this.getCartById(cidCart);
+            console.log(cart);
             if (cart.products.find((p) => p._id == productById._id.toString())) {
                 const update = {
                     $inc: {

@@ -1,5 +1,7 @@
 import UsersDAO from "../dao/mongoDB/users.mongo.dao.js";
 import bcrypt from "bcrypt";
+import UsersDTOReturn from "../dto/users.dto.js";
+import * as CartsServices from "../services/carts.services.js";
 
 const UsersDao = new UsersDAO();
 
@@ -7,7 +9,8 @@ export const GetAllUsers = async () => {
 
     try {
         const users = await UsersDao.getUsers();
-        return users;
+        const usersDto = users.map((user) => new UsersDTOReturn(user));
+        return usersDto;
       } catch (e) {
         return [];
       }
@@ -17,7 +20,8 @@ export const GetUserById = async (id) => {
 
     try {
         const user = await UsersDao.getUserById(id);
-        return user;
+        const userDto = new UsersDTOReturn(user);
+        return userDto;
     } catch (e) {
         console.log(e);
     }
@@ -27,7 +31,8 @@ export const GetUserByUsername = async (username) => {
 
     try {
         const user = await UsersDao.getUserByUsername(username);
-        return user;
+        const userDto = new UsersDTOReturn(user);
+        return userDto;
     } catch (e) {
         console.log(e);
     }
@@ -41,8 +46,6 @@ export const UpdateUser = async () => {
     await user.save();
     const userObject = user.toObject();
     const userJSON = user.toJSON();
-    const products = await model.find({});
-    res.render("index", { prod: products });
     } catch (e) {
         console.log(e);
     }
