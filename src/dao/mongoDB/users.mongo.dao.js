@@ -24,7 +24,7 @@ export default class UsersDAO {
     getUserById = async (id) => {
 
         try {
-            const user = await userModel.findById(id);
+            const user = await userModel.findById(id).populate("cart");
             return user;
         } catch (e) {
             console.log(e);
@@ -41,11 +41,22 @@ export default class UsersDAO {
         }
     };
 
-    updateUser = async () => {
+    updateUserProfile = async () => {
 
         try {
         const user = await userModel.findOne({ username });
         return user;
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    updateUserCart = async (user, cart) => {
+
+        try {
+        const userUpdated = await userModel.findOneAndUpdate({ _id: user._id }, { $set: { cart: cart._id } });
+        console.log(userUpdated)
+        return userUpdated;
         } catch (e) {
             console.log(e);
         }
@@ -99,5 +110,16 @@ export default class UsersDAO {
             console.log(e);
         }
     };   
+
+    updateUserTicket = async (user, ticket) => {
+
+        try {
+        const userUpdated = await userModel.findOneAndUpdate({ _id: user._id }, { $push: { tickets: ticket._id } });
+        console.log(userUpdated)
+        return userUpdated;
+        } catch (e) {
+            throw e;
+        }
+    };
 }
 

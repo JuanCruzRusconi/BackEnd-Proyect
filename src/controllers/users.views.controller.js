@@ -59,6 +59,7 @@ export const GETProfile = async (req,res) => {
     try {
         const { name, surname, username } = req.user;
         console.log("Inicio de sesion:", req.user)
+        //if(!req.user) return res.redirect("/user/login");
         res.render("profile", req.user); 
     } catch (e) {
         console.log(e);

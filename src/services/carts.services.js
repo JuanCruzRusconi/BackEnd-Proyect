@@ -38,6 +38,16 @@ export const PostCart = async (cart) => {
     }
 };
 
+export const PostUserCart = async (user) => {
+
+    try {
+        const addCart = await CartsDao.createUserCart(user);
+        return addCart;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 export const PostProductInCartById = async (cidCart, productById) => {
 
     try {
@@ -93,7 +103,7 @@ export const PutProductQuantityByIdInCartById = async (cid, pid, quantity) => {
     try {
         return await CartsDao.updateProductQuantity(cid, pid, quantity);
     } catch (e) {
-        console.log(e);
+        throw e;
     }
 };
 
@@ -108,10 +118,11 @@ export const GetPurchase = async (cid) => {
     }
 };
 
-export const PostPurchase = async (cid) => {
+export const PostPurchase = async (cid, user) => {
 
     try {
         const cart = await CartsDao.getCartById(cid);
+        console.log(cart.products)
         const map = cart.products.map(async (e) => {
             let prodId = e._id; 
             let prodQty = e.quantity; 
@@ -120,7 +131,7 @@ export const PostPurchase = async (cid) => {
             await ProductsServices.UpdateProductStockAfterPurchase(prodId, prodQty);
             // ------- Elimina del cart los productos que se pudieron comprar ------- //
             await DeleteAllProductsByIdInCartById(cid, prodId);
-            await TicketsServices.PostTicket();
+            if(user) await TicketsServices.PostTicket(user);
             return await GetCartById(cid);
         });
         return await Promise.all(map);

@@ -43,6 +43,16 @@ export default class CartsDAO {
             console.log(e);
         }
     };
+
+    createUserCart = async (user) => {
+
+        try {
+            const addCart = await cartsModel.create({ user: user._id, products: [] });
+            return addCart;
+        } catch (e) {
+            console.log(e);
+        }
+    };
     /*
     addProductInCartById = async (cidCart, productById) => {
 
@@ -64,9 +74,9 @@ export default class CartsDAO {
                 "products._id": productById
             };
             console.log(cidCart)
-            const cart = await this.getCartById(cidCart);
+            const cart = await cartsModel.findById(cidCart);
             console.log(cart);
-            if (cart.products.find((p) => p._id == productById._id.toString())) {
+            if (cart.products.find((p) => p._id == productById)){//.toString())) {
                 const update = {
                     $inc: {
                         "products.$.quantity": 1

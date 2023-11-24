@@ -14,10 +14,14 @@ userApiRouter.get("/:uid", UsersApiController.GETUserByUsername);
 
 userApiRouter.post("/login", UsersApiController.POSTLogin);
 
+userApiRouter.post("/register", UsersApiController.POSTRegister);
+
 userApiRouter.get("/session/current", passportMW("jwt"), UsersApiController.GETSessionCurrent);
 
 userApiRouter.post("/session/current/logout", passportMW("jwt"), UsersApiController.POSTLogout);
 
-userApiRouter.post("/cart/:pid", passportMW("jwt"), UsersApiController.POSTProdCart);
+userApiRouter.post("/cart/:pid", passportMW("jwt"), UsersApiController.POSTProductInUserCartById);
+
+userApiRouter.post("/cart", passportMW("jwt"), UsersApiController.POSTPurchaseUserCart);
 
 export default userApiRouter;

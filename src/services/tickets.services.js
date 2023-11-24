@@ -1,4 +1,5 @@
 import TicketsDAO from "../dao/mongoDB/tickets.mongo.dao.js";
+import * as UsersServices from "../services/users.services.js";
 import bcrypt from "bcrypt";
 
 const TicketsDao = new TicketsDAO();
@@ -13,22 +14,30 @@ export const GetTickets = async () => {
     }
 };
 
-export const GetTicketById = async () => {
+export const GetTicketById = async (id) => {
 
     try {
-        const ticket = await TicketsDao.getTicketById();
+        const ticket = await TicketsDao.getTicketById(id);
         return ticket;
     } catch (e) {
-        console.log(e);
+        throw e;
     }
 };
 
-export const PostTicket = async (cid) => {
+export const PostTicket = async (user) => {
 
     try {
-        const ticket = await TicketsDao.createTicket({title: "Purchase", code: "0000", purchase_datetime: "today", amount: 1000, purchaser: "me"});
-        return ticket;
-    } catch (e) {
+        const dateTime = new Date();
+        const bd = await TicketsDao.getTickets()
+        const code = bd.length + 1;
+        const ticket = await TicketsDao.createTicket({title: "Purchase", code: code, purchase_datetime: dateTime, amount: 1000, purchaser: user});
 
+        const ticketId = await TicketsDao.getTicketById(ticket._id);
+        console.log(ticketId)
+        await UsersServices.PurchaseOrder(user, ticketId);
+        const ticketAct = await TicketsDao.updateUserTicket(ticketId, user);
+        return ticketAct;
+    } catch (e) {
+        throw e;
     }
-}
+};

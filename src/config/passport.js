@@ -49,7 +49,7 @@ const InitLocalStrategy = () => {
     }, async (payload, done) => {
         console.log(payload);
         const user = await UsersServices.GetUserById(payload.sub);
-        if(!user) return done("Credenciales invalidas");
+        if(!user) throw new Error("Credenciales invalidas");
 
         return done(null, user);
     }));

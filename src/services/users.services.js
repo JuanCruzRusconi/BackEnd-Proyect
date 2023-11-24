@@ -20,8 +20,8 @@ export const GetUserById = async (id) => {
 
     try {
         const user = await UsersDao.getUserById(id);
-        const userDto = new UsersDTOReturn(user);
-        return userDto;
+        //const userDto = new UsersDTOReturn(user);
+        return user;
     } catch (e) {
         console.log(e);
     }
@@ -41,7 +41,7 @@ export const GetUserByUsername = async (username) => {
 export const UpdateUser = async () => {
 
     try {
-    const user = await UsersDao.updateUser(username);
+    const user = await UsersDao.updateUserProfile(username);
     user.user.avatar = profile_picture;
     await user.save();
     const userObject = user.toObject();
@@ -59,6 +59,13 @@ export const CreateUser = async (user) => {
     user.salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, user.salt);
     const newUser = await UsersDao.createUser(user);
+
+    // Crear un nuevo carrito asociado al usuario
+    const userCart = await CartsServices.PostUserCart(newUser);
+
+    // Utilizar updateOne para asociar el carrito al usuario
+    await UsersDao.updateUserCart(newUser, userCart);
+
     return newUser;
     } catch (e) {
         console.log(e);
@@ -86,4 +93,14 @@ export const UserRole = async () => {
     } catch (e) {
         console.log(e);
     }
-}
+};
+
+export const PurchaseOrder = async (user, ticket) => {
+
+    try {
+        const ticketUser = await UsersDao.updateUserTicket(user, ticket);
+        return ticketUser;
+    } catch (e) {
+        throw e;
+    }
+};

@@ -33,7 +33,7 @@ export default class ProductsDAO {
     getProductById = async (productId) => {
         
         try {
-            const getProd = await productsModel.findOne(productId);
+            const getProd = await productsModel.findById({ _id: productId});
             return getProd;
         } catch (e) {
             console.log(e);

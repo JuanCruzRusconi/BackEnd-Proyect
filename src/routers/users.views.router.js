@@ -7,9 +7,9 @@ import { isLogged, protectedView, verifyAuthentication } from "../utils/mddw.js"
 
 const userViewsRouter = Router();
 
-userViewsRouter.get("/login", isLogged, UsersViewsController.GETLogin);
+userViewsRouter.get("/login", UsersViewsController.GETLogin);
 
-userViewsRouter.get("/register", isLogged, UsersViewsController.GETRegister);
+userViewsRouter.get("/register", UsersViewsController.GETRegister);
 
 // ------- Autenticacion sin estrategias ------- //
 /*
@@ -43,7 +43,12 @@ userViewsRouter.get("/logout", UsersViewsController.GETLogout);
 
 userViewsRouter.post("/login", UsersViewsController.POSTLoginJWT);
 
-userViewsRouter.post("/register", UsersViewsController.POSTRegisterJWT);
+userViewsRouter.post("/register", passport.authenticate("register", {
+    successRedirect: "/user/profile",
+    failureRedirect: "/user/register"
+}),
+async (req, res) => {}
+);
 
 userViewsRouter.get("/profile", passportMW("jwt"), UsersViewsController.GETProfile);
 

@@ -21,7 +21,7 @@ import userApiRouter from "./routers/users.api.router.js";
 import authRouter from "./routers/auth.api.router.js"
 
 import ProductsDAO from "./dao/mongoDB/products.mongo.dao.js";
-import MessagesManager from "./dao/mongoDB/MessagesManager.js";
+import MessagesDAO from "./dao/mongoDB/messages.mongo.js";
 import { sendEmail, transport } from "./config/nodemailer.js";
 
 
@@ -29,7 +29,7 @@ import { sendEmail, transport } from "./config/nodemailer.js";
 const app = express();
 
 const prodManager = new ProductsDAO();
-const msgManager = new MessagesManager();
+const msgManager = new MessagesDAO();
 
 const mongooseConect = await mongoose.connect("mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce");
 
@@ -135,7 +135,7 @@ socketServer.on("connection", (socket) => {
     */
 });
 
-const PORT = 8080;
+const PORT = 8081;
 
 httpServer.listen(PORT, () => {
     console.log(`Escuchando en el puerto: ${PORT}`)

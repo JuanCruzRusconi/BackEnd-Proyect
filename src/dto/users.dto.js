@@ -7,7 +7,7 @@ export default class UsersDTOReturn {
         this.surname = user.surname,
         this.username = user.username,
         this.email = user.email,
-        this.role = user.role
-        //this.cart = user.cart
+        this.role = user.role,
+        this.cart = user.cart
     }
 }

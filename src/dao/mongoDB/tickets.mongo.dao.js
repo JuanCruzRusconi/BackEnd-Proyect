@@ -35,10 +35,21 @@ export default class TicketsDAO {
     createTicket = async (ticket) => {
 
         try {
-            const newTicket = await ticketModel.create([ticket]);
+            const newTicket = await ticketModel.create(ticket);
             return newTicket;
         } catch (e) {
             return [];
+        }
+    };
+
+    updateUserTicket = async (ticket, user) => {
+
+        try {
+            const ticketUpdated = await ticketModel.findOneAndUpdate({ _id: ticket._id }, { $set: { user: user._id } });
+            console.log(ticketUpdated)
+            return ticketUpdated;
+        } catch (e) {
+            throw e;
         }
     };
 }

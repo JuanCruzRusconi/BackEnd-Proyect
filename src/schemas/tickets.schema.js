@@ -18,9 +18,9 @@ const ticketSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
-    purchaser: {
-        type: String,
-        require: true
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users"
     }
 });
 

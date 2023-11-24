@@ -25,16 +25,15 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    /*cart: {
+    cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "carts"
-    },
-    /*
+    },/*
     cart: {
         type: [
             {
                 carts: {
-                    //_id
+                    //_id,
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "carts",
                 }
@@ -53,11 +52,17 @@ const usersSchema = new mongoose.Schema({
         type: String,
         enum: ["admin", "user"],
         default: "user"  
-    }
+    },
+    tickets: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "tickets"
+        }
+    ]
 });
 
 usersSchema.pre("find", function () {
-    this.populate("cart.carts");
+    this.populate("cart");
 });
 /*
 usersSchema.pre("save", function (next) {

@@ -29,7 +29,7 @@ export const PostProduct = async (product) => {
 export const GetProductById = async (productId) => {
         
      try {
-         const getProd = await ProductsDao.getProductById({_id: productId});
+         const getProd = await ProductsDao.getProductById(productId);
          return getProd;
      } catch (e) {
          console.log(e);
@@ -39,8 +39,8 @@ export const GetProductById = async (productId) => {
 export const GetProductStockById = async (productId) => {
         
     try {
-        const getProd = await ProductsDao.getProductById({_id: productId});
-        return getProd.stock;
+        const prod = await ProductsDao.getProductById(productId);
+        return prod.stock;
     } catch (e) {
         console.log(e);
     }

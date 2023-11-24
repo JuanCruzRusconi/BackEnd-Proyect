@@ -19,6 +19,8 @@ export const POSTProductByIdInCartById = async (req, res) => {
     try {
         let cidCart = req.params.cid;
         let productById = req.params.pid;
+        //onst {cid} = req.params;
+        //const {pid} = req.params
         if(!await ProductsServices.GetProductById(productById)) res.send({error: true, msg: "Producto no existe"});
         else res.send(await CartsServices.PostProductInCartById(
             await CartsServices.GetCartById(cidCart),
@@ -125,7 +127,7 @@ export const POSTPurchase = async (req, res) => {
         if(!cart.products.length >= 1) throw new Error("No posee productos en el carrito");
         const buyCart = await CartsServices.PostPurchase(cid); 
         //res.send(buyCart);
-        res.send({error: false, msg: "Compra realizada, ticket enviado"})
+        res.send({error: false, msg: "Compra realizada." })
     } catch (e) {
         res.status(502).send({error: true, msg: e.message});
     }

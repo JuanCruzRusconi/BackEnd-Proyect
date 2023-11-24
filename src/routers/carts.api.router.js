@@ -9,9 +9,9 @@ const cartsRouter = Router();
 
 cartsRouter.post("/", passportMW("jwt"), CartsApiController.POSTCart);
 
-cartsRouter.post("/:cid/product/:pid", verifyAuthentication, verifyRole, CartsApiController.POSTProductByIdInCartById);
+cartsRouter.post("/:cid/product/:pid", CartsApiController.POSTProductByIdInCartById);
 
-cartsRouter.get("/", passportMW("jwt"), verifyRole("admin"), CartsApiController.GETCarts);
+cartsRouter.get("/", CartsApiController.GETCarts);
 
 cartsRouter.get("/:cid", CartsApiController.GETCartById);
 
@@ -29,6 +29,6 @@ cartsRouter.delete("/:cid/product/:pid", passportMW("jwt"), CartsApiController.D
 
 cartsRouter.get("/:cid/purchase", passportMW("jwt"), CartsApiController.GETPurchase);
 
-cartsRouter.post("/:cid/purchase", passportMW("jwt"), CartsApiController.POSTPurchase);
+cartsRouter.post("/:cid/purchase", CartsApiController.POSTPurchase);
 
 export default cartsRouter;
