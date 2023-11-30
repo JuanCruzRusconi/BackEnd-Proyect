@@ -20,8 +20,8 @@ export const GetUserById = async (id) => {
 
     try {
         const user = await UsersDao.getUserById(id);
-        //const userDto = new UsersDTOReturn(user);
-        return user;
+        const userDto = new UsersDTOReturn(user);
+        return userDto;
     } catch (e) {
         console.log(e);
     }

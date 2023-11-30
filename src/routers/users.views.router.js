@@ -50,6 +50,14 @@ userViewsRouter.post("/register", passport.authenticate("register", {
 async (req, res) => {}
 );
 
+userViewsRouter.post("/auth", passport.authenticate("github", {
+    successRedirect: "/user/profile",
+    failureRedirect: "/user/register"
+}),
+async (req, res) => {}
+);
+
+
 userViewsRouter.get("/profile", passportMW("jwt"), UsersViewsController.GETProfile);
 
 userViewsRouter.get("/profile/products", passportMW("jwt"), UsersViewsController.GETProfileProducts);

@@ -7,9 +7,9 @@ import MongoStore from "connect-mongo"
 import sessionFilesStore from "session-file-store";
 import passport from "passport";
 import InitLocalStrategy from "./config/passport.js";
+import compression from "express-compression";
 
 import { Server as HTTPServer } from "http";
-import { Server } from "socket.io";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -18,20 +18,19 @@ import productsRouter from "./routers/products.api.router.js";
 import productsViewsRouter from "./routers/products.views.router.js";
 import userViewsRouter from "./routers/users.views.router.js";
 import userApiRouter from "./routers/users.api.router.js";
-import authRouter from "./routers/auth.api.router.js"
+import authRouter from "./routers/auth.api.router.js";
+import chatViewsRouter from "./routers/chat.views.rouer.js";
 
 import ProductsDAO from "./dao/mongoDB/products.mongo.dao.js";
-import MessagesDAO from "./dao/mongoDB/messages.mongo.js";
+import ChatDAO from "./dao/mongoDB/chat.mongo.dao.js";
 import { sendEmail, transport } from "./config/nodemailer.js";
-
+import ErrorMiddleware from "./utils/error.middleware.js";
+import env from "./config/env.js";
 
 
 const app = express();
 
-const prodManager = new ProductsDAO();
-const msgManager = new MessagesDAO();
-
-const mongooseConect = await mongoose.connect("mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce");
+const mongooseConect = mongoose.connect(process.env.MONGO_URI);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -51,6 +50,7 @@ app.use(session({
     store: new MongoStore({mongoUrl: "mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce"}),
     ttl: 30,
 }));
+app.use(compression({ brotli: {enabled: true, zlib: {} }}));
 
 InitLocalStrategy();
 app.use(passport.initialize());
@@ -65,27 +65,9 @@ app.use("/user", userViewsRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userApiRouter);
 app.use("/mail", sendEmail);
+app.use("/chat", chatViewsRouter);
 
-app.get("/", (req, res) => {
-    const { nombre } = req.query;
-    res.render("index", { nombre: nombre });
-});
-app.get("/api", (req, res) => {
-    //console.log(req.cookies);
-    res.send(req.cookies);
-});
-app.get("/cookies", (req, res) => {
-    res.cookie("hola cookie", "datos de cookie",  {maxAge: 20000});
-    res.send("ver cookies");
-});
-app.get("/session", (req, res) => {
-    console.log(req.session);
-    const { name } = req.query;
-    if(!name) return res.send("nombre inexistente");
-    req.session.name = name;
-    res.send(req.session);
-
-});
+//app.use(ErrorMiddleware);
 
 //const appServer = app.listen(8081, () => {
 //    console.log("escuchando")
@@ -94,49 +76,9 @@ app.get("/session", (req, res) => {
 
 const httpServer = HTTPServer(app);
 
-const socketServer = new Server(httpServer);
-
-app.get("/join", (req, res) => {
-    res.render("join");
-});
-
-app.get("/chat", (req, res) => {
-    res.render("chat");
-});
-
-const msgs = [
-    { name: "eduardo", text: "primer mensaje" },
-    { name: "Juan", text: "segundo mensaje" }
-];
-
-socketServer.on("connection", (socket) => {
-    
-    console.log(`cliente conectado: ${socket.id}`);
-
-    socket.on("newProd", async (data) => {
-        
-        await prodManager.addProduct({data});
-        socket.emit("products", await prodManager.getProducts());
-    });
-
-    socket.emit("historial", msgManager.getMessages());
-   
-    socket.on("sendMessage", (data) => {
-        
-        msgManager.addMessage(socket.id, data);
-        console.log(data);
-        msgs.push({name: socket.id, text: data});
-        socket.broadcast.emit("getMessage", {name: socket.id, text: data});
-    });
-    /*
-    socket.on("sendMessage2", (data2) => {
-        console.log('NUEVO MENSAJE: ', data2)
-    });
-    */
-});
-
-const PORT = 8081;
+const PORT = env.PORT
+const MODE = env.MODE
 
 httpServer.listen(PORT, () => {
-    console.log(`Escuchando en el puerto: ${PORT}`)
+    console.log(`${MODE}: Server ready on port ${PORT}`)
 });

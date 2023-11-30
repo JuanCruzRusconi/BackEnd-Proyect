@@ -20,8 +20,11 @@ userApiRouter.get("/session/current", passportMW("jwt"), UsersApiController.GETS
 
 userApiRouter.post("/session/current/logout", passportMW("jwt"), UsersApiController.POSTLogout);
 
+userApiRouter.post("/my-cart", passportMW("jwt"), UsersApiController.GETUserCart);
+
 userApiRouter.post("/cart/:pid", passportMW("jwt"), UsersApiController.POSTProductInUserCartById);
 
-userApiRouter.post("/cart", passportMW("jwt"), UsersApiController.POSTPurchaseUserCart);
+userApiRouter.post("/purchase-cart", passportMW("jwt"), UsersApiController.POSTPurchaseUserCart);
+
 
 export default userApiRouter;

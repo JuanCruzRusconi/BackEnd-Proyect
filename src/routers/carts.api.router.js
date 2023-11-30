@@ -7,28 +7,24 @@ import { verifyAuthentication, verifyRole } from "../utils/mddw.js";
 
 const cartsRouter = Router();
 
-cartsRouter.post("/", passportMW("jwt"), CartsApiController.POSTCart);
+cartsRouter.get("/", passportMW("jwt"), CartsApiController.GETCarts);
 
-cartsRouter.post("/:cid/product/:pid", CartsApiController.POSTProductByIdInCartById);
+cartsRouter.get("/:cid", passportMW("jwt"), CartsApiController.GETCartById);
 
-cartsRouter.get("/", CartsApiController.GETCarts);
+cartsRouter.post("/", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTCart);
 
-cartsRouter.get("/:cid", CartsApiController.GETCartById);
+cartsRouter.post("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTProductByIdInCartById);
 
-//cartsRouter.get("/:cid/product/:pid", );
+cartsRouter.put("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.PUTProductQuantityByIdInCartById);
 
-//cartsRouter.put("/:cid", );
+cartsRouter.delete("/:cid", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETECart);
 
-cartsRouter.put("/:cid/product/:pid", verifyAuthentication, verifyRole, CartsApiController.PUTProductQuantityByIdInCartById);
+cartsRouter.delete("/:cid/products", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETEProductsInCartById);
 
-cartsRouter.delete("/:cid", verifyAuthentication, verifyRole, CartsApiController.DELETECart);
+cartsRouter.delete("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETEProductByIdInCartById);
 
-cartsRouter.delete("/:cid/products", passportMW("jwt"), CartsApiController.DELETEProductsInCartById);
+cartsRouter.get("/:cid/purchase", passportMW("jwt"), verifyRole("admin"), CartsApiController.GETPurchase);
 
-cartsRouter.delete("/:cid/product/:pid", passportMW("jwt"), CartsApiController.DELETEProductByIdInCartById);
-
-cartsRouter.get("/:cid/purchase", passportMW("jwt"), CartsApiController.GETPurchase);
-
-cartsRouter.post("/:cid/purchase", CartsApiController.POSTPurchase);
+cartsRouter.post("/:cid/purchase", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTPurchase);
 
 export default cartsRouter;

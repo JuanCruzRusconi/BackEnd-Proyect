@@ -1,7 +1,7 @@
 import messagesModel from "../../schemas/messages.schema.js";
 import mongoose from "mongoose";
 
-export default class MessagesDAO {
+export default class ChatDAO {
 
     constructor () {}
 

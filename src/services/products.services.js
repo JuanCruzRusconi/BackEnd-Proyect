@@ -1,15 +1,17 @@
 import ProductsDAO from "../dao/mongoDB/products.mongo.dao.js";
+import ProductsDTOReturn from "../dto/products.dto.js";
 import productsModel from "../schemas/products.schema.js";
 
 const ProductsDao = new ProductsDAO();
 
 export const GetProducts = async () => {
-     try {
-         const getProds = await ProductsDao.getProducts();
-         return getProds;
-     } catch (e) {
+    try {
+        const products = await ProductsDao.getProducts();
+        const prodsDto = products.map((prod) => new ProductsDTOReturn(prod));
+        return prodsDto;
+    } catch (e) {
         return [];
-     }
+    }
  };
 
 export const PostProduct = async (product) => {
@@ -17,20 +19,22 @@ export const PostProduct = async (product) => {
     const {title, description, price, thumbnail, code, stock} = product
 
     try {
-        const codeValid = await ProductsDao.getProductById({code: code});
-        if (codeValid) return "Code in use";
+        //if(!product.title || !product.description || !product.price || !product.code || !product.stock) throw new Error ("Faltan parametros");
+        const products = await GetProducts();
+        if(products.find((prod) => prod.code === code)) throw new Error("Code in use!");
         const addProd = await ProductsDao.createProduct(product);
         return addProd;
     } catch (e) {
-        console.log(e);
+        throw e
     }
 };
 
 export const GetProductById = async (productId) => {
         
      try {
-         const getProd = await ProductsDao.getProductById(productId);
-         return getProd;
+         const product = await ProductsDao.getProductById(productId);
+         const productDto = new ProductsDTOReturn(product);
+         return productDto;
      } catch (e) {
          console.log(e);
      }

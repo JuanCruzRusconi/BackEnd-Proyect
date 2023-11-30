@@ -1,7 +1,10 @@
 import config from "../config/index.js"
+import args from "../config/args.js";
+import env from "../config/env.js";
 
 let usersFactoryDao;
-switch(config.persistence) {
+
+switch(args.mode) {
 
     case "MONGO":
         const { default: usersManagerMongo} = await import("./mongoDB/UserManager.js");

@@ -42,7 +42,8 @@ export const POSTLogin = async (req, res) => {
             maxAge: (24*60*60)*1000,
             httpOnly: true
         });
-        res.send({ error: false, accessToken: token, user: user });
+        const profile = await UsersServices.GetUserById(user._id);
+        res.send({ error: false, accessToken: token, user: profile });
     } catch (e) {
         res.status(403).send({error: true, msg: e.message});
     }
@@ -84,6 +85,16 @@ export const POSTLogout = (req, res) => {
     res.cookie("accessToken", "", { expires: new Date(0), httpOnly: true });
     res.send({ error: false, message: 'Cierre de sesión exitoso' });
   };
+
+export const GETUserCart = async (req, res) => {
+
+    try {
+        const cart = req.user.cart;
+        res.send(cart);
+    } catch (e) {
+        res.status(502).send({error: true, msg: e.message});
+    }
+};
 
 export const POSTProductInUserCartById = async (req, res) => {
 

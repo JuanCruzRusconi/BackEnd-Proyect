@@ -40,6 +40,16 @@ export default class ProductsDAO {
         }
     };
 
+    getProductByCode = async (code) => {
+        
+        try {
+            const getProd = await productsModel.find({ code: code });
+            return getProd;
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     updateProduct = async (id, product) => {
         
         try {  
