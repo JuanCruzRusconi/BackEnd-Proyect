@@ -48,6 +48,7 @@ app.set("view engine", "handlebars");
 
 const specs = swaggerJSDoc(config);
 
+app.use(cors);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -89,7 +90,7 @@ app.use(notFoundHandler);
 
 const httpServer = HTTPServer(app);
 
-const PORT = 9000
+const PORT = process.env.PORT || 9000
 const ENV = env.ENV
 
 httpServer.listen(PORT, () => {

@@ -2,6 +2,7 @@ import TicketsServices from "../services/tickets.services.js";
 import UsersServices from "../services/users.services.js";
 import CustomError from "../utils/customError.js";
 import ErrorsDictionary from "../utils/errorsDictionary.js";
+import Stripe from "stripe";
 
 const UserService = new UsersServices();
 
@@ -94,9 +95,18 @@ export default class TicketsApiControllers {
     POSTPayment = async (req, res, next) => {
 
         try {
-
+            let id = req.query.id;
+            //return CustomError.createError(ErrorsDictionary);
+            const data = {
+                amount: this.service.GetTicketById(),
+                currency: "usd"
+            };
+            const stripe = new Stripe();
+            const intent = await stripe.paymentIntents.create(data);
+            res.status(200).send({ status: "success", payload: intent });
         } catch (error) {
-
+            error.from = "TicketsApiControllers";
+            next(error);
         }
     }
 

@@ -101,7 +101,7 @@ describe(
                 let uid = null;
                 let pid = null;
                 let cookie = null;
-                it("Testeando que se registra un usuario", async () => {
+                it("Testeando que se registra un usuario correctamente", async () => {
                   let data = {
                     name: "Juan Cruz",
                     surname: "Rusconi",
@@ -114,7 +114,7 @@ describe(
                   uid = _body.payload;
                   expect(statusCode).to.be.equals(201);
                 });
-                it("Testeando que el usuario inicia sesión", async () => {
+                it("Testeando que el usuario inicia sesión correctamente", async () => {
                   let data = { username: "juancruz1234", password: "1234" };
                   let response = await requester.post("/auth/login").send(data);
                   let { headers } = response;
@@ -124,7 +124,7 @@ describe(
                     value: headers["set-cookie"][0].split("=")[1],
                   };
                   //console.log(cookie);
-                  expect(cookie.name).to.be.equals("token");
+                  expect(cookie.name).to.be.equals("accessToken");
                   expect(cookie.value).to.be.ok;
                 });
         })
