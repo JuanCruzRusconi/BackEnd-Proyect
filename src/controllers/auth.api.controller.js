@@ -1,11 +1,8 @@
 import UsersServices from "../services/users.services.js";
 import { generateToken } from "../utils/jwt.js";
-import CartsServices from "../services/carts.services.js";
 import CustomError from "../utils/customError.js";
 import ErrorsDictionary from "../utils/errorsDictionary.js";
 
-
-const CartService = new CartsServices();
 
 export default class UsersApiControllers {
 
@@ -25,7 +22,7 @@ export default class UsersApiControllers {
                 httpOnly: true
             });
             const profile = await this.service.GetUserById(user._id, next);
-            res.send({ error: false, accessToken: token, message: "Looged in", info: profile });
+            res.status(200).send({ error: false, accessToken: token, message: "Looged in", info: profile });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -62,7 +59,7 @@ export default class UsersApiControllers {
             console.log(role);
             const changeRole = await this.service.UpdateUserRole(user, role, next);
             if(!changeRole) return CustomError.createError(ErrorsDictionary.AUTH_ERROR)
-            res.send(await this.service.GetUserById(user, next));
+            res.status(200).send(await this.service.GetUserById(user, next));
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -75,7 +72,7 @@ export default class UsersApiControllers {
             // Elimina la cookie llamada "accessToken" estableciendo su tiempo de expiración en el pasado
             const cookie = res.cookie("accessToken", "", { expires: new Date(0), httpOnly: true });
             if(!cookie) return CustomError.createError(ErrorsDictionary.COOKIE_NOT_FOUND);
-            res.send({ error: false, message: 'Signet out.' });
+            res.status(200).send({ error: false, message: 'Signet out.' });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -87,7 +84,7 @@ export default class UsersApiControllers {
         try {
             const users = await this.service.GetUsers(next);
             if(!users) return CustomError.createError(ErrorsDictionary.NOT_FOUND);
-            res.send(users);
+            res.status(200).send({ status: "success", response: users });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -100,8 +97,7 @@ export default class UsersApiControllers {
             const { pid } = req.params;
             const user = await this.service.GetUserById(pid, next);
             if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            res.send(user);
-            console.log(user);
+            res.status(200).send({ status: "succes", response: user });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -114,7 +110,7 @@ export default class UsersApiControllers {
             const { uid } = req.params;
             const user = await this.service.GetUserByUsername(uid, next);
             if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            res.send(user);
+            res.status(200).send({ status: "succes", response: user });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -126,7 +122,7 @@ export default class UsersApiControllers {
         try {
             console.log(req.user);
             if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
-            res.send({ error: false, user: req.user });
+            res.status(200).send({ error: false, user: req.user });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -138,7 +134,7 @@ export default class UsersApiControllers {
         try {
             const cart = req.user.cart;
             if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
-            res.send(cart);
+            res.status(200).send({ error: false, user: cart });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -151,7 +147,7 @@ export default class UsersApiControllers {
             const user = req.user._id;
             if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
             const deleteUser = await this.service.DeleteUser(user, next);
-            res.send({error: false, msg: "Usuario eliminado."})
+            res.status(200).send({error: false, msg: "Usuario eliminado."})
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);

@@ -37,7 +37,7 @@ export default class ProductsApiControllers {
                 page: page, 
                 sort: {price: +sort}
             });
-            res.status(200).send(prods);
+            res.status(200).send({ status: "success", response: prods });
         } catch (error) {
             error.from = "ProductsApiControllers";
             return next(error);
@@ -50,7 +50,7 @@ export default class ProductsApiControllers {
             const { pid } = req.params;
             const product = await this.service.GetProductById(pid, next);
             if(!product) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            res.status(200).send(product);
+            res.status(200).send({ status: "success", response: product });
         } catch (error) {
             error.from = "ProductsApiControllers";
             return next(error);
@@ -65,7 +65,7 @@ export default class ProductsApiControllers {
             if(!product.body) return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
             await this.service.UpdateProduct(pid, product, next);
             const updateProd = await this.service.GetProductById(pid, next);
-            res.send(updateProd);
+            res.status(200).send({ status: "success", response: updateProd });
         } catch (error) {
             error.from = "ProductsApiControllers";
             return next(error);
@@ -78,7 +78,7 @@ export default class ProductsApiControllers {
             const { pid } = req.params;
             if(!await this.service.GetProductById(pid, next)) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
             const product = await this.service.DeleteProduct(pid, next);
-            res.status(200).send({error: false, delete: true});
+            res.status(200).send({ status: "success", delete: true });
         } catch (error) {
             error.from = "ProductsApiControllers";
             return next(error);

@@ -34,11 +34,13 @@ export default class CartsApiControllers {
             if(!await this.service.GetCartById(cid, next) || !await ProductService.GetProductById(pid, next)) {
                return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
             }
-            else res.status(200).send(await this.service.UpdateProductInCartById(
-                await this.service.GetCartById(cid, next),
-                await ProductsService.GetProductById(pid, next),
-                next
-            ));
+            else {
+                const cart = await this.service.UpdateProductInCartById(
+                    await this.service.GetCartById(cid, next),
+                    await ProductsService.GetProductById(pid, next),
+                    next);
+                    res.status(200).send({ status: "success", response: cart });
+                }
         } catch (error) {
             error.from = "CartsApiControllers";
             return next(error);
@@ -53,7 +55,7 @@ export default class CartsApiControllers {
             if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
             if(!cart.products.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
             const buyCart = await this.service.CreatePurchase(cid, next); 
-            res.send({error: false, msg: "Compra realizada." })
+            res.status(200).send({error: false, msg: "Compra realizada." })
         } catch (error) {
             error.from = "CartsApiControllers";
             return next(error);
@@ -90,7 +92,7 @@ export default class CartsApiControllers {
             const cartUserId = cartUser._id;
             const buyCart = await this.service.CreatePurchase(cartUserId, user, next);
             if(!buyCart) return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
-            res.send({error: false, msg: "Compra realizada, ticket enviado al usuario."})
+            res.status(200).send({error: false, msg: "Compra realizada, ticket enviado al usuario."})
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -142,7 +144,7 @@ export default class CartsApiControllers {
             const { cid } = req.params;
             const cart = await this.service.GetPurchase(cid, next);
             if(!cart) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            res.send(cart);
+            res.status(200).send({ status: "success", response: cart });
         } catch (error) {
             error.from = "CartsApiControllers";
             return next(error);
@@ -163,7 +165,7 @@ export default class CartsApiControllers {
                     quantity,
                     next
                 );
-                res.status(200).send({ error: false, updated: true });
+                res.status(200).send({ status: "success", updated: true });
             }
         } catch (error) {
             error.from = "CartsApiControllers";
@@ -190,7 +192,7 @@ export default class CartsApiControllers {
             const { cid } = req.params;
             const cart = await this.service.DeleteAllProductsInCartById(cid, next);
             if(!cart.products >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
-            res.send(cart);
+            res.status(200).send({ status: "success", response: cart });
         } catch (error) {
             error.from = "CartsApiControllers";
             return next(error);
@@ -207,7 +209,7 @@ export default class CartsApiControllers {
                 next
             );
             if(!cart.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
-            res.send(cart);
+            res.status(200).send({ status: "success", response: cart });
         } catch (error) {
             error.from = "CartsApiControllers";
             return next(error);
