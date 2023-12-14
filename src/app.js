@@ -10,6 +10,7 @@ import InitLocalStrategy from "./config/passport.js";
 import compression from "express-compression";
 import swaggerJSDoc from "swagger-jsdoc";
 import { serve, setup } from "swagger-ui-express";
+import cors from "cors";
 
 import { Server as HTTPServer } from "http";
 import { dirname } from "path";

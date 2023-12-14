@@ -1,5 +1,5 @@
 import { Router } from "express";
-import UsersApiControllers from "../controllers/users.api.controller.js";
+import UsersApiControllers from "../controllers/auth.api.controller.js";
 import { JWTCookieMW, JWTMW, generateToken } from "../utils/jwt.js";
 import passportMW from "../utils/jwt.middleware.js";
 import passport from "passport";
@@ -31,11 +31,7 @@ userApiRouter.get("/session/current", passportMW("jwt"), UsersApiController.GETS
 
 userApiRouter.post("/signout", passportMW("jwt"), UsersApiController.POSTSignout);
 
-userApiRouter.post("/my-cart", passportMW("jwt"), UsersApiController.GETUserCart);
-
-userApiRouter.post("/cart/:pid", passportMW("jwt"), UsersApiController.POSTProductInUserCartById);
-
-userApiRouter.post("/purchase-cart", passportMW("jwt"), UsersApiController.POSTPurchaseUserCart);
+userApiRouter.post("/mycart", passportMW("jwt"), UsersApiController.GETUserCart);
 
 userApiRouter.delete("/", passportMW("jwt"), UsersApiController.DELETEUser);
 

@@ -110,10 +110,10 @@ export default class UsersRepository {
         }
     };
 
-    deleteTicket = async (id, ticket, next) => {
+    deleteTicketUser = async (id, ticket, next) => {
         
         try {
-            const deleteTicket = await this.model.deleteTicket(id, ticket, next);
+            const deleteTicket = await this.model.deleteTicketUser(id, ticket, next);
             return deleteTicket;
         } catch (error) {
             error.from = "UsersRepository";

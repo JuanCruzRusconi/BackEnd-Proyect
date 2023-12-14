@@ -3,6 +3,7 @@ import ProductsServices from "../services/products.services.js";
 import TicketsServices from "../services/tickets.services.js";
 
 const ProductService = new ProductsServices();
+const TicketService = new TicketsServices();
 
 export default class CartsServices {
 
@@ -46,7 +47,7 @@ export default class CartsServices {
                 await ProductService.UpdateProductStockAfterPurchase(prodId, prodQty, next);
                 // ------- Elimina del cart los productos que se pudieron comprar ------- //
                 await this.DeleteAllProductsByIdInCartById(cid, prodId, next);
-                if(user) await TicketsServices.PostTicket(user, next);
+                if(user) await TicketService.CreateTicket(user, next);
                 return await this.GetCartById(cid, next);
             });
             return await Promise.all(purchase);

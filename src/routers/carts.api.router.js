@@ -15,7 +15,7 @@ cartsRouter.get("/:cid", CartsApiController.GETCartById);
 
 cartsRouter.post("/", CartsApiController.POSTCart);
 
-cartsRouter.post("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTProductByIdInCartById);
+cartsRouter.post("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTProductInCartById);
 
 cartsRouter.put("/:cid/product/:pid",  CartsApiController.PUTProductQuantityByIdInCartById);
 
@@ -28,5 +28,11 @@ cartsRouter.delete("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"),
 cartsRouter.get("/:cid/purchase", passportMW("jwt"), verifyRole("admin"), CartsApiController.GETPurchase);
 
 cartsRouter.post("/:cid/purchase", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTPurchase);
+
+cartsRouter.post("/mycart", passportMW("jwt"), CartsApiController.GETUserCart);
+
+cartsRouter.post("/mycart/product/:pid", passportMW("jwt"), CartsApiController.POSTProductInUserCartById);
+
+cartsRouter.post("/purchase-cart", passportMW("jwt"), CartsApiController.POSTPurchaseUserCart);
 
 export default cartsRouter;

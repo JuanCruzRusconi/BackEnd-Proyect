@@ -127,45 +127,6 @@ describe(
                   expect(cookie.name).to.be.equals("token");
                   expect(cookie.value).to.be.ok;
                 });
-                it("Testeando que el usuario puede cargar una mascota al sistema", async () => {
-                  let data = { name: "Max", specie: "Gato" };
-                  let response = await requester
-                    .post("/pets")
-                    .send(data)
-                    .set("cookie", [cookie.name + "=" + cookie.value]);
-                  let { _body, statusCode } = response;
-                  pid = _body.payload._id;
-                  expect(statusCode).to.be.equals(201);
-                });
-                it("Testeando que la lectura devuelve un array de mascotas", async () => {
-                  const response = await requester.get("/pets");
-                  const { _body } = response;
-                  expect(Array.isArray(_body.payload)).to.be.equals(true);
-                });
-                it("Testeando que la lectura devuelve un array de objetos", async () => {
-                  const response = await requester.get("/pets");
-                  const { _body } = response;
-                  expect(_body.payload[0]).to.be.a("object");
-                });
-                it("Testeando que la mascota se actualiza y devuelve status=200", async () => {
-                  const data = { name: "Igna" };
-                  const response = await requester
-                    .put("/pets/" + pid)
-                    .send(data)
-                    .set("cookie", [cookie.name + "=" + cookie.value]);
-                  const { statusCode } = response;
-                  expect(statusCode).to.be.equals(200);
-                });
-                it("Testeando que se borran los datos de prueba", async () => {
-                  let response = await requester
-                    .delete("/pets/" + pid)
-                    .set("cookie", [cookie.name + "=" + cookie.value]);
-                  let result = await requester.delete("/users/" + uid);
-                  let { statusCode } = response;
-                  let { _body } = result;
-                  expect(_body.message).to.be.equals("User deleted");
-                  expect(statusCode).to.be.equals(200);
-                });
         })
         // describe("Testeando Payments", () => {})
     }

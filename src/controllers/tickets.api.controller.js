@@ -17,7 +17,7 @@ export default class TicketsApiControllers {
             const body = req.body;
             if(!body.body) return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
             const ticket = await this.service.CreateTicket(body, next);
-            res.send({error: false, msg: "Producto de prueba creado correctamente."});
+            res.status(201).send({error: false, msg: "Producto de prueba creado correctamente."});
         } catch (error) {
             error.from = "TicketsApiControllers";
             return next(error);
@@ -89,6 +89,15 @@ export default class TicketsApiControllers {
             return next(error);
         }
     };
+
+    POSTPayment = async (req, res, next) => {
+
+        try {
+
+        } catch (error) {
+
+        }
+    }
 
 }
 

@@ -113,18 +113,6 @@ export default class UsersViewsControllers {
         }
     };
 
-    GETLogout = async (req, res, next) => {
-        
-        try {
-            req.session.destroy((error) => {
-                res.redirect("/user/login");
-            });
-        } catch (error) {
-            error.from = "UsersViewsControllers";
-            return next(error);
-        }
-    };
-
     GETLogoutJWT = async (req, res, next) => {
         
         try {

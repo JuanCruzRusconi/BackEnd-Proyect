@@ -47,8 +47,8 @@ export default class CartsRepository {
 
         try {
             const response = await this.model.getCartById(cid, next);
-            const responseDto = new CartsDTOReturn(response);
-            return responseDto;
+            //const responseDto = new CartsDTOReturn(response);
+            return response;
         } catch (error) {
             error.from = "CartsRepository";
             return next(error);

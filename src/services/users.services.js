@@ -28,6 +28,17 @@ export default class UsersServices {
         }
     };
 
+    UpdateUserTicket = async (user, ticket, next) => {
+
+        try {
+            const ticketUser = await this.repository.updateUserTicket(user, ticket, next);
+            return ticketUser;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
+
     GetUsers = async (next) => {
 
         try {
@@ -117,17 +128,6 @@ export default class UsersServices {
         }
     };
 
-    PurchaseOrder = async (user, ticket, next) => {
-
-        try {
-            const ticketUser = await this.repository.updateUserTicket(user, ticket, next);
-            return ticketUser;
-        } catch (error) {
-            error.from = "UsersServices";
-            return next(error);
-        }
-    };
-
     DeleteUser = async (id, next) => {
         
         try {
@@ -139,10 +139,10 @@ export default class UsersServices {
         }
     };
 
-    DeleteTicket = async (id, ticket, next) => {
+    DeleteTicketUser = async (id, ticket, next) => {
         
         try {
-            const deleteTicket = await this.repository.deleteTicket(id, ticket, next);
+            const deleteTicket = await this.repository.deleteTicketUser(id, ticket, next);
             return deleteTicket;
         } catch (error) {
             error.from = "UsersServices";

@@ -18,4 +18,6 @@ ticketsRouter.put("/:pid", passportMW("jwt"), TicketsApiController.PUTTicket);
 
 ticketsRouter.delete("/:pid", passportMW("jwt"), TicketsApiController.DELETETicket);
 
+ticketsRouter.post("/payment", passportMW("jwt"), TicketsApiController.POSTPayment);
+
 export default ticketsRouter;

@@ -53,41 +53,6 @@ export default class UsersApiControllers {
         }
     };
 
-    POSTProductInUserCartById = async (req, res, next) => {
-    
-        try {
-            const { pid } = req.params
-            const cart = req.user.cart._id;
-            const cartUser = await CartService.GetCartById(cart, next);
-            if(!cartUser) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            const cartUserId = cartUser._id;
-            const prod = await CartService.UpdateProductInCartById(cartUserId, pid, next);
-            if(!prod) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
-            res.send(prod);
-        } catch (error) {
-            error.from = "UsersApiControllers";
-            return next(error);
-        }
-    };
-    
-    POSTPurchaseUserCart = async (req, res, next) => {
-    
-        try {
-            const user = req.user._id;
-            const cart = req.user.cart;
-            const cartId = cart._id;
-            const cartUser = await CartService.GetCartById(cartId, next);
-            if(!cart.products.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
-            const cartUserId = cartUser._id;
-            const buyCart = await CartService.CreatePurchase(cartUserId, user, next);
-            if(!buyCart) return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
-            res.send({error: false, msg: "Compra realizada, ticket enviado al usuario."})
-        } catch (error) {
-            error.from = "UsersApiControllers";
-            return next(error);
-        }
-    };
-
     POSTChangeRole = async (req, res, next) => {
     
         try {

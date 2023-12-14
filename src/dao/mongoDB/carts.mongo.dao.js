@@ -43,7 +43,7 @@ export default class CartsMONGO  {
     getCartById = async (cid, next) => {
 
         try {
-            const getCart = await cartsModel.findOne({_id: cid});
+            const getCart = await cartsModel.findById(cid);
             return getCart;
         } catch (error) {
             error.from = "CartsMongo";

@@ -2,6 +2,7 @@ import TicketsRepository from "../repositories/tickets.repositories.js";
 import UsersServices from "./users.services.js";
 import crypto from "crypto";
 
+//const UserService = new UsersServices();
 
 export default class TicketsServices {
 
@@ -25,7 +26,7 @@ export default class TicketsServices {
                 next);
             const ticketId = await this.repository.getTicketById(ticket._id, next);
             console.log(ticketId)
-            await this.user.PurchaseOrder(user, ticketId, next);
+            await this.user.UpdateUserTicket(user, ticketId, next);
             const ticketAct = await this.repository.updateUserTicket(ticketId, user, next);
             return ticketAct;
         } catch (error) {
@@ -88,7 +89,7 @@ export default class TicketsServices {
 
         try {
             const deleteTicket = await this.repository.deleteTicket(ticket, next);
-            await this.user.DeleteTicket(user, ticket, next);
+            await this.user.DeleteTicketUser(user, ticket, next);
             return deleteTicket;
         } catch (error) {
             error.from = "TicketsServices";

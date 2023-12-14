@@ -110,7 +110,7 @@ export default class UsersMONGO {
         }
     };
 
-    deleteTicket = async (id, ticket, next) => {
+    deleteTicketUser = async (id, ticket, next) => {
         
         try {
             const deleteTicket = await userModel.updateOne({_id: id}, { $pull: { tickets: ticket }});
