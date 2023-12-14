@@ -1,10 +1,10 @@
 import { Server } from "socket.io";
 import { Server as HTTPServer } from "http";
-import ChatDAO from "../dao/mongoDB/chat.mongo.dao.js";
-import * as ProductsServices from "../services/products.services.js"
+import ChatMONGO from "../dao/mongoDB/chat.mongo.dao.js";
+import ProductsServices from "../services/products.services.js";
 
-const ChatDao = new ChatDAO();
-
+const ChatMongo = new ChatMONGO();
+const ProductService = new ProductsServices();
 const httpServer = HTTPServer();
 const socketServer = new Server(httpServer);
 
@@ -20,22 +20,22 @@ socketServer.on("connection", (socket) => {
 
     socket.on("newProd", async (data) => {
         
-        await ProductsServices.PostProduct({data});
-        socket.emit("products", await ProductsServices.GetProducts());
+        await ProductService.CreateProduct({data});
+        socket.emit("products", await ProductService.GetProducts());
     });
 
-    socket.emit("historial", ChatDao.getMessages());
+    socket.emit("historial", ChatMongo.getMessages());
    
     socket.on("sendMessage", (data) => {
         
-        ChatDao.addMessage(socket.id, data);
+        ChatMongo.createMessage(socket.id, data);
         console.log(data);
         msgs.push({name: socket.id, text: data});
         socket.broadcast.emit("getMessage", {name: socket.id, text: data});
     });
-    /*
+    
     socket.on("sendMessage2", (data2) => {
         console.log('NUEVO MENSAJE: ', data2)
     });
-    */
+    
 });

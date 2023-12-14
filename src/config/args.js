@@ -1,10 +1,8 @@
 import { Command } from "commander";
-import env from "./env.js"
 
 const args = new Command();
 
-args.option("--mode <mode>", "mode of excution", "dev")
-       .option("--port <port>", "Port to init app", 7000)
+args.option("--mode <mode>", "mode of excution", "prod")
 
 args.parse();
 

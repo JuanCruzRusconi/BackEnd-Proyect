@@ -1,0 +1,336 @@
+components:
+  schemas:
+    Ticket:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Titulo del ticket
+        code:
+          type: string
+          description: Codigo interno del ticket
+        purchase_datetime:
+          type: string
+          description: Fecha y hora de la generación del ticket
+        amount:
+          type: integer
+          format: int32
+          description: Total de la compra
+        user:
+          type: string
+          description: Object ID referencia del usuario propietario del ticket
+          $ref: '#/components/schemas/TicketUser'
+      example: 
+        title: Purchase
+        code: 4fh4795j09i
+        purchase_datetime: Fri Nov 24 2023 12:21:55 GMT-0300 (Argentina Standard Time)
+        amount: 775000
+        user:
+          user._id: 655e98c1caa94aae759f82f7 
+    TicketUser:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          description: ID del usuario propietario del ticket
+      example: 
+        user: 655e98c1caa94aae759f82f7 
+    UpdateTicket:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Titulo del ticket
+      example: 
+        title: Purchase 2
+  responses:
+    getTickets:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload:
+          $ref: '#/components/schemas/Ticket'
+      example:
+        status: success
+        payload:
+          TicketId: 64dc35e9b1a6f4bbfbf63db5
+    createTicket:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload:
+          $ref: '#/components/schemas/Ticket'
+      example:
+        status: success
+        payload:
+          newTicket:
+            title: Titulo del ticket creado
+            code: Codigo interno del ticket creado
+            purchase_datetime: Fecha y hora del ticket creado
+            amount: Monto total del ticket creado
+    updateTicket:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload:
+          $ref: '#/components/schemas/UpdateTicket'
+      example:
+        status: success
+        payload:
+          updateTicket:
+            ticketId: ticket._id
+            title: Purchase 2
+    destroyTicket:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Mensaje de éxito
+      example:
+        status: success
+        message: Ticket eliminado exitosamente
+    notFound:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: GET /api/tickets controller
+        message: Not found documents
+    notFoundOne:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: GET /api/tickets/{pid} controller
+        message: Not found document
+    documentError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: POST /api/tickets controller
+        message: Cannot create document
+    clientError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: PUT /api/tickets controller
+        message: Incomplete values
+    serverError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: fatal
+        from: HTTP /api/tickets controller
+        message: Server crashes
+
+paths:
+  /api/tickets:
+    get:
+      summary: Obtener la lista completa de tickets
+      tags:
+        - Tickets
+      responses:
+        '200':
+          description: Exito en la lectura de tickets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/getTickets'
+        '404':
+          description: No se encontraron los documentos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFound'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+    post:
+      summary: Crear un nuevo ticket
+      tags:
+        - Tickets
+      requestBody:
+        required: true
+        description: Objeto con las propiedades necesarias para crear un nuevo Ticket
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      responses:
+        '201':
+          description: Éxito en la creación de un nuevo ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/createTicket'
+        '400':
+          description: Faltante de campos en el objeto de creación de ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/documentError'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+
+  /api/tickets/{pid}:
+    get:
+      summary: Obtener información de un ticket específico
+      tags:
+        - Tickets
+      parameters:
+        - name: pid
+          in: path
+          description: ID del ticket
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Exito en la lectura del ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/getTickets'
+        '404':
+          description: Ticket no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+    put:
+      summary: Actualizar información de un ticket específico
+      tags:
+        - Tickets
+      parameters:
+        - name: pid
+          in: path
+          description: ID del ticket
+          required: true
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        description: Objeto con las propiedades a actualizar
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicket'
+      responses:
+        '200':
+          description: Éxito en la actualización del ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/updateTicket'
+        '400':
+          description: Se requieren los campos a actualizar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/clientError'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+    delete:
+      summary: Eliminar un ticket específico
+      tags:
+        - Tickets
+      parameters:
+        - name: pid
+          in: path
+          description: ID del ticket
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Éxito en la eliminación del ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/destroyTicket'
+        '404':
+          description: Ticket no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'

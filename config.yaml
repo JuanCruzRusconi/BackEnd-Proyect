@@ -1,0 +1,22 @@
+config:
+  pluggins:
+    metrics-by-endpoint: {}
+  target: http://localhost:8090/api/performance
+  phases:
+    - duration: 30
+      arrivalRate: 10
+scenarios:
+  - name: create, read & destroy one product
+    flow:
+      - log: create one product
+      - post:
+          url: /products
+          capture:
+            - json: "$.response._id"
+              as: "pid"
+      - log: read one product
+      - get:
+          url: /products/{{pid}}
+      - log: destroy one product
+      - delete:
+          url: /products/{{pid}}

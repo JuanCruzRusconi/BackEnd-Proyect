@@ -1,15 +1,17 @@
 import { Router } from "express";
-import * as ProductsApiController from "../controllers/products.api.controller.js";
+import ProductsApiControllers from "../controllers/products.api.controller.js";
 import passportMW from "../utils/jwt.middleware.js";
-import { verifyRole } from "../utils/mddw.js";
+import { verifyAuthentication, verifyRole } from "../utils/mddw.js";
 
 const productsRouter = Router();
+
+const ProductsApiController = new ProductsApiControllers();
 
 productsRouter.get("/", ProductsApiController.GETProducts);
 
 productsRouter.get("/:pid", ProductsApiController.GETProductById);
 
-productsRouter.post("/", passportMW("jwt"), verifyRole("admin"), ProductsApiController.POSTProduct);
+productsRouter.post("/", passportMW("jwt"), verifyRole("admin", "premium"), ProductsApiController.POSTProduct);
 
 productsRouter.put("/:pid", passportMW("jwt"), verifyRole("admin"), ProductsApiController.PUTProductById);
 

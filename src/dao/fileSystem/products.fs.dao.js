@@ -1,8 +1,7 @@
-/*
 import { json } from "express";
 import fs from "fs/promises";
 
-export default class ProductManager {
+export default class ProductsFS {
 
     constructor () {
         this.products = [];

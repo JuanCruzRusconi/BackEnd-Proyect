@@ -1,141 +1,160 @@
-import CartsDAO from "../dao/mongoDB/carts.mongo.dao.js";
-import ProductsDAO from "../dao/mongoDB/products.mongo.dao.js";
-import * as ProductsServices from "../services/products.services.js";
-import * as TicketsServices from "../services/tickets.services.js";
+import CartsRepository from "../repositories/carts.repositories.js";
+import ProductsServices from "../services/products.services.js";
+import TicketsServices from "../services/tickets.services.js";
 
-const CartsDao = new CartsDAO();
-const ProductsDao = new ProductsDAO();
+const ProductService = new ProductsServices();
 
+export default class CartsServices {
 
-export const GetCarts = async () => {
+    constructor () {
+        this.repository = new CartsRepository();
+    };
 
-    try {
-        const getCarts = await CartsDao.getCarts();
-        return getCarts;
-    } catch (e) {
-        return [];
-    }
-};
-
-export const GetCartById = async (cid) => {
-
-    try {
-        const getCart = await CartsDao.getCartById(cid);
-        return getCart;
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const PostCart = async (cart) => {
-
-    const { products } = cart
-    try {
-        const addCart = await CartsDao.createCart(cart);
-        return addCart;
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const PostUserCart = async (user) => {
-
-    try {
-        const addCart = await CartsDao.createUserCart(user);
-        return addCart;
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const PostProductInCartById = async (cidCart, productById) => {
-
-    try {
-        await CartsDao.addProductInCartById(cidCart, productById)
-        return await CartsDao.getCartById(cidCart);
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const DeleteCart = async (cid) => {
-
-    try {
-        const remove = await CartsDao.deleteCart(cid);
-        return remove;
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const DeleteAllProductsInCartById = async (cid) => {
-
-    try {
-        const deleteProds = await CartsDao.deleteProducts(cid); 
-        return deleteProds;
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const DeleteAllProductsByIdInCartById = async (cid, pid) => {
+    CreateCart = async (cart, next) => {
     
-    try {
-        const cart = await CartsDao.deleteAllProductsByIdInCartById(cid, pid);
-        return cart;
-    } catch {
+        const { products } = cart
+        try {
+            const newCart = await this.repository.createCart(cart, next);
+            return newCart;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+    
+    CreateUserCart = async (user, next) => {
+    
+        try {
+            const newUserCart = await this.repository.createUserCart(user, next);
+            return newUserCart;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+    
+    CreatePurchase = async (cid, user, next) => {
+    
+        try {
+            const cart = await this.GetCartById(cid, next);
+            console.log(cart.products)
+            const purchase = cart.products.map(async (e) => {
+                let prodId = e._id; 
+                let prodQty = e.quantity; 
+                if (!await ProductService.GetProductStockById(prodId, next) >= prodQty) throw new Error("Producto/s con stock insuficiente");
+                // ------- Resta de stock en products ------- // 
+                await ProductService.UpdateProductStockAfterPurchase(prodId, prodQty, next);
+                // ------- Elimina del cart los productos que se pudieron comprar ------- //
+                await this.DeleteAllProductsByIdInCartById(cid, prodId, next);
+                if(user) await TicketsServices.PostTicket(user, next);
+                return await this.GetCartById(cid, next);
+            });
+            return await Promise.all(purchase);
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
 
-    }
+    GetCarts = async (next) => {
+
+        try {
+            const carts = await this.repository.getCarts(next);
+            return carts;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+    
+    GetCartById = async (cid, next) => {
+    
+        try {
+            const cart = await this.repository.getCartById(cid, next);
+            return cart;
+        } catch (error) {
+            error.from = "CartsServices - getCarts()";
+            return next(error);
+        }
+    };
+
+    GetPurchase = async (cid, next) => {
+    
+        try {
+            const cart = await this.GetCartById(cid, next);
+            const prods = cart.products.map(prod => prod); 
+            return prods;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+    
+    UpdateProductInCartById = async (cid, pid, next) => {
+    
+        try {
+            await this.repository.updateProductInCartById(cid, pid, next);
+            const updatedCart = await this.GetCartById(pid, next);
+            return updatedCart;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+        
+    UpdateProductQuantityByIdInCartById = async (cid, pid, quantity, next) => {
+    
+        try {
+            const updatedCart = await this.repository.updateProductQuantity(cid, pid, quantity, next);
+            return updatedCart;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+    
+    DeleteCart = async (cid, next) => {
+    
+        try {
+            const remove = await this.repository.deleteCart(cid, next);
+            return remove;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+    
+    DeleteAllProductsInCartById = async (cid, next) => {
+    
+        try {
+            const deleteProds = await this.repository.deleteProductsInCart(cid, next); 
+            return deleteProds;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+
+    DeleteProductInCartById = async (cid, pid, next) => {
+    
+        try {
+            await this.repository.deleteProductInCartById(cid, pid, next)
+            return await this.GetCartById(cid, next);
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };   
+    
+    DeleteAllProductsByIdInCartById = async (cid, pid, next) => {
+        
+        try {
+            const cart = await this.repository.deleteAllProductsByIdInCartById(cid, pid, next);
+            return cart;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    }; 
+    
 }
-
-export const DeleteProductInCartById = async (cidCart, productById) => {
-
-    try {
-        await CartsDao.deleteProductInCartById(cidCart, productById)
-        return await CartsDao.getCartById(cidCart);
-    } catch (e) {
-        console.log(e);
-    }
-};    
-
-export const PutProductQuantityByIdInCartById = async (cid, pid, quantity) => {
-
-    try {
-        return await CartsDao.updateProductQuantity(cid, pid, quantity);
-    } catch (e) {
-        throw e;
-    }
-};
-
-export const GetPurchase = async (cid) => {
-
-    try {
-        const cart = await CartsDao.getCartById(cid);
-        const prods = cart.products.map(prod => prod); 
-        return prods;
-    } catch (e) {
-        throw e;
-    }
-};
-
-export const PostPurchase = async (cid, user) => {
-
-    try {
-        const cart = await CartsDao.getCartById(cid);
-        console.log(cart.products)
-        const map = cart.products.map(async (e) => {
-            let prodId = e._id; 
-            let prodQty = e.quantity; 
-            if (!await ProductsServices.GetProductStockById(prodId) >= prodQty) throw new Error("Producto/s con stock insuficiente");
-            // ------- Resta de stock en products ------- // 
-            await ProductsServices.UpdateProductStockAfterPurchase(prodId, prodQty);
-            // ------- Elimina del cart los productos que se pudieron comprar ------- //
-            await DeleteAllProductsByIdInCartById(cid, prodId);
-            if(user) await TicketsServices.PostTicket(user);
-            return await GetCartById(cid);
-        });
-        return await Promise.all(map);
-    } catch (e) {
-        throw e;
-    }
-};

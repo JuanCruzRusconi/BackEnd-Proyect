@@ -1,9 +1,9 @@
-/*
+
 import { Console } from "console";
 import e from "express";
 import fs from "fs/promises";
 
-export default class CartManager {
+export default class CartsFS {
 
     constructor () {
         this.carts = [];
@@ -27,7 +27,7 @@ export default class CartManager {
         return cartToUpdate;
     }
 
-    addCart = async (cart) => {
+    createCart = async (cart) => {
 
         const {products} = cart
         try {
@@ -47,7 +47,7 @@ export default class CartManager {
         }
     }
 
-    addProductInCartById = async (cidCart, productById) => {
+    updateProductInCartById = async (cidCart, productById) => {
 
         try {
             const file = await fs.readFile("./src/carts.json", "utf-8");
@@ -90,5 +90,3 @@ export default class CartManager {
         }
     };
 }
-    
-*/

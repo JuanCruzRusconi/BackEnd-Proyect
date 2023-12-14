@@ -1,0 +1,400 @@
+components:
+  schemas:
+    Register:
+      type: object
+      properties:
+        name: 
+          type: string
+          description: Nombre del usuario
+        surname:
+          type: string
+          description: Apellido del usuario
+        username:
+          type: string
+          description: Nombre de usuario del usuario
+        email:
+          type: string
+          description: Correo electronico del usuario
+        password: 
+          type: string
+          description: Contraseña del usuario
+      example: 
+        name: Juan Cruz
+        surname: Rusconi
+        username: juancruz1234
+        email: juancruzrusconi@gmail.com
+        password: prueba1234
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre de usuario del usuario
+        password: 
+          type: string
+          description: Contraseña del usuario
+      example: 
+        username: juancruz1234
+        password: prueba1234
+    User:
+      type: object
+      properties:
+        name: 
+          type: string
+          description: Nombre del usuario
+        surname:
+          type: string
+          description: Apellido del usuario
+        username:
+          type: string
+          description: Nombre de usuario del usuario
+        email:
+          type: string
+          description: Correo electronico del usuario
+        password: 
+          type: string
+          description: Contraseña del usuario
+        role: 
+          type: string
+          description: Role del usuario
+        cart:
+          type: string
+          description: Object ID referencia del carrito propietario del usuario
+          $ref: '#/components/schemas/UserCart'
+        tickets:
+          type: string
+          description: Object ID referencia del carrito propietario del usuario
+          $ref: '#/components/schemas/UserTicket'
+      example: 
+        name: Juan Cruz
+        surname: Rusconi
+        username: juancruz1234
+        email: juancruzrusconi@gmail.com
+        password: prueba1234
+        role: admin
+        cart:
+          cart._id: 6556561ed458c021eb87156b
+        tickets:
+          ticket._id: 6560c80b38e7924ca8e0f11b
+    UserCart:
+      type: object
+      properties:
+        ticket_id:
+          type: integer
+          format: int64
+          description: ID del carrito propietario del usuario
+      example: 
+        cart._id: 6556561ed458c021eb87156b 
+    UserTicket:
+      type: object
+      properties:
+        ticket_id:
+          type: integer
+          format: int64
+          description: ID del ticket propietario del usuario
+      example: 
+        ticket._id: 6560c80b38e7924ca8e0f11b 
+  responses:
+    register:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload: 
+          type: string
+          description: ID del usuario creado registrado
+      example:
+        status: success
+        payload: ID del nuevo usuario
+    login:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Mensaje de detalle de la solicitud
+      example:
+        status: success
+        message: Logged in
+        info: Datos del usuario
+    sessionCurrent:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Mensaje de detalle de la solicitud
+      example:
+        status: success
+        message: Logged in
+        info: 
+          userData:
+            id: 655e98c1caa94aae759f82f9
+            name: Juan Cruz
+            surname: Rusconi
+            username: juancruz1234
+            email: juancruzrusconi@gmail.com
+            password: prueba1234
+            role: admin
+            cart:
+              cart._id: 6556561ed458c021eb87156b
+            tickets:
+              ticket._id: 6560c80b38e7924ca8e0f11b
+    signout:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Mensaje de detalle de la solicitud
+      example:
+        status: success
+        message: Signed out
+    premium:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Mensaje de detalle de la solicitud
+      example:
+        status: success
+        message: Role updated
+    invalid:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Descripcion del error
+      example: 
+        status: error
+        from: POST /api/auth/login controller
+        message: Invalid credentials
+    credentialsInUse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Descripcion del error
+      example: 
+        status: error
+        from: POST /api/auth/register controller
+        message: Credentials are already in use 
+    notLogged:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Descripcion del error
+      example: 
+        status: error
+        from: POST /api/auth/signout controller
+        message: Must be logged to do this operation 
+    cookieNotFound:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: fatal
+        from: POST /api/auth/signout controller
+        message: La cookie no se encontro en la solicitud   
+    serverError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: fatal
+        from: HTTP /api/carts controller
+        message: Server crashes
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+
+paths:
+  /api/auth/register:
+    post:
+      summary: Registrar un nuevo usuario
+      tags:
+        - Users
+      requestBody: 
+        required: true
+        description: Objeto con las propiedades necesarias para registrar un nuevo usuario
+        content: 
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Register'
+      responses: 
+        '201':
+          description: Exito en el registro de un nuevo usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/register'
+        '401':
+          description: Credenciales ya en uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/credentialsInUse'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /api/auth/login:
+    post:
+      summary: Iniciar sesion con los datos de un usuario
+      tags:
+        - Users
+      requestBody: 
+        required: true
+        description: Objeto con las propiedades necesarias para registrar un nuevo usuario
+        content: 
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Login'
+      responses: 
+        '200':
+          description: Exito en el inicio de sesion de un usuario
+          headers:
+            Set-cookie:
+              schema:
+                type: string
+                example: accessToken=8854hghg385hgbuig55fn
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/login'
+        '401':
+          description: Credenciales invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /api/auth/session/current:
+    get:
+      summary: Obtener la sesion del usuario autenticado
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      responses: 
+        '200':
+          description: Exito en la autenticacion del usuario     
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/sessionCurrent'
+        '401':
+          description: Credenciales invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '404':
+          description: Se requiere iniciar sesion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notLogged'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /api/auth/signout:
+    post:
+      summary: Cerrar sesion con la cookie guardada
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      responses: 
+        '200':
+          description: Exito en el cierre de sesion un usuario     
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/signout'
+        '400':
+          description: La cookie que almacena el accessToken no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/cookieNotFound'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /api/auth/user/premium:
+    post:
+      summary: Cambiar el rol del usuario
+      tags:
+        - Users
+      security:
+        - cookieAuth: []
+      responses: 
+        '200':
+          description: Exito en el cambio de rol del usuario    
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/premium'
+        '401':
+          description: La cookie que almacena el accessToken no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'

@@ -7,118 +7,117 @@ import bcrypt from "bcrypt";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default class UsersDAO {
+export default class UsersMONGO {
 
     constructor () {}
 
-    getUsers = async () => {
+    createUser = async (user, next) => {
+        
+        try {
+            const newUser = await userModel.create(user);
+            return newUser;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
+        }
+    };
+
+    getUsers = async (next) => {
 
         try {
             const users = await userModel.find();
             return users;
-          } catch (e) {
-            //return [];
-          }
-    };
-
-    getUserById = async (id) => {
-
-        try {
-            const user = await userModel.findById(id).populate("cart");
-            return user;
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
         }
     };
 
-    getUserByUsername = async (username) => {
+    getUserById = async (id, next) => {
+
+        try {
+            const user = await userModel.findById(id).populate("cart", "tickets");
+            return user;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
+        }
+    };
+
+    getUserByUsername = async (username, next) => {
 
         try {
             const user = await userModel.findOne({ username });
             return user;
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
         }
     };
 
-    updateUserProfile = async () => {
+    updateUserProfile = async (username, data, next) => {
 
         try {
-        const user = await userModel.findOne({ username });
-        return user;
-        } catch (e) {
-            console.log(e);
+            const user = await userModel.updateOneOne({ username: username }, { $set: data});
+            return user;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
         }
     };
 
-    updateUserCart = async (user, cart) => {
+    updateUserRole = async (id, role, next) => {
 
         try {
-        const userUpdated = await userModel.findOneAndUpdate({ _id: user._id }, { $set: { cart: cart._id } });
-        console.log(userUpdated)
-        return userUpdated;
-        } catch (e) {
-            console.log(e);
+            const userRole = await userModel.updateOne({ _id: id }, { $set: { role: role } });
+            return userRole;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
         }
     };
 
-   /*// ------- crypto ------- // 
-    createUser = async (user) => {
+    updateUserCart = async (user, cart, next) => {
 
-        const { nombre, apellido, username, passwor } = user;
-        user.salt = crypto.randomBytes(128).toString("base64");
-        user.password = crypto
-            .createHmac("sha256", user.salt)
-            .update(user.password)
-            .digest("hex");
-        const createUser = await userModel.create([user]);
-        return createUser;
+        try {
+            const userUpdated = await userModel.findOneAndUpdate({ _id: user._id }, { $set: { cart: cart._id } });
+            return userUpdated;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
+        }
     };
     
-    validateUser = async (username, password) => {
+    updateUserTicket = async (user, ticket, next) => {
 
-        const user = await userModel.findOne({ username });
-        if (!user) return "Error, usuario no existe!";
-
-        const loginHash = crypto
-            .createHmac("sha256", user.salt)
-            .update(password)
-            .digest("hex");
-
-        return loginHash == user.password ?
-            user.toObject() :
-            false;
-    };*/
-
-    // ------- bcrypt ------- // 
-    createUser = async (user) => {
-        
         try {
-        const newUser = await userModel.create(user);
-        return newUser;
-        } catch (e) {
-            console.log(e);
+            const userUpdated = await userModel.findOneAndUpdate({ _id: user._id }, { $push: { tickets: ticket._id } });
+            return userUpdated;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
         }
     };
 
-    validateUser = async (username, password) => {
-
+    deleteUser = async (id, next) => {
+        
         try {
-        const validateUser = await userModel.findOne({ username });
-        return validateUser;
-        } catch (e) {
-            console.log(e);
+            const deleteUser = await userModel.deleteOne({_id: id});
+            return deleteUser;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
         }
-    };   
+    };
 
-    updateUserTicket = async (user, ticket) => {
-
+    deleteTicket = async (id, ticket, next) => {
+        
         try {
-        const userUpdated = await userModel.findOneAndUpdate({ _id: user._id }, { $push: { tickets: ticket._id } });
-        console.log(userUpdated)
-        return userUpdated;
-        } catch (e) {
-            throw e;
+            const deleteTicket = await userModel.updateOne({_id: id}, { $pull: { tickets: ticket }});
+            return deleteTicket;
+        } catch (error) {
+            error.from = "UsersMongo";
+            return next(error);
         }
     };
 }

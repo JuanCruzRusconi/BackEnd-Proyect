@@ -1,106 +1,157 @@
-import UsersDAO from "../dao/mongoDB/users.mongo.dao.js";
+import UsersRepository from "../repositories/users.repositories.js";
 import bcrypt from "bcrypt";
-import UsersDTOReturn from "../dto/users.dto.js";
-import * as CartsServices from "../services/carts.services.js";
+import CartsServices from "./carts.services.js";
 
-const UsersDao = new UsersDAO();
+const CartService = new CartsServices();
 
-export const GetAllUsers = async () => {
+export default class UsersServices {
 
-    try {
-        const users = await UsersDao.getUsers();
-        const usersDto = users.map((user) => new UsersDTOReturn(user));
-        return usersDto;
-      } catch (e) {
-        return [];
-      }
-};
+    constructor () {
+        this.repository = new UsersRepository();
+    };
 
-export const GetUserById = async (id) => {
-
-    try {
-        const user = await UsersDao.getUserById(id);
-        const userDto = new UsersDTOReturn(user);
-        return userDto;
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const GetUserByUsername = async (username) => {
-
-    try {
-        const user = await UsersDao.getUserByUsername(username);
-        const userDto = new UsersDTOReturn(user);
-        return userDto;
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const UpdateUser = async () => {
-
-    try {
-    const user = await UsersDao.updateUserProfile(username);
-    user.user.avatar = profile_picture;
-    await user.save();
-    const userObject = user.toObject();
-    const userJSON = user.toJSON();
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-// ------- bcrypt ------- // 
-export const CreateUser = async (user) => {
+    CreateUser = async (user, next) => {
     
-    try {
-    const { nombre, apellido, username, password } = user;
-    user.salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, user.salt);
-    const newUser = await UsersDao.createUser(user);
+        try {
+            const { nombre, apellido, username, password } = user;
+            user.salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, user.salt);
+            const newUser = await this.repository.createUser(user, next);
+            // Crear un nuevo carrito asociado al usuario
+            const userCart = await CartService.CreateUserCart(newUser, next);
+            // Utilizar updateOne para asociar el carrito al usuario
+            await this.repository.updateUserCart(newUser, userCart, next);
+            return newUser;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
 
-    // Crear un nuevo carrito asociado al usuario
-    const userCart = await CartsServices.PostUserCart(newUser);
+    GetUsers = async (next) => {
 
-    // Utilizar updateOne para asociar el carrito al usuario
-    await UsersDao.updateUserCart(newUser, userCart);
+        try {
+            const users = await this.repository.getUsers(next);
+            return users;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
 
-    return newUser;
-    } catch (e) {
-        console.log(e);
-    }
-};
+    GetUserById = async (id, next) => {
 
-export const ValidateUser = async (username, password) => {
+        try {
+            const user = await this.repository.getUserById(id, next);
+            return user;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
 
-    try {
-    const validateUser = await UsersDao.validateUser(username);
-    if(!validateUser) return false;
-    const passw = await bcrypt.compare(password, validateUser.password);
-    return passw ? validateUser.toObject() : false;
-    } catch (e) {
-        console.log(e);
-    }
-};
+    GetUserByUsername = async (username, next) => {
 
-export const UserRole = async () => {
+        try {
+            const user = await this.repository.getUserByUsername(username, next);
+            return user;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
 
-    try {
-        const user = await UsersDao.getUserByUsername(username);
-        const role = user.role;
-        return role;
-    } catch (e) {
-        console.log(e);
-    }
-};
+    UpdateUser = async (username, data, next) => {
 
-export const PurchaseOrder = async (user, ticket) => {
+        try {
+            const user = await this.repository.updateUserProfile(username, data, next);
+            user.user.avatar = profile_picture;
+            await user.save();
+            const userObject = user.toObject();
+            const userJSON = user.toJSON();
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
 
-    try {
-        const ticketUser = await UsersDao.updateUserTicket(user, ticket);
-        return ticketUser;
-    } catch (e) {
-        throw e;
-    }
-};
+    ValidateUser = async (username, password, next) => {
+
+        try {
+            const validateUser = await this.GetUserByUsername(username, next);
+            if(!validateUser) return false;
+            const passw = await bcrypt.compare(password, validateUser.password);
+            return passw ? validateUser.toObject() : false;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
+
+    UserRole = async (next) => {
+
+        try {
+            const user = await this.GetUserByUsername(username, next);
+            const role = user.role;
+            return role;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
+
+    UpdateUserRole = async (id, data, next) => {
+
+        try {
+            let role
+                if(data === 'user') {
+                role = "premium";
+            } else {
+                role = "user";
+            }
+            const user = await this.repository.updateUserRole(id, role, next);
+            return user;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
+
+    PurchaseOrder = async (user, ticket, next) => {
+
+        try {
+            const ticketUser = await this.repository.updateUserTicket(user, ticket, next);
+            return ticketUser;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
+
+    DeleteUser = async (id, next) => {
+        
+        try {
+            const deleteUser = await this.repository.deleteUser(id, next);
+            return deleteUser;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
+
+    DeleteTicket = async (id, ticket, next) => {
+        
+        try {
+            const deleteTicket = await this.repository.deleteTicket(id, ticket, next);
+            return deleteTicket;
+        } catch (error) {
+            error.from = "UsersServices";
+            return next(error);
+        }
+    };
+
+}
+
+
+
+

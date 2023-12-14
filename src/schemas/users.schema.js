@@ -28,29 +28,13 @@ const usersSchema = new mongoose.Schema({
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "carts"
-    },/*
-    cart: {
-        type: [
-            {
-                carts: {
-                    //_id,
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "carts",
-                }
-            }
-        ],
-        required: true,
-        default: []
-    },*/
+    },
     avatar: {
         type: String,
     },
-    //salt: {
-        //type: String, -- crypto
-    //},
     role: {
         type: String,
-        enum: ["admin", "user"],
+        enum: ["admin", "user", "premium"],
         default: "user"  
     },
     tickets: [
@@ -64,11 +48,6 @@ const usersSchema = new mongoose.Schema({
 usersSchema.pre("find", function () {
     this.populate("cart");
 });
-/*
-usersSchema.pre("save", function (next) {
-    this.cart = CartServices;
-    next()
-});*/
 
 const userModel = mongoose.model("users", usersSchema);
 

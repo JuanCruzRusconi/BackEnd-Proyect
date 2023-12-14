@@ -33,12 +33,28 @@ export const protectedViewJWT = (req, res, next) => {
     next();
 };
 
-export const verifyRole = (role) => (req, res, next) => {
+// export const verifyRole = (role) => (req, res, next) => {
 
+//     try {
+//         if( req.user && req.user.role !== role) throw new Error("No posess los permisos.");
+//         return next();
+//     } catch (e) {
+//         res.status(403).send({error: true, msg: e.message})
+//     }
+// }
+
+export const verifyRole = (roleA, roleP) => (req, res, next) => {
+    
     try {
-        if( req.user && req.user.role !== role) throw new Error("No posess los permisos.")
+        if (!req.user) {
+            throw new Error("Usuario no autenticado.");
+        };
+        const userRoles = req.user.role; 
+        if (!userRoles.includes(roleA) && !userRoles.includes(roleP)) {
+            throw new Error("No posee los permisos necesarios.");
+        };
         return next();
     } catch (e) {
-        res.status(403).send({error: true, msg: e.message})
+        res.status(403).send({ error: true, msg: e.message });
     }
-}
+};

@@ -1,134 +1,166 @@
-import e from "express";
-import * as CartsServices from "../services/carts.services.js";
-import * as ProductsServices from "../services/products.services.js"
+import { disconnect } from "process";
+import CartsServices from "../services/carts.services.js";
+import ProductsServices from "../services/products.services.js";
 import * as TicketsServices from "../services/tickets.services.js";
+import CustomError from "../utils/customError.js";
+import ErrorsDictionary from "../utils/errorsDictionary.js";
 
-export const POSTCart = async (req, res) => {
+
+const ProductService = new ProductsServices();
+
+export default class CartsApiControllers {
+
+    constructor () {
+        this.service = new CartsServices();
+    };
+
+    POSTCart = async (req, res, next) => {
     
-    try {
-        const body = req.body;
-        const createCart = await CartsServices.PostCart(body);
-        res.send(createCart);
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
-
-export const POSTProductByIdInCartById = async (req, res) => {
-    
-    try {
-        let cidCart = req.params.cid;
-        let productById = req.params.pid;
-        //onst {cid} = req.params;
-        //const {pid} = req.params
-        if(!await ProductsServices.GetProductById(productById)) res.send({error: true, msg: "Producto no existe"});
-        else res.send(await CartsServices.PostProductInCartById(
-            await CartsServices.GetCartById(cidCart),
-            await ProductsServices.GetProductById(productById)
-        ));
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
-
-export const GETCarts = async (req, res) => {
-
-    try {
-        const carts = await CartsServices.GetCarts();
-        res.send(carts);
-    } catch (e) {
-        res.status(502).send({error : true, msg: e.message})
-    }
-};
-
-export const GETCartById = async (req, res) => {
-
-    try {
-        const { cid } = req.params;
-        const carts = await CartsServices.GetCartById(cid);
-        res.send(carts);
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
-
-export const PUTProductQuantityByIdInCartById = async (req, res) => {
-
-    try {
-        const { cid, pid } = req.params;
-        const { quantity } = req.body;
-        const qty = await ProductsServices.GetProductById(pid);
-        if(quantity >= qty.stock) res.send({ error: true, msg: "Cantidad no dispoible" });
-        else {
-            const cart = await CartsServices.PutProductQuantityByIdInCartById(
-                await CartsServices.GetCartById(cid),
-                await ProductsServices.GetProductById(pid),
-                quantity
-            );
-            res.send({ error: false, updated: true });
+        try {
+            const body = req.body;
+            const createCart = await this.service.CreateCart(body, next);
+            if(!createCart) return CustomError.createError(ErrorsDictionary.DOCUMENT_ERROR);
+            res.status(201).send({ status: "success", payload: createCart });
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
         }
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
+    };
+    
+    POSTProductByIdInCartById = async (req, res, next) => {
+        
+        try {
+            const { cid, pid } = req.params;
+            if(!await this.service.GetCartById(cid, next) || !await ProductService.GetProductById(pid, next)) {
+               return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
+            }
+            else res.status(200).send(await this.service.UpdateProductInCartById(
+                await this.service.GetCartById(cid, next),
+                await ProductService.GetProductById(pid, next),
+                next
+            ));
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    // ESTA NOSE SI VA
+    POSTPurchase = async (req, res, next) => {
+    
+        try {
+            const { cid } = req.params;
+            const cart = await this.service.GetCartById(cid, next);
+            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
+            if(!cart.products.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            const buyCart = await this.service.CreatePurchase(cid, next); 
+            res.send({error: false, msg: "Compra realizada." })
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETCarts = async (req, res, next) => {
+    
+        try {
+            const carts = await this.service.GetCarts(next);
+            if(!carts) return CustomError.createError(ErrorsDictionary.NOT_FOUND);
+            res.status(200).json({ status: "sucess", payload: carts })
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETCartById = async (req, res, next) => {
+    
+        try {
+            const { cid } = req.params;
+            const cart = await this.service.GetCartById(cid, next);
+            if(!cart) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            res.status(200).send({ status: "success", response: cart });
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETPurchase = async (req, res, next) => {
+    
+        try {
+            const { cid } = req.params;
+            const cart = await this.service.GetPurchase(cid, next);
+            if(!cart) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            res.send(cart);
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    PUTProductQuantityByIdInCartById = async (req, res, next) => {
+    
+        try {
+            const { cid, pid } = req.params;
+            const { quantity } = req.body;
+            const qty = await ProductService.GetProductById(pid, next);
+            if(quantity >= qty.stock) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
+            else {
+                const cart = await this.service.UpdateProductQuantityByIdInCartById(
+                    await this.service.GetCartById(cid, next),
+                    await ProductService.GetProductById(pid, next),
+                    quantity,
+                    next
+                );
+                res.status(200).send({ error: false, updated: true });
+            }
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    DELETECart = async (req, res, next) => {
+    
+        try {
+            const { cid } = req.params;
+            const cart = await this.service.DeleteCart(cid, next);
+            if(!cart) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            res.status(200).json({ status: "success", message: "Cart deleted"});
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    DELETEProductsInCartById = async (req, res, next) => {
+    
+        try {
+            const { cid } = req.params;
+            const cart = await this.service.DeleteAllProductsInCartById(cid, next);
+            if(!cart.products >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            res.send(cart);
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    DELETEProductByIdInCartById = async (req, res, next) => {
+    
+        try {
+            const { cid, pid } = req.params;
+            const cart = await this.service.DeleteProductInCartById(
+                await this.service.GetCartById(cid, next),
+                await ProductService.GetProductById(pid, next),
+                next
+            );
+            if(!cart.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            res.send(cart);
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
 
-export const DELETECart = async (req, res) => {
-
-    try {
-        const { cid } = req.params;
-        const cart = await CartsServices.DeleteCart(cid);
-        res.send({error: false, deleted: true});
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
-
-export const DELETEProductsInCartById = async (req, res) => {
-
-    try {
-        const { cid } = req.params;
-        const carts = await CartsServices.DeleteAllProductsInCartById(cid);
-        res.send(carts);
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
-
-export const DELETEProductByIdInCartById = async (req, res) => {
-
-    try {
-        const { cid, pid } = req.params;
-        const carts = await CartsServices.DeleteProductInCartById(
-            await CartsServices.GetCartById(cid),
-            await ProductsServices.GetProductById(pid)
-        );
-        res.send(carts);
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
-
-export const GETPurchase = async (req, res) => {
-
-    try {
-        const { cid } = req.params;
-        const cart = await CartsServices.GetPurchase(cid);
-        res.send(cart);
-    } catch {
-        res.status(502).send({error : true})
-    }
-};
-
-export const POSTPurchase = async (req, res) => {
-
-    try {
-        const { cid } = req.params;
-        const cart = await CartsServices.GetCartById(cid);
-        if(!cart.products.length >= 1) throw new Error("No posee productos en el carrito");
-        const buyCart = await CartsServices.PostPurchase(cid); 
-        //res.send(buyCart);
-        res.send({error: false, msg: "Compra realizada." })
-    } catch (e) {
-        res.status(502).send({error: true, msg: e.message});
-    }
-};
+}

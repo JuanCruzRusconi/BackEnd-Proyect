@@ -6,7 +6,14 @@
   "scripts": {
     "start": "nodemon src/app.js --mode prod",
     "dev": "nodemon src/app.js --mode dev",
-    "test": "nodemon src/app.js --mode test"
+    "test": "nodemon src/app.js --mode test",
+    "simple": "artillery quick --count 50 --num 20 'http://localhost:9000/simple' -o ../test/simple.json",
+    "complex": "artillery quick --count 50 --num 20 'http://localhost:9000/complex' -o ../test/complex.json",
+    "performance": "artillery run ./config.yaml -o ./src/test/crd.json",
+    "report": "artillery report ./src/test/crd.json",
+    "mocha": "mocha test/mocha",
+    "chai": "mocha test/chai",
+    "supertest": "mocha test/supertest"
   },
   "engines": {
     "node": "18.x"
@@ -16,6 +23,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "artillery": "^2.0.3",
     "bcrypt": "^5.1.1",
     "commander": "^11.0.0",
     "connect-mongo": "^5.0.0",
@@ -25,6 +34,7 @@
     "express-compression": "^1.0.2",
     "express-handlebars": "^7.1.1",
     "express-session": "^1.17.3",
+    "faker": "^5.5.3",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
     "mongoose": "^7.4.3",
@@ -32,11 +42,20 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
+    "npm": "^10.2.5",
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "session-file-store": "^1.5.0",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }

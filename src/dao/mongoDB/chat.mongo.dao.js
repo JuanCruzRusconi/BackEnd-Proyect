@@ -1,10 +1,20 @@
 import messagesModel from "../../schemas/messages.schema.js";
 import mongoose from "mongoose";
 
-export default class ChatDAO {
+export default class ChatMONGO {
 
     constructor () {}
 
+    createMessage = async (user, message) => {
+
+        try {
+            const addMessg = await messagesModel.create({user, message});
+            return addMessg;
+        } catch (e) {
+            console.log(e);
+        }
+    };
+    
     getMessages = async () => {
 
         try {
@@ -15,13 +25,4 @@ export default class ChatDAO {
         }
     };
 
-    addMessage = async (user, message) => {
-
-        try {
-            const addMessg = await messagesModel.create({user, message});
-            return addMessg;
-        } catch (e) {
-            console.log(e);
-        }
-    };
 };

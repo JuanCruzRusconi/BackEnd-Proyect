@@ -1,55 +1,62 @@
 import ticketModel from "../../schemas/tickets.schema.js"
 
-export default class TicketsDAO {
+export default class TicketsMONGO {
 
     constructor () {}
 
-    getTickets = async () => {
-        
-        try {
-            const tickets = await ticketModel.find();
-            return tickets;
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    getTicketById = async (id) => {
-
-        try {
-            const ticket = await ticketModel.findById(id);
-            return ticket;
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    getTicketByPurchaser = async (purchaser) => {
-
-    };
-
-    getTicketByCode = async (code) => {
-
-    };
-
-    createTicket = async (ticket) => {
+    createTicket = async (ticket, next) => {
 
         try {
             const newTicket = await ticketModel.create(ticket);
             return newTicket;
-        } catch (e) {
-            return [];
+        } catch (error) {
+            error.from = "TicketsMongo";
+            return next(error);
         }
     };
 
-    updateUserTicket = async (ticket, user) => {
+    getTickets = async (next) => {
+        
+        try {
+            const tickets = await ticketModel.find();
+            return tickets;
+        } catch (error) {
+            error.from = "TicketsMongo";
+            return next(error);
+        }
+    };
+
+    getTicketById = async (pid, next) => {
 
         try {
-            const ticketUpdated = await ticketModel.findOneAndUpdate({ _id: ticket._id }, { $set: { user: user._id } });
-            console.log(ticketUpdated)
-            return ticketUpdated;
-        } catch (e) {
-            throw e;
+            const ticket = await ticketModel.findOne({_id: pid});
+            return ticket;
+        } catch (error) {
+            error.from = "TicketsMongo";
+            return next(error);
         }
     };
+
+    updateUserTicket = async (pid, ticket, next) => {
+
+        try {
+            const ticketUpdated = await ticketModel.updateOne({ _id: pid }, { $set: ticket });
+            return ticketUpdated;
+        } catch (error) {
+            error.from = "TicketsMongo";
+            return next(error);
+        }
+    };
+
+    deleteTicket = async (id, next) => {
+
+        try {
+            const deleteTicket = await ticketModel.deleteOne({_id: id});
+            return deleteTicket;
+        } catch (error) {
+            error.from = "TicketsMongo";
+            return next(error);
+        }
+    };
+    
 }

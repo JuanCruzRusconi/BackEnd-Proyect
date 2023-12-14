@@ -1,62 +1,33 @@
 import { Router } from "express";
 import passport from "passport";
-import * as UsersViewsController from "../controllers/users.views.controller.js";
-import * as UsersServices from "../services/users.services.js";
+import UsersViewsControllers from "../controllers/users.views.controller.js";
 import passportMW from "../utils/jwt.middleware.js";
 import { isLogged, protectedView, verifyAuthentication } from "../utils/mddw.js";
 
 const userViewsRouter = Router();
 
+const UsersViewsController = new UsersViewsControllers();
+
 userViewsRouter.get("/login", UsersViewsController.GETLogin);
 
 userViewsRouter.get("/register", UsersViewsController.GETRegister);
-
-// ------- Autenticacion sin estrategias ------- //
-/*
-userViewsRouter.post("/login", isLogged, UsersViewsController.POSTFirstLogin);
-
-userViewsRouter.post("/register", isLogged, UsersViewsController.POSTFirstRegister);
-*/
-// ------- Passport Estrategia Local ------- //
-/*
-userViewsRouter.post("/login", passport.authenticate("login", {
-        successRedirect: "/user/profile",
-        failureRedirect: "/user/login"
-    }),
-    async (req, res) => {}
-);
-
-userViewsRouter.post("/register", passport.authenticate("register", {
-        successRedirect: "/user/profile",
-        failureRedirect: "/user/register"
-    }),
-    async (req, res) => {}
-);
-
-userViewsRouter.get("/profile", verifyAuthentication, protectedView, UsersViewsController.GETProfile);
-
-userViewsRouter.get("/profile/products", protectedView, UsersViewsController.GETProfileProducts);
-
-userViewsRouter.get("/logout", UsersViewsController.GETLogout);
-*/
-// ------- Passport Estrategia JWT ------- //
 
 userViewsRouter.post("/login", UsersViewsController.POSTLoginJWT);
 
 userViewsRouter.post("/register", passport.authenticate("register", {
     successRedirect: "/user/profile",
     failureRedirect: "/user/register"
-}),
-async (req, res) => {}
-);
+}),async (req, res) => {});
 
-userViewsRouter.post("/auth", passport.authenticate("github", {
-    successRedirect: "/user/profile",
-    failureRedirect: "/user/register"
-}),
-async (req, res) => {}
-);
+userViewsRouter.get("/auth/github", passport.authenticate("github", {
+    scope: ["user: email"]
+}), (req, res) => {});
 
+
+userViewsRouter.get("/auth/callback", passport.authenticate("github", {
+    failureRedirect: "/login",
+    successRedirect: "/profile"
+}, (req, res) => {}));
 
 userViewsRouter.get("/profile", passportMW("jwt"), UsersViewsController.GETProfile);
 

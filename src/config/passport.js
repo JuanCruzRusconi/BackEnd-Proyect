@@ -4,7 +4,9 @@ import GitHubStrategy from "passport-github2";
 import jwt from "passport-jwt";
 import cookieExtractor from "../utils/cookieJWT.js";
 import { SECRET } from "../utils/jwt.js";
-import * as UsersServices from "../services/users.services.js"
+import UsersServices from "../services/users.services.js";
+
+const UserService = new UsersServices();
 
 local.Strategy; 
 
@@ -17,7 +19,7 @@ const InitLocalStrategy = () => {
     }, async (req, username, password, done) => {
 
         //const { username, password } = req.body;
-        const user = await UsersServices.ValidateUser(username, password);
+        const user = await UserService.ValidateUser(username, password);
         if(!user) return done(null, false);
 
         return done(null, user);
@@ -27,12 +29,12 @@ const InitLocalStrategy = () => {
         passReqToCallback: true
     }, async (req, username, password, done) => {
 
-        const userExists = await UsersServices.GetUserByUsername(username);
+        const userExists = await UserService.GetUserByUsername(username);
         if (userExists) return done(null, false);
 
         const { name, surname } = req.body;
 
-        const user = await UsersServices.CreateUser({
+        const user = await UserService.CreateUser({
             name: name,
             surname: surname,
             username: username,
@@ -44,11 +46,11 @@ const InitLocalStrategy = () => {
     }));
 
     passport.use("jwt", new JWTStrategy({
-        jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderAsBearerToken(), //jwt.ExtractJwt.fromExtractors([cookieExtractor])
+        jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
         secretOrKey: SECRET, 
     }, async (payload, done) => {
         console.log(payload);
-        const user = await UsersServices.GetUserById(payload.sub);
+        const user = await UserService.GetUserById(payload.sub);
         if(!user) throw new Error("Credenciales invalidas");
 
         return done(null, user);
@@ -56,16 +58,16 @@ const InitLocalStrategy = () => {
 
     passport.use("github", new GitHubStrategy ({
         clientID: "Iv1.691c49ed935c2683",
-        clientSecret: "394518bf0992c95fc9e6ba589074642450660520",
-        callbackURL: "http://localhost:8081/api/auth/callback"
+        clientSecret: "6053bffa7b319f898e2c3e00b7655733331cdd1a",
+        callbackURL: `http://localhost:9000/users/auth/callback`
     }, async (accessToken, refreshToken, profile, done) => {
 
         console.log(profile);
         const username = profile._json.login;
-        const userExists = await UsersServices.GetUserByUsername(username);
+        const userExists = await UserService.GetUserByUsername(username);
         if(userExists) return done(null, user);
 
-        const user = await UsersServices.CreateUser({
+        const user = await UserService.CreateUser({
             name: profile._json.name.split(" ")[0],
             surname: profile._json.name.split(" ")[2],
             username,
@@ -88,7 +90,7 @@ const InitLocalStrategy = () => {
     passport.deserializeUser(async (id, done) => {
 
         try {
-            const user = await UsersServices.GetUserById(id);
+            const user = await UserService.GetUserById(id);
             done(null, user);
         } catch (e) {
             done(null, false);

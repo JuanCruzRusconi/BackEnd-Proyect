@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as CartsApiController from "../controllers/carts.api.controller.js"
+import CartsApiControllers from "../controllers/carts.api.controller.js";
 //import protectedView from "../utils/mddw.js"
 import { JWTCookieMW, JWTMW } from "../utils/jwt.js";
 import passportMW from "../utils/jwt.middleware.js";
@@ -7,15 +7,17 @@ import { verifyAuthentication, verifyRole } from "../utils/mddw.js";
 
 const cartsRouter = Router();
 
-cartsRouter.get("/", passportMW("jwt"), CartsApiController.GETCarts);
+const CartsApiController = new CartsApiControllers();
 
-cartsRouter.get("/:cid", passportMW("jwt"), CartsApiController.GETCartById);
+cartsRouter.get("/", CartsApiController.GETCarts);
 
-cartsRouter.post("/", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTCart);
+cartsRouter.get("/:cid", CartsApiController.GETCartById);
+
+cartsRouter.post("/", CartsApiController.POSTCart);
 
 cartsRouter.post("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTProductByIdInCartById);
 
-cartsRouter.put("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.PUTProductQuantityByIdInCartById);
+cartsRouter.put("/:cid/product/:pid",  CartsApiController.PUTProductQuantityByIdInCartById);
 
 cartsRouter.delete("/:cid", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETECart);
 

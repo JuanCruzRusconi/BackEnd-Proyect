@@ -1,127 +1,197 @@
+import UsersServices from "../services/users.services.js";
 import { generateToken } from "../utils/jwt.js";
-import * as UsersServices from "../services/users.services.js";
-import * as CartsServices from "../services/carts.services.js";
+import CartsServices from "../services/carts.services.js";
+import CustomError from "../utils/customError.js";
+import ErrorsDictionary from "../utils/errorsDictionary.js";
 
-export const GETUsers = async (req, res) => {
 
-    const users = await UsersServices.GetAllUsers();
-    res.send(users);
-};
+const CartService = new CartsServices();
 
-export const GETUserById = async (req, res) => {
+export default class UsersApiControllers {
 
-    try {
-        const { pid } = req.params;
-        const user = await UsersServices.GetUserById(pid);
-        res.send(user);
-        console.log(user);
-    } catch (e) {
+    constructor () {
+        this.service = new UsersServices();
+    };
 
-    }
-};
-
-export const GETUserByUsername = async (req, res) => {
-
-    try {
-        const { uid } = req.params;
-        const user = await UsersServices.GetUserByUsername(uid);
-        res.send(user);
-    } catch (e) {
-
-    }
-};
-
-export const POSTLogin = async (req, res) => {
-
-    try {
-        const user = await UsersServices.ValidateUser(req.body.username, req.body.password);
-        if(!user) return res.send({error: true, msg: "Credenciales invalidas."});
-
-        const token = generateToken({sub: user._id, user: {email: user.username}});
-        res.cookie("accessToken", token, {
-            maxAge: (24*60*60)*1000,
-            httpOnly: true
-        });
-        const profile = await UsersServices.GetUserById(user._id);
-        res.send({ error: false, accessToken: token, user: profile });
-    } catch (e) {
-        res.status(403).send({error: true, msg: e.message});
-    }
-};
-
-export const POSTRegister = async (req, res) => {
-
-    try {
-        const { name, surname, mail, username, password } = req.body;
-        const userExists = await UsersServices.GetUserByUsername(username);
-        if(userExists) throw new Error("Usuario ya en uso.")
-        const newUser = await UsersServices.CreateUser({
-            name: name,
-            surname: surname,
-            username: username,
-            password: password,
-            role: username === "admincoder@coder.com" ? "admin" : "user"
-            });
-        res.send({ error: false, msg: `Registro de ${username} exitoso.` });
-    } catch (e) {
-        res.status(403).send({error: true, msg: e.message});
-    }
-};
-
-export const GETSessionCurrent = async (req, res) => {
-
-    try {
-        console.log(req.user);
-        if(!req.user) throw new Error("Debes loguearte");
-        res.send({ error: false, user: req.user });
-    } catch (e) {
-        throw e;
-    }
-};
-
-export const POSTLogout = (req, res) => {
+    POSTLogin = async (req, res, next) => {
     
-    // Elimina la cookie llamada "accessToken" estableciendo su tiempo de expiración en el pasado
-    res.cookie("accessToken", "", { expires: new Date(0), httpOnly: true });
-    res.send({ error: false, message: 'Cierre de sesión exitoso' });
-  };
+        try {
+            const user = await this.service.ValidateUser(req.body.username, req.body.password, next);
+            if(!user) return CustomError.createError(ErrorsDictionary.AUTH_ERROR);
+    
+            const token = generateToken({sub: user._id, user: {email: user.username}});
+            res.cookie("accessToken", token, {
+                maxAge: (24*60*60)*1000,
+                httpOnly: true
+            });
+            const profile = await this.service.GetUserById(user._id, next);
+            res.send({ error: false, accessToken: token, message: "Looged in", info: profile });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    POSTRegister = async (req, res, next) => {
+    
+        try {
+            const { name, surname, mail, username, password } = req.body;
+            const userExists = await this.service.GetUserByUsername(username, next);
+            if(userExists) return CustomError.createError(ErrorsDictionary.AUTH_DATA_ERROR);
+            const newUser = await this.service.CreateUser({
+                name: name,
+                surname: surname,
+                username: username,
+                password: password,
+                role: username === "admincoder@coder.com" ? "admin" : "user", 
+                next
+                });
+            res.status(200).send({ error: false, payload: newUser._id, msg: `Registro de ${username} exitoso.` });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
 
-export const GETUserCart = async (req, res) => {
+    POSTProductInUserCartById = async (req, res, next) => {
+    
+        try {
+            const { pid } = req.params
+            const cart = req.user.cart._id;
+            const cartUser = await CartService.GetCartById(cart, next);
+            if(!cartUser) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            const cartUserId = cartUser._id;
+            const prod = await CartService.UpdateProductInCartById(cartUserId, pid, next);
+            if(!prod) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
+            res.send(prod);
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    POSTPurchaseUserCart = async (req, res, next) => {
+    
+        try {
+            const user = req.user._id;
+            const cart = req.user.cart;
+            const cartId = cart._id;
+            const cartUser = await CartService.GetCartById(cartId, next);
+            if(!cart.products.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            const cartUserId = cartUser._id;
+            const buyCart = await CartService.CreatePurchase(cartUserId, user, next);
+            if(!buyCart) return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
+            res.send({error: false, msg: "Compra realizada, ticket enviado al usuario."})
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
 
-    try {
-        const cart = req.user.cart;
-        res.send(cart);
-    } catch (e) {
-        res.status(502).send({error: true, msg: e.message});
-    }
-};
+    POSTChangeRole = async (req, res, next) => {
+    
+        try {
+            const user = req.user._id;
+            console.log(user);
+            const role = req.user.role
+            console.log(role);
+            const changeRole = await this.service.UpdateUserRole(user, role, next);
+            if(!changeRole) return CustomError.createError(ErrorsDictionary.AUTH_ERROR)
+            res.send(await this.service.GetUserById(user, next));
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
 
-export const POSTProductInUserCartById = async (req, res) => {
+    POSTSignout = (req, res, next) => {
+        
+        try {
+            // Elimina la cookie llamada "accessToken" estableciendo su tiempo de expiración en el pasado
+            const cookie = res.cookie("accessToken", "", { expires: new Date(0), httpOnly: true });
+            if(!cookie) return CustomError.createError(ErrorsDictionary.COOKIE_NOT_FOUND);
+            res.send({ error: false, message: 'Signet out.' });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
 
-    try {
-        const {pid} = req.params
-        const cart = req.user.cart._id;
-        const cartUser = await CartsServices.GetCartById(cart);
-        const cartUserId = cartUser._id;
-        const prod = await CartsServices.PostProductInCartById(cartUserId, pid);
-        res.send(prod);
-    } catch (e) {
-        throw e
-    }
-};
+    GETUsers = async (req, res, next) => {
 
-export const POSTPurchaseUserCart = async (req, res) => {
+        try {
+            const users = await this.service.GetUsers(next);
+            if(!users) return CustomError.createError(ErrorsDictionary.NOT_FOUND);
+            res.send(users);
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETUserById = async (req, res, next) => {
+    
+        try {
+            const { pid } = req.params;
+            const user = await this.service.GetUserById(pid, next);
+            if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            res.send(user);
+            console.log(user);
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETUserByUsername = async (req, res, next) => {
+    
+        try {
+            const { uid } = req.params;
+            const user = await this.service.GetUserByUsername(uid, next);
+            if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            res.send(user);
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETSessionCurrent = async (req, res, next) => {
+    
+        try {
+            console.log(req.user);
+            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
+            res.send({ error: false, user: req.user });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETUserCart = async (req, res, next) => {
+    
+        try {
+            const cart = req.user.cart;
+            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
+            res.send(cart);
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    DELETEUser = async (req, res, next) => {
+    
+        try {
+            const user = req.user._id;
+            if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            const deleteUser = await this.service.DeleteUser(user, next);
+            res.send({error: false, msg: "Usuario eliminado."})
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
 
-    try {
-        const user = req.user._id;
-        const cart = req.user.cart;
-        const cartId = cart._id;
-        const cartUser = await CartsServices.GetCartById(cartId);
-        if(!cart.products.length >= 1) throw new Error("No posee productos en el carrito.");
-        const cartUserId = cartUser._id;
-        const emptyCart = await CartsServices.PostPurchase(cartUserId, user);
-        res.send({error: false, msg: "Compra realizada, ticket enviado al usuario."})
-    } catch (e) {
-        res.status(502).send({error: true, msg: e.message});
-    }
-};
+}
+

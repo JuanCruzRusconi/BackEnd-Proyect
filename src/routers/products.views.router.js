@@ -1,15 +1,17 @@
 import { Router } from "express";
-import * as ProductsViewsController from "../controllers/products.views.controller.js"
+import ProductsViewsControllers from "../controllers/products.views.controller.js";
 import passportMW from "../utils/jwt.middleware.js";
 
 const productsViewsRouter = Router();
 
-productsViewsRouter.get("/", passportMW("jwt"), ProductsViewsController.GETProducts);
+const ProductsViewsController = new ProductsViewsControllers();
+
+productsViewsRouter.get("/", ProductsViewsController.GETProducts);
 
 productsViewsRouter.get("/:pid", passportMW("jwt"), ProductsViewsController.GETProductById);
 
 productsViewsRouter.get("/realtimeproducts", passportMW("jwt"), ProductsViewsController.GETRealTimeProducts);
 
-export default productsViewsRouter
+export default productsViewsRouter;
 
 

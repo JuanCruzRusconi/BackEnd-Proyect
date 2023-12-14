@@ -1,82 +1,86 @@
-import { json } from "express";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import productsModel from "../../schemas/products.schema.js";
-import mongoose from "mongoose";
 
-export default class ProductsDAO {
+export default class ProductsMONGO {
 
-    constructor () {
-        //nodethis.products = [];
-    };
+    constructor () {};
 
-    getProducts = async () => {
-        
-        try {
-            const prods = await productsModel.find();
-            return prods;
-        } catch (e) {
-            return [];
-        }
-    };
-
-    createProduct = async (product) => {
+    createProduct = async (product, next) => {
         
         try {
             const addProd = await productsModel.create([product]);
             return addProd;
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            error.from = "ProductsMongo";
+            return next(error);
         }
     };
 
-    getProductById = async (productId) => {
+    getProducts = async (next) => {
         
         try {
-            const getProd = await productsModel.findById({ _id: productId});
-            return getProd;
-        } catch (e) {
-            console.log(e);
+            const prods = await productsModel.find();
+            return prods;
+        } catch (error) {
+            error.from = "ProductsMongo";
+            return next(error);
         }
     };
 
-    getProductByCode = async (code) => {
+    getProductById = async (productId, next) => {
+        
+        try {
+            const getProd = await productsModel.findById(productId);
+            return getProd;
+        } catch (error) {
+            error.from = "ProductsMongo";
+            return next(error);
+        }
+    };
+
+    getProductByCode = async (code, next) => {
         
         try {
             const getProd = await productsModel.find({ code: code });
             return getProd;
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            error.from = "ProductsMongo";
+            return next(error);
         }
     };
 
-    updateProduct = async (id, product) => {
+    updateProduct = async (id, product, next) => {
         
         try {  
             const updateProd = await productsModel.updateOne({_id: id}, {$set: product});
             return updateProd;
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            error.from = "ProductsMongo";
+            return next(error);
         }
     };
 
-    deleteProduct =  async (id) => {
-        
-        try {
-            const deleteProd = await productsModel.deleteOne({_id: id});
-            return deleteProd;
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    updateProductStockAfterPurchase = async (id, newStock) => {
+    updateProductStockAfterPurchase = async (id, newStock, next) => {
         
         try {              
             const updateProd = await productsModel.updateOne({_id: id}, {$set: {stock: newStock}}); 
             return updateProd;
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            error.from = "ProductsMongo";
+            return next(error);
         }                                                           
     };
-};
+
+    deleteProduct = async (id, next) => {
+        
+        try {
+            const deleteProd = await productsModel.deleteOne({_id: id});
+            return deleteProd;
+        } catch (error) {
+            error.from = "ProductsMongo";
+            return next(error);
+        }
+    };
+    
+}
+
+    

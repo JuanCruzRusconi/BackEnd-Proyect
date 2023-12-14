@@ -1,84 +1,94 @@
-import ProductsDAO from "../dao/mongoDB/products.mongo.dao.js";
-import ProductsDTOReturn from "../dto/products.dto.js";
-import productsModel from "../schemas/products.schema.js";
+import ProductsRepository from "../repositories/products.repositories.js";
 
-const ProductsDao = new ProductsDAO();
 
-export const GetProducts = async () => {
-    try {
-        const products = await ProductsDao.getProducts();
-        const prodsDto = products.map((prod) => new ProductsDTOReturn(prod));
-        return prodsDto;
-    } catch (e) {
-        return [];
-    }
- };
+export default class ProductsServices {
 
-export const PostProduct = async (product) => {
+    constructor () {
+        this.repository = new ProductsRepository(); 
+    };
+
+    CreateProduct = async (product, next) => {
     
-    const {title, description, price, thumbnail, code, stock} = product
+        const {title, description, price, thumbnail, code, stock} = product
+    
+        try {
+            //if(!product.title || !product.description || !product.price || !product.code || !product.stock) throw new Error ("Faltan parametros");
+            const products = await this.GetProducts(next);
+            if(products.find((prod) => prod.code === code)) throw new Error("Code in use!");
+            const addProd = await this.repository.createProduct(product, next);
+            return addProd;
+        } catch (error) {
+            error.from = "ProductsServices";
+            return next(error);
+        }
+    };
 
-    try {
-        //if(!product.title || !product.description || !product.price || !product.code || !product.stock) throw new Error ("Faltan parametros");
-        const products = await GetProducts();
-        if(products.find((prod) => prod.code === code)) throw new Error("Code in use!");
-        const addProd = await ProductsDao.createProduct(product);
-        return addProd;
-    } catch (e) {
-        throw e
-    }
-};
+    GetProducts = async (next) => {
+        try {
+            const products = await this.repository.getProducts(next);
+            return products;
+        } catch (error) {
+            error.from = "ProductsServices";
+            return next(error);
+        }
+     };
 
-export const GetProductById = async (productId) => {
+    GetProductById = async (productId, next) => {
         
-     try {
-         const product = await ProductsDao.getProductById(productId);
-         const productDto = new ProductsDTOReturn(product);
-         return productDto;
-     } catch (e) {
-         console.log(e);
-     }
-};
+        try {
+            const product = await this.repository.getProductById(productId, next);
+            return product;
+        } catch (error) {
+            error.from = "ProductsServices";
+            return next(error);
+        }
+    };
 
-export const GetProductStockById = async (productId) => {
+    GetProductStockById = async (productId, next) => {
         
-    try {
-        const prod = await ProductsDao.getProductById(productId);
-        return prod.stock;
-    } catch (e) {
-        console.log(e);
-    }
-};
+        try {
+            const prod = await this.repository.getProductById(productId, next);
+            return prod.stock;
+        } catch (error) {
+            error.from = "ProductsServices";
+            return next(error);
+        }
+    };
 
-export const PutProduct = async (id, product) => {
+    UpdateProduct = async (id, product, next) => {
      
-    try {  
-         const updateProd = await ProductsDao.updateProduct(id, product);
-        return updateProd;
-    } catch (e) {
-         console.log(e);
-     }
- };
+        try {  
+            const updateProd = await this.repository.updateProduct(id, product, next);
+            return updateProd;
+        } catch (error) {
+            error.from = "ProductsServices";
+            return next(error);
+        }  
+    };
 
-export const DeleteProduct =  async (id) => {
+    UpdateProductStockAfterPurchase =  async (id, quantity, next) => {
      
-     try {
-         const deleteProd = await ProductsDao.deleteProduct(id);
-         return deleteProd;
-     } catch (e) {
-         console.log(e);
-     }
- };
+        try {
+            const prod = await this.GetProductById(id, next);
+            if(prod.stock < quantity) throw new Error("No hay stock disponible");
+            const newStock = prod.stock - quantity;
+            const updateProd = await this.repository.updateProductStockAfterPurchase(id, newStock, next);
+            return updateProd;
+        } catch (error) {
+            error.from = "ProductsServices";
+            return next(error);
+        }
+    };
 
- export const UpdateProductStockAfterPurchase =  async (id, quantity) => {
+    DeleteProduct =  async (id, next) => {
      
-    try {
-        const prod = await ProductsDao.getProductById(id);
-        if(prod.stock < quantity) throw new Error("No hay stock disponible");
-        const newStock = prod.stock - quantity;
-        const updateProd = await ProductsDao.updateProductStockAfterPurchase(id, newStock);
-        return updateProd;
-    } catch (e) {
-        throw e;
-    }
-};
+        try {
+            const deleteProd = await this.repository.deleteProduct(id, next);
+            return deleteProd;
+        } catch (error) {
+            error.from = "ProductsServices";
+            return next(error);
+        }
+    };
+
+}

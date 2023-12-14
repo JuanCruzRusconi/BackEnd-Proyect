@@ -1,0 +1,352 @@
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Titulo del producto
+        description:
+          type: string
+          description: Descripcion del producto
+        price:
+          type: int64
+          description: Precio del producto
+        thumbnail:
+          type: string
+          description: Ruta de imagen del producto
+        code:
+          type: string
+          description: Codigo interno del producto
+        stock:
+          type: int64
+          description: Cantidad de unidades del producto en stock
+        status:
+          type: boolean
+          description: Estado del producto
+        category:
+          type: string
+          description: Categoría del producto
+      example: 
+        title: Iphone 14 Pro Max
+        description: 256gb, space grey
+        price: 775000
+        thumbnail: Ruta de imagen
+        code: 1017
+        stock: 10
+        status: true
+        category: tech
+    UpdateProduct:
+      type: object
+      properties:
+        price:
+          type: int64
+          description: Precio del producto
+        stock:
+          type: int64
+          description: Cantidad de unidades del producto en stock
+      example: 
+        price: 855000
+        stock: 7
+  responses:
+    getProducts:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload:
+          $ref: '#/components/schemas/Product'
+      example:
+        status: success
+        payload:
+          productId: 64dc35e9b1a6f4bbfbf63db5
+    createProduct:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload:
+          $ref: "#/components/schemas/Product"
+      example:
+        status: success
+        payload:
+          newProduct:
+            id: ID del producto creado
+            title: Titulo del nuevo producto
+            description: Descripcion del nuevo producto
+            price: Precio del nuevo producto
+            thumbnail: Ruta de imagen del nuevo producto
+            code: Codigo interno del nuevo producto
+            stock: Cantidad de stock disponible del nuevo producto
+            status: Estado del nuevo producto
+            category: Categoria del nuevo producto
+    updateProduct:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload:
+          $ref: '#/components/schemas/UpdateProduct'
+      example:
+        status: success
+        payload:
+          updateProduct:
+            id: ID del producto actualizado
+            title: Titulo del producto
+            description: Descripcion del producto
+            price: Precio del producto actualizado
+            thumbnail: Ruta de imagen del producto
+            code: Codigo interno del producto
+            stock: Cantidad de stock disponible del producto actualizado
+            status: Estado del producto
+            category: Categoria del producto
+    destroyProduct:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Mensaje de éxito
+      example:
+        status: success
+        message: Producto eliminado exitosamente
+    notFound:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: GET /api/products controller
+        message: Not found documents
+    notFoundOne:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: GET /api/products/{pid} controller
+        message: Not found document
+    documentError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: POST /api/products controller
+        message: Cannot create document
+    clientError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: PUT /api/products controller
+        message: Incomplete values
+    serverError:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: fatal
+        from: HTTP /api/products controller
+        message: Server crashes
+
+paths:
+  /api/products:
+    get:
+      summary: Obtener la lista completa de productos
+      tags:
+        - Products
+      responses:
+        '200':
+          description: Exito en la lectura de productos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/getProducts'
+        '404':
+          description: No se encontraron los documentos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFound'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+    post:
+      summary: Crear un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        description: Objeto con las propiedades necesarias para crear un nuevo producto
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Éxito en la creación de un nuevo producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/createProduct'
+        '400':
+          description: Faltante de campos en el objeto de creación de producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/documentError'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+
+  /api/products/{pid}:
+    get:
+      summary: Obtener información de un producto específico
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Exito en la lectura del producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/getProducts'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+    put:
+      summary: Actualizar información de un producto específico
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          type: integer
+          format: int64
+      requestBody:
+        required: true
+        description: Objeto con las propiedades a actualizar
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+      responses:
+        '200':
+          description: Éxito en la actualización del producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/updateProduct'
+        '400':
+          description: Se requieren los campos a actualizar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/clientError'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+    delete:
+      summary: Eliminar un producto específico
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Éxito en la eliminación del producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/destroyProduct'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
