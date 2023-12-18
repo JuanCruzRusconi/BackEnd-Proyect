@@ -1,7 +1,5 @@
-import { disconnect } from "process";
 import CartsServices from "../services/carts.services.js";
 import ProductsServices from "../services/products.services.js";
-import * as TicketsServices from "../services/tickets.services.js";
 import CustomError from "../utils/customError.js";
 import ErrorsDictionary from "../utils/errorsDictionary.js";
 
@@ -156,12 +154,12 @@ export default class CartsApiControllers {
         try {
             const { cid, pid } = req.params;
             const { quantity } = req.body;
-            const qty = await ProductService.GetProductById(pid, next);
+            const qty = await ProductsService.GetProductById(pid, next);
             if(quantity >= qty.stock) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
             else {
                 const cart = await this.service.UpdateProductQuantityByIdInCartById(
                     await this.service.GetCartById(cid, next),
-                    await ProductService.GetProductById(pid, next),
+                    await ProductsService.GetProductById(pid, next),
                     quantity,
                     next
                 );
@@ -205,7 +203,7 @@ export default class CartsApiControllers {
             const { cid, pid } = req.params;
             const cart = await this.service.DeleteProductInCartById(
                 await this.service.GetCartById(cid, next),
-                await ProductService.GetProductById(pid, next),
+                await ProductsService.GetProductById(pid, next),
                 next
             );
             if(!cart.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);

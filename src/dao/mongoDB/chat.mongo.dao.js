@@ -1,5 +1,4 @@
 import messagesModel from "../../schemas/messages.schema.js";
-import mongoose from "mongoose";
 
 export default class ChatMONGO {
 

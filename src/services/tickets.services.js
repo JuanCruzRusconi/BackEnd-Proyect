@@ -1,5 +1,5 @@
 import TicketsRepository from "../repositories/tickets.repositories.js";
-import UsersServices from "./users.services.js";
+//import UsersServices from "./users.services.js";
 import crypto from "crypto";
 
 //const UserService = new UsersServices();
@@ -8,11 +8,13 @@ export default class TicketsServices {
 
     constructor () {
         this.repository = new TicketsRepository();
-        this.user = new UsersServices();
+        //this.user = new UsersServices();
     };
 
     CreateTicket = async (user, next) => {
 
+        const UsersServices = import("./users.services.js").default;
+        const UserService = new UsersServices();
         try {
             const dateTime = new Date();
             const ticketCode = crypto.randomBytes(12).toString("hex");
@@ -26,7 +28,7 @@ export default class TicketsServices {
                 next);
             const ticketId = await this.repository.getTicketById(ticket._id, next);
             console.log(ticketId)
-            await this.user.UpdateUserTicket(user, ticketId, next);
+            await UserService.UpdateUserTicket(user, ticketId, next);
             const ticketAct = await this.repository.updateUserTicket(ticketId, user, next);
             return ticketAct;
         } catch (error) {
@@ -87,9 +89,11 @@ export default class TicketsServices {
 
     DeleteTicket = async (user, ticket, next) => {
 
+        const UsersServices = import("./users.services.js").default;
+        const UserService = new UsersServices();
         try {
             const deleteTicket = await this.repository.deleteTicket(ticket, next);
-            await this.user.DeleteTicketUser(user, ticket, next);
+            await UserService.DeleteTicketUser(user, ticket, next);
             return deleteTicket;
         } catch (error) {
             error.from = "TicketsServices";

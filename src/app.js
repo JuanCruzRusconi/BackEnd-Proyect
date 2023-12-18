@@ -90,7 +90,7 @@ app.use(notFoundHandler);
 
 const httpServer = HTTPServer(app);
 
-const PORT = process.env.PORT || 9000
+const PORT = env.PORT || 9080
 const ENV = env.ENV
 
 httpServer.listen(PORT, () => {
