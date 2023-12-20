@@ -1,36 +1,34 @@
 import TicketsRepository from "../repositories/tickets.repositories.js";
-//import UsersServices from "./users.services.js";
+import UsersServices from "./users.services.js";
 import crypto from "crypto";
-
-//const UserService = new UsersServices();
 
 export default class TicketsServices {
 
     constructor () {
         this.repository = new TicketsRepository();
-        //this.user = new UsersServices();
     };
 
-    CreateTicket = async (user, next) => {
+    CreateTicket = async (user, amount, next) => {
 
-        const UsersServices = import("./users.services.js").default;
-        const UserService = new UsersServices();
         try {
+            console.log(user);
+            const UserService = new UsersServices();
             const dateTime = new Date();
             const ticketCode = crypto.randomBytes(12).toString("hex");
             const ticket = await this.repository.createTicket({
                     title: "Purchase",
                     code: ticketCode,
                     purchase_datetime: dateTime,
-                    amount: 1000,
-                    purchaser: user
+                    amount: amount,
+                    user: user
                 },
                 next);
-            const ticketId = await this.repository.getTicketById(ticket._id, next);
+            const ticketId = ticket._id;
+            const getTicket = await this.repository.getTicketById(ticketId, next);
             console.log(ticketId)
-            await UserService.UpdateUserTicket(user, ticketId, next);
+            let userUpdt = await UserService.UpdateUserTicket(user, getTicket, next);
             const ticketAct = await this.repository.updateUserTicket(ticketId, user, next);
-            return ticketAct;
+            return this.GetTicketById(ticketId);
         } catch (error) {
             error.from = "TicketsServices";
             return next(error);
@@ -76,6 +74,7 @@ export default class TicketsServices {
         }
     };
 
+
     UpdateUserTicket = async (pid, ticket, next) => {
 
         try {
@@ -89,11 +88,10 @@ export default class TicketsServices {
 
     DeleteTicket = async (user, ticket, next) => {
 
-        const UsersServices = import("./users.services.js").default;
-        const UserService = new UsersServices();
         try {
+            const UserService = new UsersServices();
             const deleteTicket = await this.repository.deleteTicket(ticket, next);
-            await UserService.DeleteTicketUser(user, ticket, next);
+            let userDlt = await UserService.DeleteTicketUser(user, ticket, next);
             return deleteTicket;
         } catch (error) {
             error.from = "TicketsServices";

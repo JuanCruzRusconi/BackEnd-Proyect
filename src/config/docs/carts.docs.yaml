@@ -134,6 +134,19 @@ components:
       example:
         status: success
         message: Carrito eliminado exitosamente
+    purchaseCart:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Mensaje de éxito
+      example:
+        status: success
+        payload: ID del ticket creado
+        message: Compra dirigida a la seccion de tickets, informacion enviada al usuario.
     notFound:
       type: object
       properties:
@@ -182,6 +195,38 @@ components:
         status: error
         from: POST /api/carts controller
         message: Cannot create document
+    documentEmpty:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: POST /api/carts controller
+        message: Incomplete values
+    cartEmpty:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: POST /api/carts/purchase-cart controller
+        message: Document is empty
     clientError:
       type: object
       properties:
@@ -363,6 +408,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /purchase-cart:
+    post:
+      summary: Realizar la compra del carrito del usuario logueado para la creacion del ticket
+      tags:
+        - Carts
+      responses:
+        '200':
+          description: Éxito en la compra del carrito y creacion del ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/purchaseCart'
+        '404':
+          description: Error en la compra de carrito debido a que se encuentra vacio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/cartEmpty'
         '500':
           description: Error caida de servidor
           content:

@@ -99,6 +99,18 @@ components:
       example:
         status: success
         message: Ticket eliminado exitosamente
+    ticketPayment:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Mensaje de éxito
+      example:
+        status: success
+        message: Ticket cobrado exitosamente
     notFound:
       type: object
       properties:
@@ -115,6 +127,22 @@ components:
         status: error
         from: GET /api/tickets controller
         message: Not found documents
+    notFoundPost:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        from:
+          type: string
+          description: Descripción del endpoint del error
+        message:
+          type: string
+          description: Descripción del error
+      example:
+        status: error
+        from: POST /api/tickets/payments/{pid}/payment-intents controller
+        message: Not found document
     notFoundOne:
       type: object
       properties:
@@ -334,3 +362,35 @@ paths:
             application/json:
               schema:
                 $ref: '#components/responses/serverError'
+  api/tickets/payments/{pid}/payment-intents:
+    post:
+      summary: Realizar el pago del ticket
+      tags:
+        - Tickets
+      parameters:
+        - name: pid
+          in: path
+          description: ID del ticket
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '201':
+          description: Éxito en el pago del ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ticketPayment'
+        '400':
+          description: No se encontro el ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundPost'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+      

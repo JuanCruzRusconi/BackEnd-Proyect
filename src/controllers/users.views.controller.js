@@ -47,7 +47,7 @@ export default class UsersViewsControllers {
                 surname: surname,
                 username: username,
                 password: password,
-                role: username === "admincoder@coder.com" ? "admin" : "user", 
+                role: username === "admin@coder.com" ? "admin" : "user", 
                 next
             });
 

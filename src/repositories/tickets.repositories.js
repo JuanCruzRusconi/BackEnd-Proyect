@@ -36,8 +36,8 @@ export default class TicketsRepository {
 
         try {
             let ticket = await this.model.getTicketById(pid, next);
-            const responseDto = new TicketsDTOReturn(ticket);
-            return responseDto;
+            //const responseDto = new TicketsDTOReturn(ticket);
+            return ticket;
         } catch (error) {
             error.from = "TicketsRepository";
             return next(error);

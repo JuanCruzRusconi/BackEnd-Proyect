@@ -10,8 +10,98 @@ export default class CartsApiControllers {
 
     constructor () {
         this.service = new CartsServices();
+    };  
+
+    // ------- Rutas orientadas al usuario, acceso de usuario logueado ------- //
+    POSTPurchaseUserCart = async (req, res, next) => {
+    
+        try {
+            const user = req.user._id;
+            const cart = req.user.cart;
+            const cartId = cart._id;
+            const cartUser = await this.service.GetCartById(cartId, next);
+            if(!cart.products.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            const cartUserId = cartUser._id;
+            const newTicket = await this.service.CreatePurchase(cartUserId, user, next);
+            const ticketId = newTicket[0]._id;
+            if(!newTicket) return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
+            res.status(200).send({ status: "sucess", payload: ticketId, message: `Compra dirigida a la seccion de tickets, informacion enviada al usuario.` })
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
     };
 
+    GETUserCart = async (req, res, next) => {
+    
+        try {
+            const cart = req.user.cart._id;
+            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
+            const userCart = await this.service.GetCartById(cart, next)
+            res.status(200).send({ status: "success", payload: userCart });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+
+    PUTProductQuantityByIdInUserCart = async (req, res, next) => {
+    
+        try {
+            const { pid } = req.params;
+            const { quantity } = req.body;
+            const user = req.user.cart;
+            const product = await ProductsService.GetProductById(pid, next);
+            if(quantity >= product.stock) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
+            else {
+                const cart = await this.service.UpdateProductQuantityByIdInCartById(
+                    user._id,
+                    product._id,
+                    quantity,
+                    next
+                );
+                res.status(200).send({ status: "success", updated: true });
+            }
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+
+    DELETEProductsInUserCart = async (req, res, next) => {
+    
+        try {
+            const user = req.user.cart;
+            const getCart = await this.service.GetCartById(user._id, next);
+            if(getCart.products.length == 0) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            else { await this.service.DeleteAllProductsInCartById(user._id, next);}
+            res.status(200).send({ status: "success", deleted: true });
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+    
+    DELETEProductInUserCartById = async (req, res, next) => {
+    
+        try {
+            const { pid } = req.params;
+            const user = req.user.cart;
+            const cart = await this.service.GetCartById(user._id, next);
+            if(!cart.products.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            const cartDeleted = await this.service.DeleteProductInCartById(
+                user._id,
+                await ProductsService.GetProductById(pid, next),
+                next
+            );
+            res.status(200).send({ status: "success", response: "Product deleted." });
+        } catch (error) {
+            error.from = "CartsApiControllers";
+            return next(error);
+        }
+    };
+
+    // ------- Rutas orientadas al administrador, acceso unicamente admin ------- //
     POSTCart = async (req, res, next) => {
     
         try {
@@ -25,11 +115,11 @@ export default class CartsApiControllers {
         }
     };
     
-    POSTProductInCartById = async (req, res, next) => {
+    POSTProductInCart = async (req, res, next) => {
         
         try {
             const { cid, pid } = req.params;
-            if(!await this.service.GetCartById(cid, next) || !await ProductService.GetProductById(pid, next)) {
+            if(!await this.service.GetCartById(cid, next) || !await ProductsService.GetProductById(pid, next)) {
                return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
             }
             else {
@@ -44,7 +134,7 @@ export default class CartsApiControllers {
             return next(error);
         }
     };
-    // ESTA NOSE SI VA
+
     POSTPurchase = async (req, res, next) => {
     
         try {
@@ -60,7 +150,6 @@ export default class CartsApiControllers {
         }
     };
 
-
     POSTProductInUserCartById = async (req, res, next) => {
     
         try {
@@ -72,32 +161,13 @@ export default class CartsApiControllers {
             const cartUserId = cartUser._id;
             const prod = await this.service.UpdateProductInCartById(cartUserId, pid, next);
             if(!await ProductsService.GetProductById(pid, next)) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
-            res.status(200).send({ status: "success", mycart: cartUser });
-        } catch (error) {
-            error.from = "UsersApiControllers";
-            return next(error);
-        }
-    };
-    
-    POSTPurchaseUserCart = async (req, res, next) => {
-    
-        try {
-            const user = req.user._id;
-            const cart = req.user.cart;
-            const cartId = cart._id;
-            const cartUser = await this.service.GetCartById(cartId, next);
-            if(!cart.products.length >= 1) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
-            const cartUserId = cartUser._id;
-            const buyCart = await this.service.CreatePurchase(cartUserId, user, next);
-            if(!buyCart) return CustomError.createError(ErrorsDictionary.USER_INPUT_ERROR);
-            res.status(200).send({error: false, msg: "Compra realizada, ticket enviado al usuario."})
+            res.status(200).send({ status: "success", mycart: await this.service.GetCartById(cart, next) });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
         }
     };
 
-    
     GETCarts = async (req, res, next) => {
     
         try {
@@ -123,33 +193,7 @@ export default class CartsApiControllers {
         }
     };
 
-    GETUserCart = async (req, res, next) => {
-    
-        try {
-            const cart = req.user.cart._id;
-            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
-            const userCart = await this.service.GetCartById(cart, next)
-            res.status(200).send({ status: "success", payload: userCart });
-        } catch (error) {
-            error.from = "UsersApiControllers";
-            return next(error);
-        }
-    };
-    
-    GETPurchase = async (req, res, next) => {
-    
-        try {
-            const { cid } = req.params;
-            const cart = await this.service.GetPurchase(cid, next);
-            if(!cart) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            res.status(200).send({ status: "success", response: cart });
-        } catch (error) {
-            error.from = "CartsApiControllers";
-            return next(error);
-        }
-    };
-    
-    PUTProductQuantityByIdInCartById = async (req, res, next) => {
+    PUTProductQuantityById = async (req, res, next) => {
     
         try {
             const { cid, pid } = req.params;
@@ -170,7 +214,7 @@ export default class CartsApiControllers {
             return next(error);
         }
     };
-    
+
     DELETECart = async (req, res, next) => {
     
         try {
@@ -183,8 +227,8 @@ export default class CartsApiControllers {
             return next(error);
         }
     };
-    
-    DELETEProductsInCartById = async (req, res, next) => {
+
+    DELETEProductsInCart = async (req, res, next) => {
     
         try {
             const { cid } = req.params;
@@ -197,7 +241,7 @@ export default class CartsApiControllers {
         }
     };
     
-    DELETEProductByIdInCartById = async (req, res, next) => {
+    DELETEProductById = async (req, res, next) => {
     
         try {
             const { cid, pid } = req.params;

@@ -12,6 +12,42 @@ export default class TicketsApiControllers {
         this.service = new TicketsServices();
     };
 
+    // ------- Rutas orientadas al usuario, acceso de usuario logueado ------- //
+    GETTicketsUser = async (req, res, next) => {
+    
+        try {
+            const user = req.user.tickets;
+            const tickets = await this.service.GetTicketsUser(user, next);
+            if(!tickets) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
+            res.status(200).send({ status: "success", response: tickets });
+        } catch (error) {
+            error.from = "TicketsApiControllers";
+            return next(error);
+        }
+    };
+    
+    POSTPayment = async (req, res, next) => {
+
+        try {
+            let id = req.query.id;
+            const { pid } = req.params;
+            const ticket = await this.service.GetTicketById(pid);
+            if(!ticket) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            const amount = ticket.amount;
+            const data = {
+                amount: amount,
+                currency: "usd"
+            };
+            const stripe = new Stripe(process.env.STRIPE);
+            const intent = await stripe.paymentIntents.create(data);
+            res.status(200).send({ status: "success", payload: intent, message: "Ticket cobrado exitosamente" });
+        } catch (error) {
+            error.from = "TicketsApiControllers";
+            next(error);
+        }
+    };
+
+    // ------- Rutas orientadas al administrador, acceso unicamente admin ------- //
     POSTTicket = async (req, res, next) => {
 
         try {
@@ -50,19 +86,6 @@ export default class TicketsApiControllers {
         }
     };
     
-    GETTicketsUser = async (req, res, next) => {
-    
-        try {
-            const user = req.user.tickets;
-            const tickets = await this.service.GetTicketsUser(user, next);
-            if(!tickets) return CustomError.createError(ErrorsDictionary.DOCUMENT_EMPTY);
-            es.status(200).send({ status: "success", response: tickets });
-        } catch (error) {
-            error.from = "TicketsApiControllers";
-            return next(error);
-        }
-    };
-    
     PUTTicket = async (req, res, next) => {
     
         try {
@@ -85,30 +108,12 @@ export default class TicketsApiControllers {
             const user = req.user._id;
             if(!await this.service.GetTicketById(pid, next)) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
             const ticket = await this.service.DeleteTicket(user, pid, next);
-            res.status(200).send({ status: "success", msg: "Ticket deleted." });
+            res.status(200).send({ status: "success", message: "Ticket deleted." });
         } catch (error) {
             error.from = "TicketsApiControllers";
             return next(error);
         }
     };
-
-    POSTPayment = async (req, res, next) => {
-
-        try {
-            let id = req.query.id;
-            //return CustomError.createError(ErrorsDictionary);
-            const data = {
-                amount: this.service.GetTicketById(),
-                currency: "usd"
-            };
-            const stripe = new Stripe();
-            const intent = await stripe.paymentIntents.create(data);
-            res.status(200).send({ status: "success", payload: intent });
-        } catch (error) {
-            error.from = "TicketsApiControllers";
-            next(error);
-        }
-    }
 
 }
 

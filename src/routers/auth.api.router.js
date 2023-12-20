@@ -3,38 +3,42 @@ import UsersApiControllers from "../controllers/auth.api.controller.js";
 import { JWTCookieMW, JWTMW, generateToken } from "../utils/jwt.js";
 import passportMW from "../utils/jwt.middleware.js";
 import passport from "passport";
+import { verifyRole } from "../utils/mddw.js";
 
-const userApiRouter = Router();
+const authApiRouter = Router();
 
 const UsersApiController = new UsersApiControllers();
 
-userApiRouter.get("/", UsersApiController.GETUsers);
-
-userApiRouter.get("/:pid", UsersApiController.GETUserById);
-
-userApiRouter.get("/:uid", UsersApiController.GETUserByUsername);
-
-userApiRouter.get("/github", passport.authenticate("github", {
+// ------- Rutas orientadas al usuario, acceso de usuario logueado ------- //
+authApiRouter.get("/github", passport.authenticate("github", {
     scope: ["user: email"]
 }), (req, res) => {});
 
-userApiRouter.get("/callback", passport.authenticate("github", {
+authApiRouter.get("/callback", passport.authenticate("github", {
     failureRedirect: "/login",
     successRedirect: "/profile"
 }, (req, res) => {}));
 
-userApiRouter.post("/login", UsersApiController.POSTLogin);
+authApiRouter.post("/login", UsersApiController.POSTLogin);
 
-userApiRouter.post("/register", UsersApiController.POSTRegister);
+authApiRouter.post("/register", UsersApiController.POSTRegister);
 
-userApiRouter.get("/session/current", passportMW("jwt"), UsersApiController.GETSessionCurrent);
+authApiRouter.get("/session/current", passportMW("jwt"), UsersApiController.GETSessionCurrent);
 
-userApiRouter.post("/signout", passportMW("jwt"), UsersApiController.POSTSignout);
+authApiRouter.post("/signout", passportMW("jwt"), UsersApiController.POSTSignout);
 
-userApiRouter.post("/mycart", passportMW("jwt"), UsersApiController.GETUserCart);
+authApiRouter.post("/mycart", passportMW("jwt"), UsersApiController.GETUserCart);
 
-userApiRouter.delete("/", passportMW("jwt"), UsersApiController.DELETEUser);
+authApiRouter.post("/user/premium", passportMW("jwt"), UsersApiController.POSTChangeRole);
 
-userApiRouter.post("/user/premium", passportMW("jwt"), UsersApiController.POSTChangeRole);
+// ------- Rutas orientadas al administrador, acceso unicamente admin ------- //
+authApiRouter.get("/", passportMW("jwt"), verifyRole("admin"), UsersApiController.GETUsers);
 
-export default userApiRouter;
+authApiRouter.get("/:uid", passportMW("jwt"), verifyRole("admin"), UsersApiController.GETUserById);
+
+authApiRouter.get("/:uid", passportMW("jwt"), verifyRole("admin"), UsersApiController.GETUserByUsername);
+
+authApiRouter.delete("/:uid", passportMW("jwt"), verifyRole("admin"), UsersApiController.DELETEUser);
+
+
+export default authApiRouter;

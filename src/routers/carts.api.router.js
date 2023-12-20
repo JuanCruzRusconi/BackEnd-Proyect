@@ -5,34 +5,41 @@ import { JWTCookieMW, JWTMW } from "../utils/jwt.js";
 import passportMW from "../utils/jwt.middleware.js";
 import { verifyAuthentication, verifyRole } from "../utils/mddw.js";
 
-const cartsRouter = Router();
+const cartsApiRouter = Router();
 
 const CartsApiController = new CartsApiControllers();
 
-cartsRouter.get("/", CartsApiController.GETCarts);
+// ------- Rutas orientadas al usuario, acceso de usuario logueado ------- //
+cartsApiRouter.get("/mycart", passportMW("jwt"), CartsApiController.GETUserCart);
 
-cartsRouter.get("/:cid", CartsApiController.GETCartById);
+cartsApiRouter.post("/mycart/product/:pid", passportMW("jwt"), CartsApiController.POSTProductInUserCartById);
 
-cartsRouter.post("/", CartsApiController.POSTCart);
+cartsApiRouter.post("/purchase-cart", passportMW("jwt"), CartsApiController.POSTPurchaseUserCart);
 
-cartsRouter.post("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTProductInCartById);
+cartsApiRouter.put("/mycart/product/:pid", passportMW("jwt"), CartsApiController.PUTProductQuantityByIdInUserCart);
 
-cartsRouter.put("/:cid/product/:pid",  CartsApiController.PUTProductQuantityByIdInCartById);
+cartsApiRouter.delete("/mycart/products", passportMW("jwt"), CartsApiController.DELETEProductsInUserCart);
 
-cartsRouter.delete("/:cid", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETECart);
+cartsApiRouter.delete("/mycart/product/:pid", passportMW("jwt"), CartsApiController.DELETEProductInUserCartById);
 
-cartsRouter.delete("/:cid/products", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETEProductsInCartById);
+// ------- Rutas orientadas al administrador, acceso unicamente admin ------- //
+cartsApiRouter.get("/", passportMW("jwt"), verifyRole("admin"), CartsApiController.GETCarts);
 
-cartsRouter.delete("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETEProductByIdInCartById);
+cartsApiRouter.get("/:cid", passportMW("jwt"), verifyRole("admin"), CartsApiController.GETCartById);
 
-cartsRouter.get("/:cid/purchase", passportMW("jwt"), verifyRole("admin"), CartsApiController.GETPurchase);
+cartsApiRouter.post("/", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTCart);
 
-cartsRouter.post("/:cid/purchase", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTPurchase);
+cartsApiRouter.post("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTProductInCart);
 
-cartsRouter.post("/mycart", passportMW("jwt"), CartsApiController.GETUserCart);
+cartsApiRouter.post("/:cid/purchase", passportMW("jwt"), verifyRole("admin"), CartsApiController.POSTPurchase);
 
-cartsRouter.post("/mycart/product/:pid", passportMW("jwt"), CartsApiController.POSTProductInUserCartById);
+cartsApiRouter.put("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.PUTProductQuantityById);
 
-cartsRouter.post("/purchase-cart", passportMW("jwt"), CartsApiController.POSTPurchaseUserCart);
+cartsApiRouter.delete("/:cid", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETECart);
 
-export default cartsRouter;
+cartsApiRouter.delete("/:cid/products", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETEProductsInCart);
+
+cartsApiRouter.delete("/:cid/product/:pid", passportMW("jwt"), verifyRole("admin"), CartsApiController.DELETEProductById);
+
+
+export default cartsApiRouter;

@@ -1,6 +1,3 @@
-
-import { Console } from "console";
-import e from "express";
 import fs from "fs/promises";
 
 export default class CartsFS {
@@ -11,25 +8,34 @@ export default class CartsFS {
 
     #id = 0;
 
-    getCarts = async () => {
-        
-        const file = await fs.readFile("./src/carts.json", "utf-8");
-        this.carts = JSON.parse(file);
-        return this.carts;
-    }
+    getCarts = async (next) => {
+         
+        try {
+            const file = await fs.readFile("./src/carts.json", "utf-8");
+            this.carts = JSON.parse(file);
+            return this.carts;
+        } catch (error) {
+            error.from = "CartsFileSystem";
+            return next(error);
+        }
+    };
 
-    getCartById = async (cid) => {
+    getCartById = async (cid, next) => {
 
-        const file = await fs.readFile("./src/carts.json", "utf-8");
-        this.carts = JSON.parse(file);
+        try {
+            const file = await fs.readFile("./src/carts.json", "utf-8");
+            this.carts = JSON.parse(file);
+            let cartToUpdate = this.carts.find((cart) => cart.id === cid);
+            return cartToUpdate;
+        } catch (error) {
+            error.from = "CartsFileSystem";
+            return next(error);
+        }
+    };
 
-        let cartToUpdate = this.carts.find((cart) => cart.id === cid);
-        return cartToUpdate;
-    }
+    createCart = async (cart, next) => {
 
-    createCart = async (cart) => {
-
-        const {products} = cart
+        const {products} = cart;
         try {
             const file = await fs.readFile("./src/carts.json", "utf-8");
             const carts = JSON.parse(file);
@@ -42,51 +48,65 @@ export default class CartsFS {
             carts.push(newCart);
             await fs.writeFile("./src/carts.json", JSON.stringify(carts));
             return cart;
-        } catch {
-            console.log(e)
+        } catch (error) {
+            error.from = "CartsFileSystem";
+            return next(error);
         }
-    }
+    };
 
-    updateProductInCartById = async (cidCart, productById) => {
+    updateProductInCartById = async (cidCart, productById, next) => {
 
         try {
             const file = await fs.readFile("./src/carts.json", "utf-8");
             const carts = JSON.parse(file);
+            if (!cidCart) return "Cart Not Found";
+            if (!productById) return "Product Not Found";
 
-           if (!cidCart) return "Cart Not Found";
-           if (!productById) return "Product Not Found";
-
-           let update = carts.map((cart) => {
-            if (cart.id === cidCart.id) {
-                if (!cidCart.products.some((product) => product.id === productById.id)) {
-                    let productInCart = cart.products.push({
-                        id: productById.id,
-                        quantity: 1,
+            let update = carts.map((cart) => {
+                if (cart.id === cidCart.id) {
+                    if (!cidCart.products.some((product) => product.id === productById.id)) {
+                        let productInCart = cart.products.push({
+                            id: productById.id,
+                            quantity: 1,
                     });
-
-                    return {
-                        ...cart,
-                        ...productInCart
-                    };
-                }
-
-                console.log("everithing ok");
-                cart.products.map((p) => {
-                    if (p.id === productById.id) {
-                        return ++p.quantity;
+                        return {
+                            ...cart,
+                            ...productInCart
+                        };
                     }
-                    return p;
-                });
-            }
-        return cart;
-        });
-
-        await fs.writeFile("./src/carts.json", JSON.stringify(update));
-        
-        return "Product added to cart succesfully";
-
-        } catch (e) {
-            console.log(e);
+                    cart.products.map((p) => {
+                        if (p.id === productById.id) {
+                            return ++p.quantity;
+                        }
+                        return p;
+                    });
+                }
+            return cart;
+            });
+            await fs.writeFile("./src/carts.json", JSON.stringify(update));
+            return "Product added to cart succesfully";
+        } catch (error) {
+            error.from = "CartsFileSystem";
+            return next(error);
         }
     };
+
+    deleteTicket = async (id, next) => {
+        
+        try {
+            const file = await fs.readFile("./src/carts.json", "utf-8");
+            this.carts = JSON.parse(file);
+            let cartFound = this.carts.find((cart) => cart.id === id);
+            if(!cartFound){
+                return `No se ha encontrado el cart con id: ${id}`;
+            }
+            let deletecart = this.carts.filter((cart) => cart.id !== id)
+            await fs.writeFile("./src/carts.json", JSON.stringify(deletecart, null, 2));
+            return cartFound;
+        } catch (error) {
+            error.from = "CartsFileSystem";
+            return next(error);
+        }
+    };
+
 }

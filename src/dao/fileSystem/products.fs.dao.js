@@ -9,85 +9,85 @@ export default class ProductsFS {
 
     #id = 0;
 
-    getProducts = async () => {
-        const file = await fs.readFile("./src/products.json", "utf-8");
-        this.products = JSON.parse(file);
-        return this.products;
-    }
+    getProducts = async (next) => {
+        
+        try {
+            const file = await fs.readFile("./src/products.json", "utf-8");
+            this.products = JSON.parse(file);
+            return this.products;
+        } catch (error) {
+            error.from = "ProductsFileSystem";
+            return next(error);
+        }
+    };
 
-    addProduct = async (product) => {
+    addProduct = async (product, next) => {
 
-        const {title, description, price, thumbnail, code, stock} = product
-
+        const {title, description, price, thumbnail, code, stock} = product;
         try {
             const file = await fs.readFile("./src/products.json", "utf-8");
             const products = JSON.parse(file);
-
             const itsValid = this.products.some((productFind) => productFind.code === code);
-            
             if (itsValid) {
                 console.log(`ERROR: Code in use in ${product.title}`);
                 return;
             };
-
             const newProduct = {
                 //id: this.#id++,
                 id: products[products.length -1].id + 1,
                 ...product,
             }
-
             products.push(newProduct);
             await fs.writeFile("./src/products.json", JSON.stringify(products));
-            return product;
-            
-        } catch (e) {
-            console.log(e);
+            return product;  
+        } catch (error) {
+            error.from = "ProductsFileSystem";
+            return next(error);
         }
-        
        console.log(`Product ${product.title} submitted successfully`);
     };
 
-    getProductById = async (productId) => {
+    getProductById = async (productId, next) => {
         
-        const file = await fs.readFile("./src/products.json", "utf-8");
-        this.products = JSON.parse(file);
+        try{
+            const file = await fs.readFile("./src/products.json", "utf-8");
+            this.products = JSON.parse(file);
+            const productById = this.products.find((product) => product.id === productId);
+            if(!productById) return "Not Found";
+            return productById;
+        } catch (error) {
+            error.from = "ProductsFileSystem";
+            return next(error);
+        }
+    };
 
-        const productById = this.products.find((product) => product.id === productId);
-
-        if(!productById) return "Not Found";
-
-        console.log("Producto encontrado");
-        return productById;
-    }
-
-    updateProduct = async (id, product) => {
+    updateProduct = async (id, product, next) => {
+        
         try {
             const file = await fs.readFile("./src/products.json", "utf-8");
             this.products = JSON.parse(file);
-
             let productFound = this.products.find((product) => product.id === id);
             if(!productFound){
                 return `No se ha encontrado el producto con id: ${id}`;
             }
-            
             let update = this.products.map((p) => {
                 if(p.id === id){
                     return {...p, ...product};
                 }
                 return p;
             });
-
             await fs.writeFile("./src/products.json", JSON.stringify(update, null, 2));
             console.log("ProductFound:")
             return productFound;
-            
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            error.from = "ProductsFileSystem";
+            return next(error);
         }
         //console.log("Producto a actualizar:", await productManager.updateProduct(idUpdate, productUpdate));
-    }
+    };
 
-    deleteProduct =  async (id) => {
+    deleteProduct =  async (id, next) => {
+        
         try {
             const file = await fs.readFile("./src/products.json", "utf-8");
             this.products = JSON.parse(file);
@@ -102,11 +102,11 @@ export default class ProductsFS {
             await fs.writeFile("./src/products.json", JSON.stringify(deleteProduct, null, 2));
             //console.log("DP:", deleteProduct);
             console.log("PF:", productFound)
-            return productFound;
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            error.from = "ProductsFileSystem";
+            return next(error);
         }
-    }
+    };
 }
 
 //const productManager = new ProductManager()

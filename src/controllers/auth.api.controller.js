@@ -10,6 +10,7 @@ export default class UsersApiControllers {
         this.service = new UsersServices();
     };
 
+    // ------- Rutas orientadas al usuario, acceso de usuario logueado ------- //
     POSTLogin = async (req, res, next) => {
     
         try {
@@ -22,7 +23,7 @@ export default class UsersApiControllers {
                 httpOnly: true
             });
             const profile = await this.service.GetUserById(user._id, next);
-            res.status(200).send({ error: false, accessToken: token, message: "Looged in", info: profile });
+            res.status(200).send({ status: "success", accessToken: token, message: "Looged in", info: profile });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -40,10 +41,10 @@ export default class UsersApiControllers {
                 surname: surname,
                 username: username,
                 password: password,
-                role: username === "admincoder@coder.com" ? "admin" : "user", 
+                role: username === "admin@coder.com" ? "admin" : "user", 
                 next
                 });
-            res.status(200).send({ error: false, payload: newUser._id, msg: `Registro de ${username} exitoso.` });
+            res.status(200).send({ status: "success", payload: newUser._id, msg: `Registro de ${username} exitoso.` });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -59,7 +60,7 @@ export default class UsersApiControllers {
             console.log(role);
             const changeRole = await this.service.UpdateUserRole(user, role, next);
             if(!changeRole) return CustomError.createError(ErrorsDictionary.AUTH_ERROR)
-            res.status(200).send(await this.service.GetUserById(user, next));
+            res.status(200).send({ status: "success", payload: await this.service.GetUserById(user, next) });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
@@ -72,13 +73,38 @@ export default class UsersApiControllers {
             // Elimina la cookie llamada "accessToken" estableciendo su tiempo de expiración en el pasado
             const cookie = res.cookie("accessToken", "", { expires: new Date(0), httpOnly: true });
             if(!cookie) return CustomError.createError(ErrorsDictionary.COOKIE_NOT_FOUND);
-            res.status(200).send({ error: false, message: 'Signet out.' });
+            res.status(200).send({ status: "success", message: 'Signet out.' });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETSessionCurrent = async (req, res, next) => {
+    
+        try {
+            console.log(req.user);
+            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
+            res.status(200).send({ status: "success", user: req.user });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+    
+    GETUserCart = async (req, res, next) => {
+    
+        try {
+            const cart = req.user.cart;
+            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
+            res.status(200).send({ status: "success", user: cart });
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);
         }
     };
 
+    // ------- Rutas orientadas al administrador, acceso unicamente admin ------- //
     GETUsers = async (req, res, next) => {
 
         try {
@@ -94,8 +120,8 @@ export default class UsersApiControllers {
     GETUserById = async (req, res, next) => {
     
         try {
-            const { pid } = req.params;
-            const user = await this.service.GetUserById(pid, next);
+            const { uid } = req.params;
+            const user = await this.service.GetUserById(uid, next);
             if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
             res.status(200).send({ status: "succes", response: user });
         } catch (error) {
@@ -116,38 +142,14 @@ export default class UsersApiControllers {
             return next(error);
         }
     };
-    
-    GETSessionCurrent = async (req, res, next) => {
-    
-        try {
-            console.log(req.user);
-            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
-            res.status(200).send({ error: false, user: req.user });
-        } catch (error) {
-            error.from = "UsersApiControllers";
-            return next(error);
-        }
-    };
-    
-    GETUserCart = async (req, res, next) => {
-    
-        try {
-            const cart = req.user.cart;
-            if(!req.user) return CustomError.createError(ErrorsDictionary.NOT_LOGGED);
-            res.status(200).send({ error: false, user: cart });
-        } catch (error) {
-            error.from = "UsersApiControllers";
-            return next(error);
-        }
-    };
-    
+
     DELETEUser = async (req, res, next) => {
     
         try {
-            const user = req.user._id;
-            if(!user) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            const deleteUser = await this.service.DeleteUser(user, next);
-            res.status(200).send({error: false, msg: "Usuario eliminado."})
+            const { uid } = req.params;
+            const deleteUser = await this.service.DeleteUser(uid, next);
+            if(!deleteUser) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            res.status(200).send({ status: "success", msg: "Usuario eliminado." })
         } catch (error) {
             error.from = "UsersApiControllers";
             return next(error);

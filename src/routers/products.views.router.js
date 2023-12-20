@@ -12,6 +12,7 @@ productsViewsRouter.get("/:pid", passportMW("jwt"), ProductsViewsController.GETP
 
 productsViewsRouter.get("/realtimeproducts", passportMW("jwt"), ProductsViewsController.GETRealTimeProducts);
 
+
 export default productsViewsRouter;
 
 

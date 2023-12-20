@@ -17,13 +17,13 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 
 import indexViewsRouter from "./routers/index.router.js";
-import cartsRouter from "./routers/carts.api.router.js";
-import productsRouter from "./routers/products.api.router.js";
+import cartsApiRouter from "./routers/carts.api.router.js";
+import productsApiRouter from "./routers/products.api.router.js";
 import productsViewsRouter from "./routers/products.views.router.js";
 import userViewsRouter from "./routers/users.views.router.js";
-import userApiRouter from "./routers/auth.api.router.js";
+import authApiRouter from "./routers/auth.api.router.js";
 import chatViewsRouter from "./routers/chat.views.router.js";
-import ticketsRouter from "./routers/tickets.api.router.js";
+import ticketsApiRouter from "./routers/tickets.api.router.js";
 import performanceRouter from "../test/products.mocks.test.js";
 import loggersRouter from "./routers/loggers.api.router.js";
 
@@ -38,6 +38,8 @@ import config from "./config/swagger.js";
 
 const app = express();
 
+const corsMddw = cors();
+
 const mongooseConect = mongoose.connect(process.env.MONGO_URI);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -48,7 +50,7 @@ app.set("view engine", "handlebars");
 
 const specs = swaggerJSDoc(config);
 
-app.use(cors);
+app.use(corsMddw);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -59,7 +61,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
     // FS store: new fileStore({path: "./sessions"});
-    store: new MongoStore({mongoUrl: "mongodb+srv://juancruzrusconi:ecommerce@cluster0.eqrmymr.mongodb.net/ecommerce"}),
+    store: new MongoStore({mongoUrl: process.env.MONGO_URI}),
     ttl: 30,
 }));
 app.use(compression({ brotli: {enabled: true, zlib: {} }}));
@@ -73,13 +75,13 @@ app.use(express.static(`${__dirname}/public`));
 app.use("/api/docs", serve, setup(specs));
 
 app.use("/index", indexViewsRouter)
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
+app.use("/api/products", productsApiRouter);
+app.use("/api/carts", cartsApiRouter);
 app.use("/products", productsViewsRouter);
 app.use("/users", userViewsRouter);
 //app.use("/api/auth/github", authRouter);
-app.use("/api/auth", userApiRouter);
-app.use("/api/tickets", ticketsRouter);
+app.use("/api/auth", authApiRouter);
+app.use("/api/tickets", ticketsApiRouter);
 app.use("/mail", sendEmail);
 app.use("/chat", chatViewsRouter);
 app.use("/api/performance", performanceRouter)

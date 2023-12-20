@@ -770,3 +770,251 @@ Expecting 'ID', got 'SEP'
 [31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc35e9b1a6f4bbfbf63db4 - Cannot set headers after they are sent to the client
 [35mFATAL[39m: POST /api/carts/purchase-cart  -  No hay stock disponible  -  11:47:00 AM
 [31mERROR[39m: Server error: POST /api/carts/purchase-cart - No hay stock disponible
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:31:32 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:31:38 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:33:35 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:33:58 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:34:14 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:35:03 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:35:42 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:37:27 PM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: GET /api/carts/my-cart  -  Cast to ObjectId failed for value "my-cart" (type string) at path "_id" for model "carts"  -  11:43:02 PM
+[31mERROR[39m: Server error: GET /api/carts/my-cart - Cast to ObjectId failed for value "my-cart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: GET /api/carts/mycart  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  11:43:29 PM
+[31mERROR[39m: Server error: GET /api/carts/mycart - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/products  -  Incomplete values.  -  11:43:49 PM
+[31mERROR[39m: Server error: POST /api/products - Incomplete values.
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  11:44:25 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  11:44:44 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  11:45:07 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  11:46:11 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Cannot read properties of undefined (reading 'map')  -  11:47:50 PM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Cannot read properties of undefined (reading 'map')
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:49:23 PM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Cannot read properties of undefined (reading 'map')  -  11:50:24 PM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Cannot read properties of undefined (reading 'map')
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:52:06 PM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc35e9b1a6f4bbfbf63db4  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  12:17:39 AM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc35e9b1a6f4bbfbf63db4 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  No hay stock disponible  -  12:19:30 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - No hay stock disponible
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  12:20:32 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  No hay stock disponible  -  12:23:10 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - No hay stock disponible
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  object is not iterable (cannot read property Symbol(Symbol.iterator))  -  12:28:25 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - object is not iterable (cannot read property Symbol(Symbol.iterator))
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  12:28:50 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  object is not iterable (cannot read property Symbol(Symbol.iterator))  -  12:29:09 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - object is not iterable (cannot read property Symbol(Symbol.iterator))
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  object is not iterable (cannot read property Symbol(Symbol.iterator))  -  12:30:49 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - object is not iterable (cannot read property Symbol(Symbol.iterator))
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  12:33:56 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Producto/s con stock insuficiente  -  12:34:13 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Producto/s con stock insuficiente
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Producto/s con stock insuficiente  -  12:35:04 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Producto/s con stock insuficiente
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Producto/s con stock insuficiente  -  12:36:38 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Producto/s con stock insuficiente
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Producto/s con stock insuficiente  -  12:37:18 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Producto/s con stock insuficiente
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "[ NaN ]" (type Array) at path "amount"  -  12:37:52 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "[ NaN ]" (type Array) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  12:41:45 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "[ NaN ]" (type Array) at path "amount"  -  12:42:49 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "[ NaN ]" (type Array) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Producto/s con stock insuficiente  -  12:54:52 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Producto/s con stock insuficiente
+[35mFATAL[39m: POST /api/auth/login  -  data and hash arguments required  -  11:29:21 AM
+[31mERROR[39m: Server error: POST /api/auth/login - data and hash arguments required
+[35mFATAL[39m: GET /api/carts/mycart  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  11:30:07 AM
+[31mERROR[39m: Server error: GET /api/carts/mycart - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  total is not defined  -  11:30:36 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - total is not defined
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:33:11 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:33:29 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:34:09 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:34:39 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:34:57 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:38:50 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:39:04 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:40:50 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:41:32 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:41:39 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:41:53 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"  -  11:42:37 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "NaN" (type number) at path "amount"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:47:21 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  undefined is not iterable (cannot read property Symbol(Symbol.iterator))  -  11:49:33 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - undefined is not iterable (cannot read property Symbol(Symbol.iterator))
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  promises is not defined  -  11:54:05 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - promises is not defined
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  subtotals.reduce is not a function  -  11:54:39 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - subtotals.reduce is not a function
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  11:55:22 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  subtotals.reduce is not a function  -  11:55:35 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - subtotals.reduce is not a function
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  tickets validation failed: amount: Cast to Number failed for value "0[object Promise]" (type string) at path "amount"  -  11:58:15 AM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - tickets validation failed: amount: Cast to Number failed for value "0[object Promise]" (type string) at path "amount"
+[35mFATAL[39m: GET /api/tickets/myticket  -  Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"  -  12:11:14 PM
+[31mERROR[39m: Server error: GET /api/tickets/myticket - Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/myticket  -  Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"  -  12:12:11 PM
+[31mERROR[39m: Server error: GET /api/tickets/myticket - Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/my-ticket  -  Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"  -  12:13:12 PM
+[31mERROR[39m: Server error: GET /api/tickets/my-ticket - Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/my-ticket  -  Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"  -  12:21:37 PM
+[31mERROR[39m: Server error: GET /api/tickets/my-ticket - Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/my-ticket  -  Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"  -  12:21:43 PM
+[31mERROR[39m: Server error: GET /api/tickets/my-ticket - Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/my-ticket  -  Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"  -  12:22:28 PM
+[31mERROR[39m: Server error: GET /api/tickets/my-ticket - Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/my-ticket  -  Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"  -  12:26:20 PM
+[31mERROR[39m: Server error: GET /api/tickets/my-ticket - Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/my-ticket  -  Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"  -  12:26:43 PM
+[31mERROR[39m: Server error: GET /api/tickets/my-ticket - Cast to ObjectId failed for value "my-ticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/myticket  -  Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"  -  12:27:01 PM
+[31mERROR[39m: Server error: GET /api/tickets/myticket - Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  12:32:05 PM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  next is not a function  -  12:34:45 PM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - next is not a function
+[35mFATAL[39m: POST /api/carts/purchase-cart  -  Document is empty.  -  12:38:34 PM
+[31mERROR[39m: Server error: POST /api/carts/purchase-cart - Document is empty.
+[35mFATAL[39m: GET /api/carts/undefined  -  Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "carts"  -  1:29:12 PM
+[31mERROR[39m: Server error: GET /api/carts/undefined - Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: GET /api/products/null  -  Cast to ObjectId failed for value "null" (type string) at path "_id" for model "products"  -  1:29:14 PM
+[31mERROR[39m: Server error: GET /api/products/null - Cast to ObjectId failed for value "null" (type string) at path "_id" for model "products"
+[35mFATAL[39m: POST /api/auth/register  -  Credentials are already in use.  -  1:29:16 PM
+[31mERROR[39m: Server error: POST /api/auth/register - Credentials are already in use.
+[35mFATAL[39m: POST /api/auth/login  -  Invalid credentials.  -  1:29:16 PM
+[31mERROR[39m: Server error: POST /api/auth/login - Invalid credentials.
+[35mFATAL[39m: GET /api/carts/undefined  -  Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "carts"  -  1:32:13 PM
+[31mERROR[39m: Server error: GET /api/carts/undefined - Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: GET /api/products/undefined  -  Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "products"  -  1:32:15 PM
+[31mERROR[39m: Server error: GET /api/products/undefined - Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "products"
+[35mFATAL[39m: POST /api/auth/register  -  Credentials are already in use.  -  1:32:17 PM
+[31mERROR[39m: Server error: POST /api/auth/register - Credentials are already in use.
+[35mFATAL[39m: POST /api/auth/login  -  Invalid credentials.  -  1:32:17 PM
+[31mERROR[39m: Server error: POST /api/auth/login - Invalid credentials.
+[35mFATAL[39m: GET /api/carts/undefined  -  Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "carts"  -  1:37:33 PM
+[31mERROR[39m: Server error: GET /api/carts/undefined - Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: GET /api/products/undefined  -  Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "products"  -  1:37:35 PM
+[31mERROR[39m: Server error: GET /api/products/undefined - Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "products"
+[35mFATAL[39m: POST /api/auth/register  -  Credentials are already in use.  -  1:37:37 PM
+[31mERROR[39m: Server error: POST /api/auth/register - Credentials are already in use.
+[35mFATAL[39m: POST /api/auth/login  -  Invalid credentials.  -  1:37:37 PM
+[31mERROR[39m: Server error: POST /api/auth/login - Invalid credentials.
+[35mFATAL[39m: GET /api/auth/login  -  Cast to ObjectId failed for value "login" (type string) at path "_id" for model "users"  -  4:00:48 PM
+[31mERROR[39m: Server error: GET /api/auth/login - Cast to ObjectId failed for value "login" (type string) at path "_id" for model "users"
+[35mFATAL[39m: GET /api/carts/mycart  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:13:15 PM
+[31mERROR[39m: Server error: GET /api/carts/mycart - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: GET /api/carts/my-cart  -  Cast to ObjectId failed for value "my-cart" (type string) at path "_id" for model "carts"  -  4:13:31 PM
+[31mERROR[39m: Server error: GET /api/carts/my-cart - Cast to ObjectId failed for value "my-cart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:27:17 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:27:30 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:27:58 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:29:08 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:30:14 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:30:58 PM
+[31mERROR[39m: Server error: POST /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:32:00 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:33:15 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:33:49 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:34:55 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:35:40 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:36:20 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:37:25 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:38:02 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:39:22 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:39:35 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:40:33 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:42:16 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:44:35 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:44:47 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:47:26 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:50:14 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  4:51:57 PM
+[31mERROR[39m: Server error: PUT /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: DELETE /api/carts/mycart/products  -  Document is empty.  -  5:03:16 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/products - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart  -  Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"  -  5:03:23 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart - Cast to ObjectId failed for value "mycart" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: DELETE /api/carts/mycart/products  -  Document is empty.  -  5:03:42 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/products - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/products  -  Document is empty.  -  5:08:38 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/products - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/product/64dc37002d11612d3668ef5b  -  Document is empty.  -  5:11:06 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/product/64dc37002d11612d3668ef5b - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/product/64dc37002d11612d3668ef5b  -  Document is empty.  -  5:12:25 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/product/64dc37002d11612d3668ef5b - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Document is empty.  -  5:13:01 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Document is empty.  -  5:13:26 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Document is empty.  -  5:13:44 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Document is empty.  -  5:14:20 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Document is empty.
+[35mFATAL[39m: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80  -  Cannot read properties of undefined (reading 'toString')  -  5:14:44 PM
+[31mERROR[39m: Server error: DELETE /api/carts/mycart/product/64dc3695256a84aa3b451d80 - Cannot read properties of undefined (reading 'toString')
+[35mFATAL[39m: GET /api/carts/tickets  -  Cast to ObjectId failed for value "tickets" (type string) at path "_id" for model "carts"  -  5:33:12 PM
+[31mERROR[39m: Server error: GET /api/carts/tickets - Cast to ObjectId failed for value "tickets" (type string) at path "_id" for model "carts"
+[35mFATAL[39m: GET /api/tickets/myticket  -  Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"  -  5:34:13 PM
+[31mERROR[39m: Server error: GET /api/tickets/myticket - Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/myticket  -  Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"  -  5:34:42 PM
+[31mERROR[39m: Server error: GET /api/tickets/myticket - Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/myticket  -  Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"  -  5:35:08 PM
+[31mERROR[39m: Server error: GET /api/tickets/myticket - Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"
+[35mFATAL[39m: GET /api/tickets/myticket  -  Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"  -  5:35:32 PM
+[31mERROR[39m: Server error: GET /api/tickets/myticket - Cast to ObjectId failed for value "myticket" (type string) at path "_id" for model "tickets"

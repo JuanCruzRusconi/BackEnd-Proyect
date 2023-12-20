@@ -43,12 +43,16 @@ export default class CartsServices {
                 let prodId = e._id; 
                 let prodQty = e.quantity; 
                 if (!await ProductService.GetProductStockById(prodId, next) >= prodQty) throw new Error("Producto/s con stock insuficiente");
-                // ------- Resta de stock en products ------- // 
-                await ProductService.UpdateProductStockAfterPurchase(prodId, prodQty, next);
-                // ------- Elimina del cart los productos que se pudieron comprar ------- //
-                await this.DeleteAllProductsByIdInCartById(cid, prodId, next);
-                if(user) await TicketService.CreateTicket(user, next);
-                return await this.GetCartById(cid, next);
+                let amount = await this.GetCartAmount(cid, next);
+                if(user) {
+                    const ticket = await TicketService.CreateTicket(user, amount, next);
+                    // ------- Resta de stock en products ------- // 
+                    await ProductService.UpdateProductStockAfterPurchase(prodId, prodQty, next);
+                    // ------- Elimina del cart los productos que se pudieron comprar ------- //
+                    await this.DeleteAllProductsByIdInCartById(cid, prodId, next);
+                    return ticket;
+                };
+
             });
             return await Promise.all(purchase);
         } catch (error) {
@@ -90,7 +94,27 @@ export default class CartsServices {
             return next(error);
         }
     };
-    
+
+    GetCartAmount = async (cid, next) => {
+
+        try {
+            const cart = await this.GetCartById(cid, next);
+            let total = 0;
+            const products = cart.products.map(async (product) => {
+                let prodId = product._id;
+                let prod = await ProductService.GetProductById(prodId, next);
+                const subtotal = prod.price * product.quantity;
+                return subtotal;
+        });
+            let subtotals = await Promise.all(products);
+            total = subtotals.reduce((acc, subtotal) => acc + subtotal, 0);
+            return total;
+        } catch (error) {
+            error.from = "CartsServices";
+            return next(error);
+        }
+    };
+
     UpdateProductInCartById = async (cid, pid, next) => {
     
         try {

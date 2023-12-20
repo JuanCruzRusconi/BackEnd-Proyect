@@ -35,4 +35,5 @@ userViewsRouter.get("/profile/products", passportMW("jwt"), UsersViewsController
 
 userViewsRouter.get("/logout", passportMW("jwt"), UsersViewsController.GETLogoutJWT);
 
+
 export default userViewsRouter;
