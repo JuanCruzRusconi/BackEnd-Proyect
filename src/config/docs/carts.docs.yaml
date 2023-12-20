@@ -76,6 +76,22 @@ components:
           product: 64dc35e9b1a6f4bbfbf63db8
           quantity: 5
   responses:
+    cart:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        payload:
+          $ref: '#/components/schemas/Cart'
+      example:
+        status: success
+        payload:
+          id: ID del carrito
+          user: ID del propietario del carrito
+          products:
+            - product_id: ID de producto 
+              quantity: Cantidad del producto añadido
     getCarts:
       type: object
       properties:
@@ -134,6 +150,18 @@ components:
       example:
         status: success
         message: Carrito eliminado exitosamente
+    destroyProductCart:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message:
+          type: string
+          description: Mensaje de éxito
+      example:
+        status: success
+        message: Producto/s eliminado exitosamente
     purchaseCart:
       type: object
       properties:
@@ -243,6 +271,19 @@ components:
         status: error
         from: PUT /api/carts controller
         message: Incomplete values
+    notLogged:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estado de la solicitud
+        message: 
+          type: string
+          description: Descripcion del error
+      example: 
+        status: error
+        from: POST /api/carts/mycart controller
+        message: Se requiere estar logueago para hacer esta operacion
     serverError:
       type: object
       properties:
@@ -263,7 +304,7 @@ components:
 paths:
   /api/carts:
     get:
-      summary: Obtener la lista completa de carritos
+      summary: Obtener la lista completa de carritos, acceso unicamente de admin
       tags:
         - Carts
       responses:
@@ -272,7 +313,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/getCarts'
+                $ref: '#/components/responses/cart'
         '404':
           description: No se encontraron los documentos
           content:
@@ -286,7 +327,7 @@ paths:
               schema:
                 $ref: '#components/responses/serverError'
     post:
-      summary: Crear un nuevo carrito
+      summary: Crear un nuevo carrito, acceso unicamente de admin
       tags:
         - Carts
       requestBody:
@@ -318,7 +359,7 @@ paths:
 
   /api/carts/{cid}:
     get:
-      summary: Obtener información de un carrito específico
+      summary: Obtener información de un carrito específico, acceso unicamente de admin
       tags:
         - Carts
       parameters:
@@ -348,7 +389,7 @@ paths:
               schema:
                 $ref: '#components/responses/serverError'
     put:
-      summary: Actualizar información de un carrito específico
+      summary: Actualizar información de un carrito específico, acceso unicamente de admin
       tags:
         - Carts
       parameters:
@@ -385,7 +426,7 @@ paths:
               schema:
                 $ref: '#components/responses/serverError'
     delete:
-      summary: Eliminar un carrito específico
+      summary: Eliminar un carrito específico, acceso unicamente de admin
       tags:
         - Carts
       parameters:
@@ -404,6 +445,146 @@ paths:
                 $ref: '#/components/responses/destroyCart'
         '404':
           description: Carrito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /mycart:
+    get:
+      summary: Obtener el carrito del usuario logueado
+      tags:
+        - Carts
+      responses:
+        '200':
+          description: Éxito en la obtencion del carrito del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/cart'
+        '404':
+          description: Error en la obtencion del carrito del usuario ya que no esta logueado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notLogged'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /mycart/product/{pid}:
+    post:
+      summary: Agregar un producto mediante su id en el carrito del usuario logueado
+      tags:
+        - Carts
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Éxito en agregar un producto al carrito del usuario logueado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/getCarts'
+        '404':
+          description: No se encuentra el producto enviado para agregar al carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+    put:
+      summary: Modificar la cantidad de un producto mediante su id en el carrito del usuario logueado
+      tags:
+        - Carts
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Éxito en la obtencion y modificacion del carrito del usuario logueado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/updateCart'
+        '404':
+          description: No se encuentra el producto enviado dentro del carrito para ser modificado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/notFoundOne'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /mycart/products:
+    delete:
+      summary: Eliminar todos los productos del carrito del usuario logueado
+      tags:
+        - Carts
+      responses:
+        '200':
+          description: Éxito en la eliminacion de los productos del carrito del usuario logueado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/destroyProductCart'
+        '404':
+          description: Error en la eliminacion de los productos debido a que el carrito se encuentra vacio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/cartEmpty'
+        '500':
+          description: Error caida de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#components/responses/serverError'
+  /mycart/products/{pid}:
+    delete:
+      summary: Eliminar un producto mediante su id del carrito del usuario logueado
+      tags:
+        - Carts
+      parameters:
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Éxito en la eliminacion de un producto del carrito del usuario logueado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/destroyProductCart'
+        '404':
+          description: Error en la eliminacion de un producto debido a que no se encuentra en el carrito
           content:
             application/json:
               schema:

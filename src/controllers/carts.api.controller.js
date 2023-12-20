@@ -32,6 +32,24 @@ export default class CartsApiControllers {
         }
     };
 
+    POSTProductInUserCartById = async (req, res, next) => {
+    
+        try {
+            const { pid } = req.params
+            const cart = req.user.cart._id;
+            console.log(cart)
+            const cartUser = await this.service.GetCartById(cart, next);
+            if(!cartUser) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
+            const cartUserId = cartUser._id;
+            const prod = await this.service.UpdateProductInCartById(cartUserId, pid, next);
+            if(!await ProductsService.GetProductById(pid, next)) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
+            res.status(200).send({ status: "success", mycart: await this.service.GetCartById(cart, next) });
+        } catch (error) {
+            error.from = "UsersApiControllers";
+            return next(error);
+        }
+    };
+
     GETUserCart = async (req, res, next) => {
     
         try {
@@ -146,24 +164,6 @@ export default class CartsApiControllers {
             res.status(200).send({error: false, msg: "Compra realizada." })
         } catch (error) {
             error.from = "CartsApiControllers";
-            return next(error);
-        }
-    };
-
-    POSTProductInUserCartById = async (req, res, next) => {
-    
-        try {
-            const { pid } = req.params
-            const cart = req.user.cart._id;
-            console.log(cart)
-            const cartUser = await this.service.GetCartById(cart, next);
-            if(!cartUser) return CustomError.createError(ErrorsDictionary.NOT_FOUND_ONE);
-            const cartUserId = cartUser._id;
-            const prod = await this.service.UpdateProductInCartById(cartUserId, pid, next);
-            if(!await ProductsService.GetProductById(pid, next)) return CustomError.createError(ErrorsDictionary.PRODUCT_INPUT_ERROR);
-            res.status(200).send({ status: "success", mycart: await this.service.GetCartById(cart, next) });
-        } catch (error) {
-            error.from = "UsersApiControllers";
             return next(error);
         }
     };
